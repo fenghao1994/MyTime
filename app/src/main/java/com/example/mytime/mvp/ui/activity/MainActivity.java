@@ -1,7 +1,9 @@
-package com.example.mytime;
+package com.example.mytime.mvp.ui.activity;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+
+import com.example.mytime.R;
 
 public class MainActivity extends AppCompatActivity {
 
