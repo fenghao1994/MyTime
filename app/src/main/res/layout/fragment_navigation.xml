@@ -1,0 +1,140 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#515151"
+    tools:context="com.example.mytime.mvp.ui.fragment.NavigationFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/header_img"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:src="@mipmap/ic_launcher" />
+
+        <LinearLayout
+            android:id="@+id/plan_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:src="@drawable/plan" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:text="所有计划"
+                android:textColor="#FFF"
+                android:textSize="20sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/complete_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:src="@drawable/complete" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:text="所有便签"
+                android:textColor="#FFF"
+                android:textSize="20sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/note_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:src="@drawable/note" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:text="完成计划"
+                android:textColor="#FFF"
+                android:textSize="20sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/count_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:src="@drawable/count" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:text="完成统计"
+                android:textColor="#FFF"
+                android:textSize="20sp" />
+
+        </LinearLayout>
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/sign_out_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="20dp"
+        >
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:src="@drawable/sign_out" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:text="退出登陆"
+            android:textColor="#FFF"
+            android:textSize="20sp" />
+
+    </LinearLayout>
+
+</RelativeLayout>

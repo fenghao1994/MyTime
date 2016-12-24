@@ -1,13 +1,13 @@
 package com.example.mytime.mvp.ui.activity;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -31,6 +31,10 @@ public class LoginActivity extends AppCompatActivity implements ILogin {
 
     //多一秒 因为是先减去一秒后才发送的message
     private static final int TIME_OUT = 6;
+    @BindView(R.id.toolbar_title)
+    TextView toolbarTitle;
+    @BindView(R.id.text_login)
+    TextView textLogin;
 
     //是否可以点击获取验证码
     private boolean isClickVerificationCode;
@@ -62,7 +66,7 @@ public class LoginActivity extends AppCompatActivity implements ILogin {
                     Thread.sleep(1000);
                     second -= 1;
                     handler.sendMessage(message);
-                    if ( second <= 0){
+                    if (second <= 0) {
                         break;
                     }
                 } catch (InterruptedException e) {
@@ -79,7 +83,7 @@ public class LoginActivity extends AppCompatActivity implements ILogin {
         ButterKnife.bind(this);
         isClickVerificationCode = true;
         ActionBar actionBar = getSupportActionBar();
-        if ( actionBar != null){
+        if (actionBar != null) {
             actionBar.setHomeAsUpIndicator(R.drawable.logo);
         }
 
@@ -95,7 +99,7 @@ public class LoginActivity extends AppCompatActivity implements ILogin {
         return false;
     }
 
-    @OnClick({R.id.phone_number, R.id.input_verification_code, R.id.get_verification_code})
+    @OnClick({R.id.phone_number, R.id.input_verification_code, R.id.get_verification_code, R.id.text_login})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.phone_number:
@@ -104,6 +108,9 @@ public class LoginActivity extends AppCompatActivity implements ILogin {
                 break;
             case R.id.get_verification_code:
                 clickVerificationCode();
+                break;
+            case R.id.text_login:
+                clickLogin();
                 break;
         }
     }
@@ -116,6 +123,12 @@ public class LoginActivity extends AppCompatActivity implements ILogin {
             getVerificationCode.setText("获取验证码");
             new Thread(runnable).start();
         }
+    }
+
+    //验证成功跳转
+    private void clickLogin() {
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
     }
 }
 
