@@ -7,6 +7,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -37,6 +38,7 @@ public class CreatePlan extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_plan);
         ButterKnife.bind(this);
+        setSupportActionBar( toolbar);
     }
 
     @OnClick({R.id.toolbar_title, R.id.ok, R.id.toolbar, R.id.recycler_view, R.id.activity_create_plan, R.id.fab})
@@ -53,12 +55,25 @@ public class CreatePlan extends AppCompatActivity {
             case R.id.activity_create_plan:
                 break;
             case R.id.fab:
+                createPlanItem();
                 break;
         }
     }
 
-    private void createPlanItem(){
-        Intent intent = new Intent(this, CreatePlanItem.class);
-        startActivity( intent);
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                this.finish();
+                break;
+        }
+
+        return true;
     }
+
+    private void createPlanItem() {
+        Intent intent = new Intent(this, CreatePlanItem.class);
+        startActivity(intent);
+    }
+
 }

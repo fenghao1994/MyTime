@@ -26,7 +26,6 @@
                 android:layout_height="wrap_content"
                 android:text="新建计划子项"
                 android:textSize="16sp"
-                android:layout_centerHorizontal="true"
                 />
             <ImageView
                 android:id="@+id/ok"
@@ -49,6 +48,7 @@
         android:text="计划表标题"
         android:paddingLeft="8dp"
         android:gravity="center"
+        android:background="@null"
         />
 
     <LinearLayout
@@ -65,6 +65,7 @@
             android:text="内容正文内容正文内容正文内容正文"
             android:gravity="top|start"
             android:padding="8dp"
+            android:background="@null"
             />
 
         <LinearLayout

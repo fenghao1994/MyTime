@@ -58,4 +58,5 @@ public class PlanFragment extends Fragment {
         Intent intent = new Intent(getActivity(), CreatePlan.class);
         startActivity( intent);
     }
+
 }

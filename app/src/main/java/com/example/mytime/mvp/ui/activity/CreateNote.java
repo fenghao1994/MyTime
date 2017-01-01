@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -43,6 +44,7 @@ public class CreateNote extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_note);
         ButterKnife.bind(this);
+        setSupportActionBar( toolbar);
     }
 
     @OnClick({R.id.toolbar_title, R.id.ok, R.id.toolbar, R.id.content, R.id.call_phone, R.id.send_message, R.id.photo, R.id.location})
@@ -65,5 +67,16 @@ public class CreateNote extends AppCompatActivity {
             case R.id.location:
                 break;
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case android.R.id.home:
+                this.finish();
+                break;
+        }
+
+        return true;
     }
 }

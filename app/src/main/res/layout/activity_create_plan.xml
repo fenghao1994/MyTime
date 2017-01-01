@@ -28,7 +28,6 @@
                     android:layout_height="wrap_content"
                     android:text="新建计划表"
                     android:textSize="16sp"
-                    android:layout_centerHorizontal="true"
                     />
                 <ImageView
                     android:id="@+id/ok"
