@@ -96,10 +96,10 @@
                 />
         </LinearLayout>
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/photo_recycler"
+        <GridView
+            android:id="@+id/gridview"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"></android.support.v7.widget.RecyclerView>
+            android:layout_height="match_parent"></GridView>
     </LinearLayout>
 
 </android.support.design.widget.CoordinatorLayout>
