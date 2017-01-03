@@ -66,7 +66,7 @@ public class CreatePlanItemActivity extends AppCompatActivity {
 
     }
 
-    @OnClick({R.id.toolbar_title, R.id.ok, R.id.toolbar, R.id.content_title, R.id.content, R.id.call_phone, R.id.send_message, R.id.photo})
+    @OnClick({R.id.toolbar_title, R.id.ok, R.id.toolbar, R.id.content_title, R.id.content, R.id.call_phone, R.id.send_message, R.id.photo, R.id.location})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.toolbar_title:
@@ -86,7 +86,15 @@ public class CreatePlanItemActivity extends AppCompatActivity {
             case R.id.photo:
                 takePhoto();
                 break;
+            case R.id.location:
+                goLocation();
+                break;
         }
+    }
+
+    public void goLocation(){
+        Intent intent = new Intent(this, MapActivity.class);
+        startActivity( intent);
     }
 
     
