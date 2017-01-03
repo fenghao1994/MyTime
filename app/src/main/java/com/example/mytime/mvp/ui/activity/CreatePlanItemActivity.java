@@ -99,12 +99,12 @@ public class CreatePlanItemActivity extends AppCompatActivity {
 
     
     //// TODO: 2017/1/3  暂时不做 第三方插件有点问题
-//    @OnItemClick(R.id.gridview)
-//    public void onItemClick(int position){
-//        Intent intent = new Intent(this, ImageZoomActivity.class);
-//        intent.putExtra("image_path", images.get( position).path);
-//        startActivity( intent);
-//    }
+    @OnItemClick(R.id.gridview)
+    public void onItemClick(int position){
+        Intent intent = new Intent(this, ImageZoomActivity.class);
+        intent.putExtra("image_path", images.get( position).path);
+        startActivity( intent);
+    }
 
     private void takePhoto(){
         Intent intent = new Intent(this, ImageGridActivity.class);
