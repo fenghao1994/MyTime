@@ -12,13 +12,14 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+
 import com.example.mytime.R;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class CreatePlan extends AppCompatActivity {
+public class CreatePlanActivity extends AppCompatActivity {
 
     @BindView(R.id.toolbar_title)
     TextView toolbarTitle;
@@ -72,7 +73,7 @@ public class CreatePlan extends AppCompatActivity {
     }
 
     private void createPlanItem() {
-        Intent intent = new Intent(this, CreatePlanItem.class);
+        Intent intent = new Intent(this, CreatePlanItemActivity.class);
         startActivity(intent);
     }
 

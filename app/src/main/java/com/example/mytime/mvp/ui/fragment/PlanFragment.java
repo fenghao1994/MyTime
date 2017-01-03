@@ -10,10 +10,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 
 import com.example.mytime.R;
-import com.example.mytime.mvp.ui.activity.CreatePlan;
+import com.example.mytime.mvp.ui.activity.CreatePlanActivity;
 import com.example.mytime.mvp.ui.adapter.PlanAdapter;
 
 import java.util.ArrayList;
@@ -76,7 +75,7 @@ public class PlanFragment extends Fragment {
     }
 
     private void createPlan(){
-        Intent intent = new Intent(getActivity(), CreatePlan.class);
+        Intent intent = new Intent(getActivity(), CreatePlanActivity.class);
         startActivity( intent);
     }
 

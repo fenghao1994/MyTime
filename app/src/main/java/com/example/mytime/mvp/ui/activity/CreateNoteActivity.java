@@ -8,7 +8,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.mytime.R;
@@ -17,7 +16,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class CreatePlanItem extends AppCompatActivity {
+public class CreateNoteActivity extends AppCompatActivity {
 
     @BindView(R.id.toolbar_title)
     TextView toolbarTitle;
@@ -25,8 +24,6 @@ public class CreatePlanItem extends AppCompatActivity {
     ImageView ok;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
-    @BindView(R.id.content_title)
-    EditText contentTitle;
     @BindView(R.id.content)
     EditText content;
     @BindView(R.id.call_phone)
@@ -41,18 +38,16 @@ public class CreatePlanItem extends AppCompatActivity {
     ImageView time;
     @BindView(R.id.photo_recycler)
     RecyclerView photoRecycler;
-    @BindView(R.id.activity_create_plan_item)
-    LinearLayout activityCreatePlanItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_create_plan_item);
+        setContentView(R.layout.activity_create_note);
         ButterKnife.bind(this);
         setSupportActionBar( toolbar);
     }
 
-    @OnClick({R.id.toolbar_title, R.id.ok, R.id.toolbar, R.id.content_title, R.id.content, R.id.call_phone, R.id.send_message, R.id.photo})
+    @OnClick({R.id.toolbar_title, R.id.ok, R.id.toolbar, R.id.content, R.id.call_phone, R.id.send_message, R.id.photo, R.id.location})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.toolbar_title:
@@ -61,8 +56,6 @@ public class CreatePlanItem extends AppCompatActivity {
                 break;
             case R.id.toolbar:
                 break;
-            case R.id.content_title:
-                break;
             case R.id.content:
                 break;
             case R.id.call_phone:
@@ -70,6 +63,8 @@ public class CreatePlanItem extends AppCompatActivity {
             case R.id.send_message:
                 break;
             case R.id.photo:
+                break;
+            case R.id.location:
                 break;
         }
     }

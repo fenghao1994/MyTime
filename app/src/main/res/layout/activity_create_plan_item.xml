@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.example.mytime.mvp.ui.activity.CreatePlanItem">
+    tools:context="com.example.mytime.mvp.ui.activity.CreatePlanItemActivity">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
@@ -108,10 +108,16 @@
                 />
         </LinearLayout>
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/photo_recycler"
+        <GridView
+            android:id="@+id/gridview"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"></android.support.v7.widget.RecyclerView>
+            android:layout_height="match_parent"
+            android:numColumns="3"
+            android:verticalSpacing="10dp"
+            android:horizontalSpacing="10dp"
+            android:stretchMode="columnWidth"
+            android:gravity="center"
+            ></GridView>
 
     </LinearLayout>
 

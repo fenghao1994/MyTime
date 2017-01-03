@@ -12,7 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.mytime.R;
-import com.example.mytime.mvp.ui.activity.CreateNote;
+import com.example.mytime.mvp.ui.activity.CreateNoteActivity;
 import com.example.mytime.mvp.ui.adapter.NoteAdapter;
 
 import java.util.ArrayList;
@@ -67,7 +67,7 @@ public class NoteFragment extends Fragment {
         }
     }
     private void createNote(){
-        Intent intent = new Intent(getActivity(), CreateNote.class);
+        Intent intent = new Intent(getActivity(), CreateNoteActivity.class);
         startActivity( intent);
     }
 }
