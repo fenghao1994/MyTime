@@ -16,11 +16,13 @@ import android.widget.Toast;
 import com.example.mytime.R;
 import com.example.mytime.application.MyApplication;
 import com.example.mytime.mvp.ui.adapter.ImageItemAdapter;
+import com.example.mytime.mvp.ui.custom.TimeDialog;
 import com.lzy.imagepicker.ImagePicker;
 import com.lzy.imagepicker.bean.ImageItem;
 import com.lzy.imagepicker.ui.ImageGridActivity;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -57,6 +59,10 @@ public class CreatePlanItemActivity extends AppCompatActivity {
 
     ArrayList<ImageItem> images;
 
+    TimeDialog timeDialog;
+    boolean isEveryDaySetting = false;
+    List<Long> settingTimes = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,9 +70,10 @@ public class CreatePlanItemActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
 
+        timeDialog = new TimeDialog(this);
     }
 
-    @OnClick({R.id.toolbar_title, R.id.ok, R.id.toolbar, R.id.content_title, R.id.content, R.id.call_phone, R.id.send_message, R.id.photo, R.id.location})
+    @OnClick({R.id.time, R.id.toolbar_title, R.id.ok, R.id.toolbar, R.id.content_title, R.id.content, R.id.call_phone, R.id.send_message, R.id.photo, R.id.location})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.toolbar_title:
@@ -89,7 +96,23 @@ public class CreatePlanItemActivity extends AppCompatActivity {
             case R.id.location:
                 goLocation();
                 break;
+            case R.id.time:
+                showTimeDialog();
+                break;
         }
+    }
+
+
+    public void showTimeDialog(){
+        timeDialog.show();
+        timeDialog.setOnOkListener(new TimeDialog.onOkListener() {
+            @Override
+            public void getDate(boolean isEveryDay, List<Long> setTimes) {
+                isEveryDaySetting = isEveryDay;
+                settingTimes = setTimes;
+                timeDialog.dismiss();
+            }
+        });
     }
 
     public void goLocation(){
@@ -98,7 +121,6 @@ public class CreatePlanItemActivity extends AppCompatActivity {
     }
 
     
-    //// TODO: 2017/1/3  暂时不做 第三方插件有点问题
     @OnItemClick(R.id.gridview)
     public void onItemClick(int position){
         Intent intent = new Intent(this, ImageZoomActivity.class);
