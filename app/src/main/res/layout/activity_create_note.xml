@@ -61,38 +61,10 @@
             android:layout_height="wrap_content">
             <ImageView
                 android:layout_weight="1"
-                android:id="@+id/call_phone"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:src="@drawable/call_phone"
-                />
-            <ImageView
-                android:layout_weight="1"
-                android:id="@+id/send_message"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:src="@drawable/message"
-                />
-            <ImageView
-                android:layout_weight="1"
                 android:id="@+id/photo"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:src="@drawable/photo"
-                />
-            <ImageView
-                android:layout_weight="1"
-                android:id="@+id/location"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:src="@drawable/location"
-                />
-            <ImageView
-                android:layout_weight="1"
-                android:id="@+id/time"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:src="@drawable/time"
                 />
         </LinearLayout>
 

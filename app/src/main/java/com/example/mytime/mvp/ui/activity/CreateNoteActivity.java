@@ -27,6 +27,9 @@ import butterknife.OnClick;
 public class CreateNoteActivity extends AppCompatActivity {
 
     private static final int IMAGE_PICKER = 1;
+
+
+    ArrayList<ImageItem> images;
     @BindView(R.id.toolbar_title)
     TextView toolbarTitle;
     @BindView(R.id.ok)
@@ -35,20 +38,10 @@ public class CreateNoteActivity extends AppCompatActivity {
     Toolbar toolbar;
     @BindView(R.id.content)
     EditText content;
-    @BindView(R.id.call_phone)
-    ImageView callPhone;
-    @BindView(R.id.send_message)
-    ImageView sendMessage;
     @BindView(R.id.photo)
     ImageView photo;
-    @BindView(R.id.location)
-    ImageView location;
-    @BindView(R.id.time)
-    ImageView time;
     @BindView(R.id.gridview)
     GridView gridview;
-
-    ArrayList<ImageItem> images;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,30 +51,8 @@ public class CreateNoteActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
     }
 
-    @OnClick({R.id.toolbar_title, R.id.ok, R.id.toolbar, R.id.content, R.id.call_phone, R.id.send_message, R.id.photo, R.id.location})
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.toolbar_title:
-                break;
-            case R.id.ok:
-                break;
-            case R.id.toolbar:
-                break;
-            case R.id.content:
-                break;
-            case R.id.call_phone:
-                break;
-            case R.id.send_message:
-                break;
-            case R.id.photo:
-                takePhoto();
-                break;
-            case R.id.location:
-                break;
-        }
-    }
 
-    private void takePhoto(){
+    private void takePhoto() {
         Intent intent = new Intent(this, ImageGridActivity.class);
         startActivityForResult(intent, IMAGE_PICKER);
     }
@@ -90,12 +61,12 @@ public class CreateNoteActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == ImagePicker.RESULT_CODE_ITEMS){
-            if (data != null && requestCode == IMAGE_PICKER){
+        if (resultCode == ImagePicker.RESULT_CODE_ITEMS) {
+            if (data != null && requestCode == IMAGE_PICKER) {
                 images = (ArrayList<ImageItem>) data.getSerializableExtra(ImagePicker.EXTRA_RESULT_ITEMS);
                 ImageItemAdapter imageItemAdapter = new ImageItemAdapter(images, this);
-                gridview.setAdapter( imageItemAdapter);
-            }else {
+                gridview.setAdapter(imageItemAdapter);
+            } else {
                 Toast.makeText(this, "meiyou fanhui shuju", Toast.LENGTH_SHORT).show();
             }
         }
@@ -110,5 +81,24 @@ public class CreateNoteActivity extends AppCompatActivity {
         }
 
         return true;
+    }
+
+    @OnClick({R.id.toolbar_title, R.id.ok, R.id.toolbar, R.id.content, R.id.photo, R.id.gridview})
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.toolbar_title:
+                break;
+            case R.id.ok:
+                break;
+            case R.id.toolbar:
+                break;
+            case R.id.content:
+                break;
+            case R.id.photo:
+                takePhoto();
+                break;
+            case R.id.gridview:
+                break;
+        }
     }
 }
