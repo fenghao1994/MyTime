@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<litepal>
+    <dbname value="mytime"></dbname>
+    <version value="1"></version>
+    <list>
+        <mapping class="com.example.mytime.mvp.model.entity.Note"></mapping>
+        <mapping class="com.example.mytime.mvp.model.entity.Photo"></mapping>
+        <mapping class="com.example.mytime.mvp.model.entity.Plan"></mapping>
+        <mapping class="com.example.mytime.mvp.model.entity.PlanItem"></mapping>
+        <mapping class="com.example.mytime.mvp.model.entity.Time"></mapping>
+    </list>
+</litepal>

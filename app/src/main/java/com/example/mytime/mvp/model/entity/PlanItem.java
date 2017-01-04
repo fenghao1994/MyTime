@@ -1,5 +1,8 @@
 package com.example.mytime.mvp.model.entity;
 
+import org.litepal.crud.DataSupport;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
@@ -7,28 +10,36 @@ import java.util.ArrayList;
  * 计划表子项item
  */
 
-public class PlanItem {
+public class PlanItem extends DataSupport implements Serializable{
     int id;
     /**
      * 计划表的唯一值
      */
-    String planId;
+    long planId;
     String title;
     String content;
-    String createTime;
-    String editTime;
+    long createTime;
+    long editTime;
     boolean isEdit;
     String phoneNumber;
     String messageContent;
     String messagePhoneNumber;
     String location;
-    String time;
     boolean isEveryDay;
     boolean isManyDays;
     boolean isExpired;
     boolean isComplete;
 
     ArrayList<Photo> address;
+    ArrayList<Time> times;
+
+    public ArrayList<Time> getTimes() {
+        return times;
+    }
+
+    public void setTimes(ArrayList<Time> times) {
+        this.times = times;
+    }
 
     public ArrayList<Photo> getAddress() {
         return address;
@@ -46,13 +57,6 @@ public class PlanItem {
         this.id = id;
     }
 
-    public String getPlanId() {
-        return planId;
-    }
-
-    public void setPlanId(String planId) {
-        this.planId = planId;
-    }
 
     public String getTitle() {
         return title;
@@ -70,21 +74,30 @@ public class PlanItem {
         this.content = content;
     }
 
-    public String getCreateTime() {
+    public long getPlanId() {
+        return planId;
+    }
+
+    public void setPlanId(long planId) {
+        this.planId = planId;
+    }
+
+    public long getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(String createTime) {
+    public void setCreateTime(long createTime) {
         this.createTime = createTime;
     }
 
-    public String getEditTime() {
+    public long getEditTime() {
         return editTime;
     }
 
-    public void setEditTime(String editTime) {
+    public void setEditTime(long editTime) {
         this.editTime = editTime;
     }
+
 
     public boolean isEdit() {
         return isEdit;
@@ -126,13 +139,6 @@ public class PlanItem {
         this.location = location;
     }
 
-    public String getTime() {
-        return time;
-    }
-
-    public void setTime(String time) {
-        this.time = time;
-    }
 
     public boolean isEveryDay() {
         return isEveryDay;

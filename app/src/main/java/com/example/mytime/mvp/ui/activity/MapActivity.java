@@ -38,6 +38,7 @@ public class MapActivity extends AppCompatActivity implements LocationSource, AM
     TextView editContent;
 
     private static final int REQUEST = 1;
+    public static final int RESULT_LOCATION = 2;
     AMap aMap;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -113,7 +114,9 @@ public class MapActivity extends AppCompatActivity implements LocationSource, AM
                 PoiItem poiItem = data.getParcelableExtra("poiitem");
                 String keyWord = data.getStringExtra("address");
                 editContent.setText(keyWord);
-                LatLng latLng = new LatLng(poiItem.getLatLonPoint().getLatitude(), poiItem.getLatLonPoint().getLongitude());
+                latitude = poiItem.getLatLonPoint().getLatitude();
+                longtitude = poiItem.getLatLonPoint().getLongitude();
+                LatLng latLng = new LatLng(latitude, longtitude);
                 aMap.clear(true);
                 marker = aMap.addMarker(new MarkerOptions().position(latLng).draggable(false));
                 aMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 18f));
@@ -212,10 +215,25 @@ public class MapActivity extends AppCompatActivity implements LocationSource, AM
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                this.finish();
+                returnLocation();
                 break;
         }
         return true;
     }
 
+    public void returnLocation(){
+        if ( longtitude != 0){
+            Intent intent = new Intent();
+            intent.putExtra("LOCATION", latitude + "," + longtitude);
+            setResult(RESULT_LOCATION, intent);
+        }
+        this.finish();
+    }
+
+    @Override
+    public void onBackPressed() {
+        returnLocation();
+        super.onBackPressed();
+
+    }
 }

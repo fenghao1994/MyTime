@@ -6,6 +6,8 @@ import com.example.mytime.util.GlideImageLoader;
 import com.lzy.imagepicker.ImagePicker;
 import com.lzy.imagepicker.view.CropImageView;
 
+import org.litepal.LitePal;
+
 /**
  * Created by fenghao on 2017/1/3.
  */
@@ -16,6 +18,8 @@ public class MyApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+
+        LitePal.initialize(this);
 
         imagePicker = ImagePicker.getInstance();
         imagePicker.setImageLoader(new GlideImageLoader());   //设置图片加载器

@@ -12,8 +12,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.mytime.R;
+import com.example.mytime.mvp.model.entity.Plan;
 import com.example.mytime.mvp.ui.activity.CreatePlanActivity;
 import com.example.mytime.mvp.ui.adapter.PlanAdapter;
+
+import org.litepal.crud.DataSupport;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +25,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static android.app.Activity.RESULT_OK;
+
+
 /**
  * A simple {@link Fragment} subclass.
  * 计划fragment
@@ -29,11 +35,14 @@ import butterknife.OnClick;
 public class PlanFragment extends Fragment {
 
 
+    private static final int REQUEST_PLAN = 1;
     @BindView(R.id.recycler_view)
     RecyclerView recyclerView;
     @BindView(R.id.fab)
     FloatingActionButton fab;
     private PlanAdapter adapter;
+
+    private List<Plan> mList;
     
     public PlanFragment() {
         // Required empty public constructor
@@ -49,18 +58,21 @@ public class PlanFragment extends Fragment {
         init();
         LinearLayoutManager layoutManager = new LinearLayoutManager( getActivity());
         recyclerView.setLayoutManager( layoutManager);
-        adapter = new PlanAdapter( mList);
-        recyclerView.setAdapter( adapter);
+
         
         return view;
     }
-    
-    //// TODO: 2017/1/1  测试
-    private List mList = new ArrayList();
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        init();
+    }
+
     public void init(){
-        for (int i = 0 ;i < 30; i++){
-            mList.add("计划表名" + i);
-        }
+        mList = DataSupport.findAll(Plan.class);
+        adapter = new PlanAdapter( mList);
+        recyclerView.setAdapter( adapter);
     }
 
     @OnClick({R.id.recycler_view, R.id.fab})
@@ -76,7 +88,16 @@ public class PlanFragment extends Fragment {
 
     private void createPlan(){
         Intent intent = new Intent(getActivity(), CreatePlanActivity.class);
-        startActivity( intent);
+        startActivityForResult( intent, REQUEST_PLAN);
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK){
+            if (requestCode == REQUEST_PLAN){
+                init();
+            }
+        }
+    }
 }

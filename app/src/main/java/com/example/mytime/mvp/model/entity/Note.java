@@ -1,5 +1,8 @@
 package com.example.mytime.mvp.model.entity;
 
+import org.litepal.crud.DataSupport;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
@@ -7,12 +10,13 @@ import java.util.ArrayList;
  * 便签实体
  */
 
-public class Note {
+public class Note extends DataSupport implements Serializable{
+
     int id;
     String title;
     String content;
-    String createTime;
-    String editTime;
+    long createTime;
+    long editTime;
     boolean isEdit;
     ArrayList<Photo> address;
 
@@ -48,19 +52,19 @@ public class Note {
         this.content = content;
     }
 
-    public String getCreateTime() {
+    public long getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(String createTime) {
+    public void setCreateTime(long createTime) {
         this.createTime = createTime;
     }
 
-    public String getEditTime() {
+    public long getEditTime() {
         return editTime;
     }
 
-    public void setEditTime(String editTime) {
+    public void setEditTime(long editTime) {
         this.editTime = editTime;
     }
 

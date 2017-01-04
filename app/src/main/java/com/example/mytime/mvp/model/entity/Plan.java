@@ -1,18 +1,22 @@
 package com.example.mytime.mvp.model.entity;
 
+import org.litepal.crud.DataSupport;
+
+import java.io.Serializable;
+
 /**
  * Created by fenghao on 2017/1/4.
  * 计划表
  */
 
-public class Plan {
+public class Plan extends DataSupport implements Serializable{
     int id;
-    String planId;
+    long planId;
     String title;
     boolean isExpired;
     boolean isComplete;
-    String createTime;
-    String editTime;
+    long createTime;
+    long editTime;
     boolean isEdit;
 
     public int getId() {
@@ -23,13 +27,6 @@ public class Plan {
         this.id = id;
     }
 
-    public String getPlanId() {
-        return planId;
-    }
-
-    public void setPlanId(String planId) {
-        this.planId = planId;
-    }
 
     public String getTitle() {
         return title;
@@ -55,19 +52,27 @@ public class Plan {
         isComplete = complete;
     }
 
-    public String getCreateTime() {
+    public long getPlanId() {
+        return planId;
+    }
+
+    public void setPlanId(long planId) {
+        this.planId = planId;
+    }
+
+    public long getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(String createTime) {
+    public void setCreateTime(long createTime) {
         this.createTime = createTime;
     }
 
-    public String getEditTime() {
+    public long getEditTime() {
         return editTime;
     }
 
-    public void setEditTime(String editTime) {
+    public void setEditTime(long editTime) {
         this.editTime = editTime;
     }
 

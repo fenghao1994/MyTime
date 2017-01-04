@@ -1,11 +1,15 @@
 package com.example.mytime.mvp.model.entity;
 
+import org.litepal.crud.DataSupport;
+
+import java.io.Serializable;
+
 /**
  * Created by fenghao on 2017/1/4.
  * 图片地址实体
  */
 
-public class Photo {
+public class Photo extends DataSupport implements Serializable{
     int id;
     int objectType;
     int objectId;

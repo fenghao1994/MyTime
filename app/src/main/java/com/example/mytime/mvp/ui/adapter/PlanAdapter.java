@@ -10,6 +10,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.mytime.R;
+import com.example.mytime.mvp.model.entity.Plan;
+import com.example.mytime.util.MyUtil;
 
 import java.util.List;
 
@@ -21,10 +23,10 @@ import butterknife.ButterKnife;
  */
 
 public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.ViewHolder> {
-    private List mList;
+    private List<Plan> mList;
 
 
-    public PlanAdapter(List list){
+    public PlanAdapter(List<Plan> list){
         this.mList = list;
     }
 
@@ -38,7 +40,13 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         //TODO 数据绑定
-        holder.planName.setText( (String)mList.get( position));
+        if ( "".equals(mList.get( position).getTitle())){
+            holder.planName.setText("计划表");
+        }else {
+            holder.planName.setText(mList.get( position).getTitle());
+        }
+        holder.planTime.setText(MyUtil.dateYMDHM( mList.get( position).getEditTime()));
+
     }
 
 

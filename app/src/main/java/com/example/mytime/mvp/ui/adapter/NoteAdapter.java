@@ -7,6 +7,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.mytime.R;
+import com.example.mytime.mvp.model.entity.Note;
+import com.example.mytime.util.MyUtil;
 
 import java.util.List;
 
@@ -19,9 +21,9 @@ import butterknife.ButterKnife;
 
 public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.ViewHolder> {
 
-    private List mList;
+    private List<Note> mList;
 
-    public NoteAdapter(List list){
+    public NoteAdapter(List<Note> list){
         this.mList = list;
     }
 
@@ -34,7 +36,8 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.noteText.setText( (String)mList.get( position));
+        holder.noteText.setText( mList.get( position).getContent());
+        holder.timeText.setText(MyUtil.dateYMDHM(mList.get( position).getEditTime()));
     }
 
 
