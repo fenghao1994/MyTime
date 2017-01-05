@@ -39,7 +39,6 @@ public class CreateNoteActivity extends AppCompatActivity implements ICreateNote
 
     private static final int IMAGE_PICKER = 1;
 
-
     ArrayList<ImageItem> images;
     @BindView(R.id.toolbar_title)
     TextView toolbarTitle;
@@ -60,12 +59,9 @@ public class CreateNoteActivity extends AppCompatActivity implements ICreateNote
     long noteEditTime;
     boolean noteIsEdit;
     ArrayList<Photo> noteAddress;
-
     Note note;
     EasyGridviewAdapter easyGridviewAdapter;
-
     ICreateNotePresenter createNotePresenter;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
