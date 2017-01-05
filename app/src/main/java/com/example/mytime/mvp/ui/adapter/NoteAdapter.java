@@ -1,5 +1,7 @@
 package com.example.mytime.mvp.ui.adapter;
 
+import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +10,7 @@ import android.widget.TextView;
 
 import com.example.mytime.R;
 import com.example.mytime.mvp.model.entity.Note;
+import com.example.mytime.mvp.ui.activity.CreateNoteActivity;
 import com.example.mytime.util.MyUtil;
 
 import java.util.List;
@@ -22,8 +25,10 @@ import butterknife.ButterKnife;
 public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.ViewHolder> {
 
     private List<Note> mList;
+    private Context mContext;
 
-    public NoteAdapter(List<Note> list){
+    public NoteAdapter(Context context,List<Note> list){
+        this.mContext = context;
         this.mList = list;
     }
 
@@ -35,9 +40,17 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.ViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(ViewHolder holder, final int position) {
         holder.noteText.setText( mList.get( position).getContent());
         holder.timeText.setText(MyUtil.dateYMDHM(mList.get( position).getEditTime()));
+        holder.noteView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(mContext, CreateNoteActivity.class);
+                intent.putExtra("NOTE", mList.get(position));
+                mContext.startActivity( intent);
+            }
+        });
     }
 
 

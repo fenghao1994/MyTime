@@ -1,8 +1,6 @@
 package com.example.mytime.mvp.ui.adapter;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,32 +9,32 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
 import com.example.mytime.R;
-import com.lzy.imagepicker.bean.ImageItem;
+import com.example.mytime.mvp.model.entity.Photo;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Created by fenghao on 2017/1/3.
+ * Created by fenghao on 2017/1/5.
  */
 
-public class ImageItemAdapter extends BaseAdapter {
+public class EasyGridviewAdapter extends BaseAdapter{
 
-    private ArrayList<ImageItem> mArrayList;
+    private List<Photo> mList;
     private Context mContext;
 
-    public ImageItemAdapter(ArrayList<ImageItem> arrayList, Context context){
-        this.mArrayList = arrayList;
+    public EasyGridviewAdapter(Context context, List<Photo> list){
         this.mContext = context;
+        this.mList = list;
     }
 
     @Override
     public int getCount() {
-        return mArrayList.size();
+        return mList.size();
     }
 
     @Override
     public Object getItem(int i) {
-        return mArrayList.get(i);
+        return mList.get( i);
     }
 
     @Override
@@ -46,18 +44,17 @@ public class ImageItemAdapter extends BaseAdapter {
 
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
-        ViewHolder viewHolder;
+        ImageItemAdapter.ViewHolder viewHolder;
         if ( view == null){
             view = LayoutInflater.from(mContext).inflate(R.layout.item_gridview, null);
-            viewHolder = new ViewHolder();
+            viewHolder = new ImageItemAdapter.ViewHolder();
             viewHolder.imageView = (ImageView) view.findViewById(R.id.image);
             view.setTag( viewHolder);
         }else {
-            viewHolder = (ViewHolder) view.getTag();
+            viewHolder = (ImageItemAdapter.ViewHolder) view.getTag();
         }
-        String str = mArrayList.get(i).path;
-        Bitmap bm = BitmapFactory.decodeFile( str);
-        viewHolder.imageView.setImageBitmap( bm);
+
+        viewHolder.imageView.setImageURI(Uri.parse( mList.get(i).getAddress()));
         return view;
     }
 

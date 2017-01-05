@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.example.mytime.R;
 import com.example.mytime.mvp.model.entity.Note;
 import com.example.mytime.mvp.model.entity.Photo;
+import com.example.mytime.mvp.ui.adapter.EasyGridviewAdapter;
 import com.example.mytime.mvp.ui.adapter.ImageItemAdapter;
 import com.lzy.imagepicker.ImagePicker;
 import com.lzy.imagepicker.bean.ImageItem;
@@ -28,6 +29,7 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.OnItemClick;
 
 public class CreateNoteActivity extends AppCompatActivity {
 
@@ -58,6 +60,7 @@ public class CreateNoteActivity extends AppCompatActivity {
     Note note;
     //通过数据库获取有id的note
     Note currentNote;
+    EasyGridviewAdapter easyGridviewAdapter;
 
 
     @Override
@@ -66,6 +69,15 @@ public class CreateNoteActivity extends AppCompatActivity {
         setContentView(R.layout.activity_create_note);
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
+
+        note = (Note) getIntent().getSerializableExtra("NOTE");
+        if (note != null){
+            content.setText( note.getContent());
+            toolbarTitle.setText("编辑");
+            noteAddress = (ArrayList<Photo>) DataSupport.where("objectId = ? and objectType = ?", note.getId() + "", 2 + "").find(Photo.class);
+            easyGridviewAdapter = new EasyGridviewAdapter(this, noteAddress);
+            gridview.setAdapter( easyGridviewAdapter);
+        }
     }
 
 
@@ -83,6 +95,7 @@ public class CreateNoteActivity extends AppCompatActivity {
                 images = (ArrayList<ImageItem>) data.getSerializableExtra(ImagePicker.EXTRA_RESULT_ITEMS);
                 ImageItemAdapter imageItemAdapter = new ImageItemAdapter(images, this);
                 gridview.setAdapter(imageItemAdapter);
+                imageItemAdapter.notifyDataSetChanged();
 
                 noteAddress = new ArrayList<>();
                 for (int i = 0 ; i < images.size(); i++){
@@ -122,22 +135,48 @@ public class CreateNoteActivity extends AppCompatActivity {
             Toast.makeText(this, "便签内容不能为空", Toast.LENGTH_SHORT).show();
             return;
         }
-        note = new Note();
-        noteTitle = "";
-        noteCreateTime = System.currentTimeMillis();
-        noteEditTime = noteCreateTime;
-        noteIsEdit = false;
 
-        note.setTitle( noteTitle);
-        note.setCreateTime( noteCreateTime);
-        note.setEditTime( noteEditTime);
-        note.setEdit( noteIsEdit);
-        note.setAddress( noteAddress);
-        note.setContent( noteContent);
+        if (note == null){
+            note = new Note();
+            noteTitle = "";
+            noteCreateTime = System.currentTimeMillis();
+            noteEditTime = noteCreateTime;
+            noteIsEdit = false;
 
-        if (note.save()){
-            currentNote = DataSupport.where("createTime = ?", noteCreateTime + "").findFirst(Note.class);
+            note.setTitle( noteTitle);
+            note.setCreateTime( noteCreateTime);
+            note.setEditTime( noteEditTime);
+            note.setEdit( noteIsEdit);
+            note.setAddress( noteAddress);
+            note.setContent( noteContent);
+
+            if (note.save()){
+                currentNote = DataSupport.where("createTime = ?", note.getCreateTime() + "").findFirst(Note.class);
+                if ( noteAddress != null && noteAddress.size() > 0){
+                    for (int i = 0 ; i < noteAddress.size(); i++){
+                        noteAddress.get(i).setObjectType(2);
+                        noteAddress.get(i).setObjectId( currentNote.getId());
+                        noteAddress.get(i).save();
+                    }
+                }
+                complete();
+            }else {
+                Toast.makeText(this, "设置失败", Toast.LENGTH_SHORT).show();
+            }
+            return;
+        }else {
+            noteEditTime = System.currentTimeMillis();
+            noteIsEdit = true;
+            note.setEditTime( noteEditTime);
+            note.setEdit( noteIsEdit);
+            note.setAddress( noteAddress);
+            note.setContent( noteContent);
+            note.update( note.getId());
+            currentNote = DataSupport.where("createTime = ?", note.getCreateTime() + "").findFirst(Note.class);
             if ( noteAddress != null && noteAddress.size() > 0){
+
+                DataSupport.deleteAll(Photo.class, "objectType = ? and objectId = ?", 2 + "", currentNote.getId() + "");
+
                 for (int i = 0 ; i < noteAddress.size(); i++){
                     noteAddress.get(i).setObjectType(2);
                     noteAddress.get(i).setObjectId( currentNote.getId());
@@ -145,8 +184,6 @@ public class CreateNoteActivity extends AppCompatActivity {
                 }
             }
             complete();
-        }else {
-            Toast.makeText(this, "设置失败", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -170,5 +207,15 @@ public class CreateNoteActivity extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
         this.finish();
+    }
+
+    @OnItemClick(R.id.gridview)
+    public void onItemClick(int position){
+        if (noteAddress != null){
+            Intent intent = new Intent(this, ImageZoomActivity.class);
+            intent.putExtra("image_path", noteAddress.get( position).getAddress());
+            startActivity( intent);
+        }
+
     }
 }

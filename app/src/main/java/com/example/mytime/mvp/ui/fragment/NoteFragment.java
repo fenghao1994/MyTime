@@ -55,8 +55,8 @@ public class NoteFragment extends Fragment {
         return view;
     }
     public void init(){
-        notes = DataSupport.findAll(Note.class);
-        adapter = new NoteAdapter( notes);
+        notes = DataSupport.order("editTime desc").find(Note.class);
+        adapter = new NoteAdapter(getActivity(), notes);
         recyclerView.setAdapter( adapter);
     }
 
