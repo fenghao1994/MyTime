@@ -18,7 +18,10 @@ import android.widget.Toast;
 import com.example.mytime.R;
 import com.example.mytime.mvp.model.entity.Plan;
 import com.example.mytime.mvp.model.entity.PlanItem;
+import com.example.mytime.mvp.presenter.ICreatePlanPresenter;
+import com.example.mytime.mvp.presenter.impl.CreatePlanPresenterImpl;
 import com.example.mytime.mvp.ui.adapter.PlanItemAdapter;
+import com.example.mytime.mvp.ui.view.ICreatePlanView;
 
 import org.litepal.crud.DataSupport;
 
@@ -28,7 +31,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class CreatePlanActivity extends AppCompatActivity {
+public class CreatePlanActivity extends AppCompatActivity implements ICreatePlanView {
 
     private static final int REQUEST = 1;
     @BindView(R.id.toolbar_title)
@@ -56,10 +59,12 @@ public class CreatePlanActivity extends AppCompatActivity {
     boolean isCompletePlanItem;
     PlanItemAdapter adapter;
 
+    private boolean isFromFab;
+
 //    Plan editPlan;
 //    List<PlanItem> editPlanItems;
 
-
+    private ICreatePlanPresenter createPlanPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,34 +72,56 @@ public class CreatePlanActivity extends AppCompatActivity {
         setContentView(R.layout.activity_create_plan);
         ButterKnife.bind(this);
         setSupportActionBar( toolbar);
+        createPlanPresenter = new CreatePlanPresenterImpl( this);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager( this);
         recyclerView.setLayoutManager( layoutManager);
 
         plan = (Plan) getIntent().getSerializableExtra("PLAN");
+        isFromFab = getIntent().getBooleanExtra("IS_FROM_FAB", false);
+
         if ( plan != null){
-            toolbarTitle.setText("编辑");
+//            toolbarTitle.setText("编辑");
 //            editPlanItems = DataSupport.where("planId = ?", editPlan.getPlanId() + "").find(PlanItem.class);
-            getAllPlanItems();
-            editPlanData();
+
+            createPlanPresenter.showData( plan);
+
+//            getAllPlanItems();
+//            editPlanData();
         }else {
             createPlanInData();
         }
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        getAllPlanItems();
-    }
+    public void showData(List<PlanItem> planItems) {
+        toolbarTitle.setText("编辑");
+//        planEditTime = System.currentTimeMillis();
+//        planTitle = "";
+//        planIsEdit = true;
 
-    public void getAllPlanItems(){
-        List<PlanItem> planItems = DataSupport.order("editTime desc").where("planId = ?", plan.getPlanId() + "").find(PlanItem.class);
         if ( planItems != null && planItems.size() > 0){
             adapter = new PlanItemAdapter(this, planItems);
             recyclerView.setAdapter( adapter);
         }
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if ( plan != null){
+            createPlanPresenter.showData( plan);
+        }
+//        getAllPlanItems();
+    }
+
+    /*public void getAllPlanItems(){
+        List<PlanItem> planItems = DataSupport.order("editTime desc").where("planId = ?", plan.getPlanId() + "").find(PlanItem.class);
+        if ( planItems != null && planItems.size() > 0){
+            adapter = new PlanItemAdapter(this, planItems);
+            recyclerView.setAdapter( adapter);
+        }
+    }*/
 
     @OnClick({R.id.toolbar_title, R.id.ok, R.id.toolbar, R.id.recycler_view, R.id.activity_create_plan, R.id.fab})
     public void onClick(View view) {
@@ -137,17 +164,26 @@ public class CreatePlanActivity extends AppCompatActivity {
 
     public void clickOk(){
         if ( isCompletePlanItem && plan != null){
-            if ( !planIsEdit){
+            if ( isFromFab){
+                createPlanPresenter.savePlan( plan);
+            }else {
+                editPlanData();
+                createPlanPresenter.updatePlan( plan);
+            }
+           /* if ( !planIsEdit){
                 plan.save();
             }else {
                 plan.update( plan.getId());
-            }
-            complete();
+            }*/
+//            complete();
         }else {
             Toast.makeText(this, "设置失败", Toast.LENGTH_SHORT).show();
         }
     }
 
+
+
+    @Override
     public void complete(){
         Intent intent = new Intent();
         setResult(RESULT_OK, intent);

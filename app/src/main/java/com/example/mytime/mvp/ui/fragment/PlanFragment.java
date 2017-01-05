@@ -88,6 +88,7 @@ public class PlanFragment extends Fragment {
 
     private void createPlan(){
         Intent intent = new Intent(getActivity(), CreatePlanActivity.class);
+        intent.putExtra("IS_FROM_FAB", true);
         startActivityForResult( intent, REQUEST_PLAN);
     }
 
