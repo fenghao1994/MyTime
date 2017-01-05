@@ -173,10 +173,8 @@ public class CreateNoteActivity extends AppCompatActivity {
             note.setContent( noteContent);
             note.update( note.getId());
             currentNote = DataSupport.where("createTime = ?", note.getCreateTime() + "").findFirst(Note.class);
-            if ( noteAddress != null && noteAddress.size() > 0){
-
+            if ( noteAddress != null){
                 DataSupport.deleteAll(Photo.class, "objectType = ? and objectId = ?", 2 + "", currentNote.getId() + "");
-
                 for (int i = 0 ; i < noteAddress.size(); i++){
                     noteAddress.get(i).setObjectType(2);
                     noteAddress.get(i).setObjectId( currentNote.getId());

@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.example.mytime.R;
 import com.lzy.imagepicker.bean.ImageItem;
 
@@ -55,9 +56,7 @@ public class ImageItemAdapter extends BaseAdapter {
         }else {
             viewHolder = (ViewHolder) view.getTag();
         }
-        String str = mArrayList.get(i).path;
-        Bitmap bm = BitmapFactory.decodeFile( str);
-        viewHolder.imageView.setImageBitmap( bm);
+        Glide.with( mContext).load( mArrayList.get(i).path).into( viewHolder.imageView);
         return view;
     }
 

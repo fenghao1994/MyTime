@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.example.mytime.R;
 import com.example.mytime.mvp.model.entity.Photo;
 
@@ -54,7 +55,7 @@ public class EasyGridviewAdapter extends BaseAdapter{
             viewHolder = (ImageItemAdapter.ViewHolder) view.getTag();
         }
 
-        viewHolder.imageView.setImageURI(Uri.parse( mList.get(i).getAddress()));
+        Glide.with(mContext).load(mList.get(i).getAddress()).into( viewHolder.imageView);
         return view;
     }
 

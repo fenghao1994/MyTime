@@ -71,7 +71,7 @@ public class PlanFragment extends Fragment {
 
     public void init(){
         mList = DataSupport.findAll(Plan.class);
-        adapter = new PlanAdapter( mList);
+        adapter = new PlanAdapter(getActivity(), mList);
         recyclerView.setAdapter( adapter);
     }
 

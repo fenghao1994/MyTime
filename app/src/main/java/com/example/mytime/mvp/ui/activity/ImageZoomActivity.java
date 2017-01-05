@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
+import com.bumptech.glide.Glide;
 import com.example.mytime.R;
 
 import butterknife.BindView;
@@ -40,7 +41,8 @@ public class ImageZoomActivity extends AppCompatActivity {
         path = intent.getStringExtra("image_path");
 
 
-        photoView.setImageURI(Uri.parse(path));
+//        photoView.setImageURI(Uri.parse(path));
+        Glide.with(this).load( path).into( photoView);
         mAttacher = new PhotoViewAttacher(photoView);
 
     }

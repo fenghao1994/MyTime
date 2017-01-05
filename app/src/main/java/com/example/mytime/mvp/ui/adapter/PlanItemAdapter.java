@@ -1,5 +1,7 @@
 package com.example.mytime.mvp.ui.adapter;
 
+import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -12,6 +14,7 @@ import android.widget.TextView;
 import com.example.mytime.R;
 import com.example.mytime.mvp.model.entity.PlanItem;
 import com.example.mytime.mvp.model.entity.Time;
+import com.example.mytime.mvp.ui.activity.CreatePlanItemActivity;
 import com.example.mytime.util.MyUtil;
 
 import org.litepal.crud.DataSupport;
@@ -29,8 +32,10 @@ public class PlanItemAdapter extends RecyclerView.Adapter<PlanItemAdapter.ViewHo
 
     private List<PlanItem> mList;
     private List<Time> times;
+    private Context mContext;
 
-    public PlanItemAdapter(List<PlanItem> list) {
+    public PlanItemAdapter(Context context, List<PlanItem> list) {
+        this.mContext = context;
         this.mList = list;
     }
 
@@ -42,7 +47,7 @@ public class PlanItemAdapter extends RecyclerView.Adapter<PlanItemAdapter.ViewHo
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(ViewHolder holder, final int position) {
         times = DataSupport.where("planItemId = ?", mList.get( position).getId() + "").find(Time.class);
 
         //// TODO: 2017/1/4  显示的时间处理
@@ -53,6 +58,14 @@ public class PlanItemAdapter extends RecyclerView.Adapter<PlanItemAdapter.ViewHo
         }
         holder.planItemContent.setText( mList.get( position).getContent());
         holder.planItemTitle.setText( mList.get(position).getTitle());
+        holder.planItemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(mContext, CreatePlanItemActivity.class);
+                intent.putExtra("PLANITEM", mList.get( position));
+                mContext.startActivity( intent);
+            }
+        });
     }
 
 

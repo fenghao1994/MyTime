@@ -19,6 +19,7 @@ import com.example.mytime.mvp.model.entity.Photo;
 import com.example.mytime.mvp.model.entity.Plan;
 import com.example.mytime.mvp.model.entity.PlanItem;
 import com.example.mytime.mvp.model.entity.Time;
+import com.example.mytime.mvp.ui.adapter.EasyGridviewAdapter;
 import com.example.mytime.mvp.ui.adapter.ImageItemAdapter;
 import com.example.mytime.mvp.ui.custom.TimeDialog;
 import com.lzy.imagepicker.ImagePicker;
@@ -94,6 +95,7 @@ public class CreatePlanItemActivity extends AppCompatActivity {
      */
     PlanItem currentPlanItem;
 
+    EasyGridviewAdapter easyGridviewAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,6 +107,19 @@ public class CreatePlanItemActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         plan = (Plan) intent.getSerializableExtra("PLAN");
+        planItem = (PlanItem) intent.getSerializableExtra("PLANITEM");
+        if ( planItem != null){
+            toolbarTitle.setText("编辑");
+            contentTitle.setText( planItem.getTitle());
+            content.setText( planItem.getContent());
+
+            planItemAddress = (ArrayList<Photo>) DataSupport.where("objectType = ? and objectId = ?", "1", planItem.getId() + "").find(Photo.class);
+            easyGridviewAdapter = new EasyGridviewAdapter(this, planItemAddress);
+            gridview.setAdapter( easyGridviewAdapter);
+
+            planItemTimes = (ArrayList<Time>) DataSupport.where("planItemId = ?", planItem.getId() + "").find( Time.class);
+
+        }
     }
 
     @OnClick({R.id.time, R.id.toolbar_title, R.id.ok, R.id.toolbar, R.id.content_title, R.id.content, R.id.call_phone, R.id.send_message, R.id.photo, R.id.location})
@@ -143,9 +158,6 @@ public class CreatePlanItemActivity extends AppCompatActivity {
     public void submit(){
         planItemTitle = contentTitle.getText().toString();
         planItemContentMessage = content.getText().toString();
-        planItemCreateTime = System.currentTimeMillis();
-        planItemEditTime = System.currentTimeMillis();
-
         if (TextUtils.isEmpty( planItemTitle) && TextUtils.isEmpty( planItemContentMessage)){
             Toast.makeText(this, "请输入标题或者内容", Toast.LENGTH_SHORT).show();
             return ;
@@ -155,52 +167,99 @@ public class CreatePlanItemActivity extends AppCompatActivity {
             return;
         }
 
-        if ( planItemTimes.size() > 1){
-            planItemIsManyDays = true;
-        }
+        if (planItem == null){
+            planItemCreateTime = System.currentTimeMillis();
+            planItemEditTime = System.currentTimeMillis();
 
-        planItem = new PlanItem();
-        planItem.setPlanId( plan.getPlanId());
-        planItem.setTitle( planItemTitle);
-        planItem.setContent( planItemContentMessage);
-        planItem.setCreateTime( planItemCreateTime);
-        planItem.setEditTime( planItemEditTime);
-        planItem.setEdit( planItemIsEdit);
-        planItem.setPhoneNumber( planItemPhoneNumber);
-        planItem.setMessageContent( planItemMessageContent);
-        planItem.setMessagePhoneNumber( planItemMessagePhoneNumber);
-        planItem.setLocation( planItemLocation);
-        planItem.setTimes( planItemTimes);
-        planItem.setAddress( planItemAddress);
-        planItem.setEveryDay( planItemIsEveryDay);
-        planItem.setManyDays( planItemIsManyDays);
-        planItem.setExpired( planItemIsExpired);
-        planItem.setComplete( planItemIsComplete);
-
-
-        //存成功后，通过创建时间 得到当前对象，然后去存储time表和photo表
-        if ( planItem.save()){
-            currentPlanItem = DataSupport.where("createTime = ?", planItemCreateTime + "").findFirst( PlanItem.class);
-            if (planItemTimes != null && planItemTimes.size() > 0){
-                for ( int i = 0; i < planItemTimes.size() ; i++){
-                    planItemTimes.get(i).setPlanItemId( currentPlanItem.getId());
-                    planItemTimes.get(i).save();
-                }
+            if ( planItemTimes.size() > 1){
+                planItemIsManyDays = true;
             }
-            if (planItemAddress != null && planItemAddress.size() > 0){
-                for ( int i = 0; i < planItemAddress.size(); i++){
-                    planItemAddress.get(i).setObjectType(1);
-                    planItemAddress.get(i).setObjectId( currentPlanItem.getId());
-                    planItemAddress.get(i).save();
+            planItem = new PlanItem();
+            planItem.setPlanId( plan.getPlanId());
+            planItem.setTitle( planItemTitle);
+            planItem.setContent( planItemContentMessage);
+            planItem.setCreateTime( planItemCreateTime);
+            planItem.setEditTime( planItemEditTime);
+            planItem.setEdit( planItemIsEdit);
+            planItem.setPhoneNumber( planItemPhoneNumber);
+            planItem.setMessageContent( planItemMessageContent);
+            planItem.setMessagePhoneNumber( planItemMessagePhoneNumber);
+            planItem.setLocation( planItemLocation);
+            planItem.setTimes( planItemTimes);
+            planItem.setAddress( planItemAddress);
+            planItem.setEveryDay( planItemIsEveryDay);
+            planItem.setManyDays( planItemIsManyDays);
+            planItem.setExpired( planItemIsExpired);
+            planItem.setComplete( planItemIsComplete);
+
+            //存成功后，通过创建时间 得到当前对象，然后去存储time表和photo表
+            if ( planItem.save()){
+                currentPlanItem = DataSupport.where("createTime = ?", planItemCreateTime + "").findFirst( PlanItem.class);
+                if (planItemTimes != null && planItemTimes.size() > 0){
+                    for ( int i = 0; i < planItemTimes.size() ; i++){
+                        planItemTimes.get(i).setPlanItemId( currentPlanItem.getId());
+                        planItemTimes.get(i).save();
+                    }
                 }
+                if (planItemAddress != null && planItemAddress.size() > 0){
+                    for ( int i = 0; i < planItemAddress.size(); i++){
+                        planItemAddress.get(i).setObjectType(1);
+                        planItemAddress.get(i).setObjectId( currentPlanItem.getId());
+                        planItemAddress.get(i).save();
+                    }
+                }
+                setAlarmClock();
+                complete();
+
+            }else {
+                Toast.makeText(this, "设置失败",Toast.LENGTH_SHORT).show();
             }
-
-            setAlarmClock();
-            complete();
-
         }else {
-            Toast.makeText(this, "设置失败",Toast.LENGTH_SHORT).show();
+            planItemEditTime = System.currentTimeMillis();
+            planItemIsEdit = true;
+            if ( planItemTimes.size() > 1){
+                planItemIsManyDays = true;
+
+                planItem.setTitle( planItemTitle);
+                planItem.setContent( planItemContentMessage);
+                planItem.setEditTime( planItemEditTime);
+                planItem.setEdit( planItemIsEdit);
+                planItem.setPhoneNumber( planItemPhoneNumber);
+                planItem.setMessageContent( planItemMessageContent);
+                planItem.setMessagePhoneNumber( planItemMessagePhoneNumber);
+                planItem.setLocation( planItemLocation);
+                planItem.setTimes( planItemTimes);
+                planItem.setAddress( planItemAddress);
+                planItem.setEveryDay( planItemIsEveryDay);
+                planItem.setManyDays( planItemIsManyDays);
+                planItem.setExpired( planItemIsExpired);
+                planItem.setComplete( planItemIsComplete);
+
+                planItem.update( planItem.getId());
+
+                DataSupport.deleteAll(Time.class, "planItemId = ?", planItem.getPlanId() + "");
+                if (planItemTimes != null && planItemTimes.size() > 0){
+                    for ( int i = 0; i < planItemTimes.size() ; i++){
+                        planItemTimes.get(i).setPlanItemId( planItem.getId());
+                        planItemTimes.get(i).save();
+                    }
+                }
+
+                if (planItemAddress != null ){
+                    DataSupport.deleteAll(Photo.class, "objectType = ? and objectId = ?", 1 + "", planItem.getId() + "");
+                    for ( int i = 0; i < planItemAddress.size(); i++){
+                        planItemAddress.get(i).setObjectType(1);
+                        planItemAddress.get(i).setObjectId( planItem.getId());
+                        planItemAddress.get(i).save();
+                    }
+                }
+
+                setAlarmClock();
+                complete();
+            }
         }
+
+
     }
 
 
@@ -250,7 +309,7 @@ public class CreatePlanItemActivity extends AppCompatActivity {
     @OnItemClick(R.id.gridview)
     public void onItemClick(int position){
         Intent intent = new Intent(this, ImageZoomActivity.class);
-        intent.putExtra("image_path", images.get( position).path);
+        intent.putExtra("image_path", planItemAddress.get( position).getAddress());
         startActivity( intent);
     }
 

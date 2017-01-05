@@ -56,6 +56,11 @@ public class CreatePlanActivity extends AppCompatActivity {
     boolean isCompletePlanItem;
     PlanItemAdapter adapter;
 
+//    Plan editPlan;
+//    List<PlanItem> editPlanItems;
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,7 +70,16 @@ public class CreatePlanActivity extends AppCompatActivity {
 
         LinearLayoutManager layoutManager = new LinearLayoutManager( this);
         recyclerView.setLayoutManager( layoutManager);
-        createPlanInData();
+
+        plan = (Plan) getIntent().getSerializableExtra("PLAN");
+        if ( plan != null){
+            toolbarTitle.setText("编辑");
+//            editPlanItems = DataSupport.where("planId = ?", editPlan.getPlanId() + "").find(PlanItem.class);
+            getAllPlanItems();
+            editPlanData();
+        }else {
+            createPlanInData();
+        }
     }
 
     @Override
@@ -77,7 +91,7 @@ public class CreatePlanActivity extends AppCompatActivity {
     public void getAllPlanItems(){
         List<PlanItem> planItems = DataSupport.where("planId = ?", plan.getPlanId() + "").find(PlanItem.class);
         if ( planItems != null && planItems.size() > 0){
-            adapter = new PlanItemAdapter( planItems);
+            adapter = new PlanItemAdapter(this, planItems);
             recyclerView.setAdapter( adapter);
         }
     }
@@ -123,7 +137,11 @@ public class CreatePlanActivity extends AppCompatActivity {
 
     public void clickOk(){
         if ( isCompletePlanItem && plan != null){
-            plan.save();
+            if ( !planIsEdit){
+                plan.save();
+            }else {
+                plan.update( plan.getId());
+            }
             complete();
         }else {
             Toast.makeText(this, "设置失败", Toast.LENGTH_SHORT).show();
@@ -156,6 +174,20 @@ public class CreatePlanActivity extends AppCompatActivity {
         plan.setExpired( planIsExpired);
         plan.setEditTime( planEditTime);
         plan.setComplete( planIsComplete);
+        plan.setTitle( planTitle);
+    }
+
+    /**
+     * 编辑plan对象
+     * @return
+     */
+    public void editPlanData(){
+        planEditTime = System.currentTimeMillis();
+        planTitle = "";
+        planIsEdit = true;
+
+        plan.setEdit( planIsEdit);
+        plan.setEditTime( planEditTime);
         plan.setTitle( planTitle);
     }
 

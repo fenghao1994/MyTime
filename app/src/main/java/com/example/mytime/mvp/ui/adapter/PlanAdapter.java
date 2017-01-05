@@ -1,6 +1,8 @@
 package com.example.mytime.mvp.ui.adapter;
 
 
+import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +13,7 @@ import android.widget.TextView;
 
 import com.example.mytime.R;
 import com.example.mytime.mvp.model.entity.Plan;
+import com.example.mytime.mvp.ui.activity.CreatePlanActivity;
 import com.example.mytime.util.MyUtil;
 
 import java.util.List;
@@ -24,9 +27,11 @@ import butterknife.ButterKnife;
 
 public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.ViewHolder> {
     private List<Plan> mList;
+    private Context mContext;
 
 
-    public PlanAdapter(List<Plan> list){
+    public PlanAdapter(Context context, List<Plan> list){
+        this.mContext = context;
         this.mList = list;
     }
 
@@ -38,7 +43,7 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.ViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(ViewHolder holder, final int position) {
         //TODO 数据绑定
         if ( "".equals(mList.get( position).getTitle())){
             holder.planName.setText("计划表");
@@ -46,6 +51,14 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.ViewHolder> {
             holder.planName.setText(mList.get( position).getTitle());
         }
         holder.planTime.setText(MyUtil.dateYMDHM( mList.get( position).getEditTime()));
+        holder.planView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(mContext, CreatePlanActivity.class);
+                intent.putExtra("PLAN", mList.get( position));
+                mContext.startActivity( intent);
+            }
+        });
 
     }
 
