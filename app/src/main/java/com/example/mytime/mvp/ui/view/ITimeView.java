@@ -7,7 +7,7 @@ import java.util.List;
  * 时间选择dialog
  */
 
-public interface ITime {
+public interface ITimeView {
     //是否设置为每天提醒
     boolean isEveryDay();
 

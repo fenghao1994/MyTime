@@ -5,7 +5,7 @@
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.mytime.mvp.ui.activity.MainActivity">
+    tools:context="com.example.mytime.mvp.ui.activity.MainViewActivity">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"

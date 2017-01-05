@@ -16,8 +16,11 @@ import android.widget.Toast;
 import com.example.mytime.R;
 import com.example.mytime.mvp.model.entity.Note;
 import com.example.mytime.mvp.model.entity.Photo;
+import com.example.mytime.mvp.presenter.ICreateNotePresenter;
+import com.example.mytime.mvp.presenter.impl.CreateNotePresenterImpl;
 import com.example.mytime.mvp.ui.adapter.EasyGridviewAdapter;
 import com.example.mytime.mvp.ui.adapter.ImageItemAdapter;
+import com.example.mytime.mvp.ui.view.ICreateNoteView;
 import com.lzy.imagepicker.ImagePicker;
 import com.lzy.imagepicker.bean.ImageItem;
 import com.lzy.imagepicker.ui.ImageGridActivity;
@@ -25,13 +28,14 @@ import com.lzy.imagepicker.ui.ImageGridActivity;
 import org.litepal.crud.DataSupport;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnItemClick;
 
-public class CreateNoteActivity extends AppCompatActivity {
+public class CreateNoteActivity extends AppCompatActivity implements ICreateNoteView{
 
     private static final int IMAGE_PICKER = 1;
 
@@ -58,9 +62,9 @@ public class CreateNoteActivity extends AppCompatActivity {
     ArrayList<Photo> noteAddress;
 
     Note note;
-    //通过数据库获取有id的note
-    Note currentNote;
     EasyGridviewAdapter easyGridviewAdapter;
+
+    ICreateNotePresenter createNotePresenter;
 
 
     @Override
@@ -69,17 +73,12 @@ public class CreateNoteActivity extends AppCompatActivity {
         setContentView(R.layout.activity_create_note);
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
-
+        createNotePresenter = new CreateNotePresenterImpl( this);
         note = (Note) getIntent().getSerializableExtra("NOTE");
         if (note != null){
-            content.setText( note.getContent());
-            toolbarTitle.setText("编辑");
-            noteAddress = (ArrayList<Photo>) DataSupport.where("objectId = ? and objectType = ?", note.getId() + "", 2 + "").find(Photo.class);
-            easyGridviewAdapter = new EasyGridviewAdapter(this, noteAddress);
-            gridview.setAdapter( easyGridviewAdapter);
+            createNotePresenter.showData( note);
         }
     }
-
 
     private void takePhoto() {
         Intent intent = new Intent(this, ImageGridActivity.class);
@@ -104,12 +103,10 @@ public class CreateNoteActivity extends AppCompatActivity {
                     noteAddress.add( photo);
                 }
             } else {
-                Toast.makeText(this, "meiyou fanhui shuju", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "没有数据", Toast.LENGTH_SHORT).show();
             }
         }
     }
-
-
 
     @OnClick({R.id.toolbar_title, R.id.ok, R.id.toolbar, R.id.content, R.id.photo})
     public void onClick(View view) {
@@ -135,7 +132,6 @@ public class CreateNoteActivity extends AppCompatActivity {
             Toast.makeText(this, "便签内容不能为空", Toast.LENGTH_SHORT).show();
             return;
         }
-
         if (note == null){
             note = new Note();
             noteTitle = "";
@@ -147,44 +143,25 @@ public class CreateNoteActivity extends AppCompatActivity {
             note.setCreateTime( noteCreateTime);
             note.setEditTime( noteEditTime);
             note.setEdit( noteIsEdit);
-            note.setAddress( noteAddress);
             note.setContent( noteContent);
 
-            if (note.save()){
-                currentNote = DataSupport.where("createTime = ?", note.getCreateTime() + "").findFirst(Note.class);
-                if ( noteAddress != null && noteAddress.size() > 0){
-                    for (int i = 0 ; i < noteAddress.size(); i++){
-                        noteAddress.get(i).setObjectType(2);
-                        noteAddress.get(i).setObjectId( currentNote.getId());
-                        noteAddress.get(i).save();
-                    }
-                }
-                complete();
-            }else {
-                Toast.makeText(this, "设置失败", Toast.LENGTH_SHORT).show();
-            }
-            return;
+            note.setAddress( noteAddress);
+            createNotePresenter.saveNote( note, noteAddress);
+
         }else {
             noteEditTime = System.currentTimeMillis();
             noteIsEdit = true;
             note.setEditTime( noteEditTime);
             note.setEdit( noteIsEdit);
-            note.setAddress( noteAddress);
-            note.setContent( noteContent);
-            note.update( note.getId());
-            currentNote = DataSupport.where("createTime = ?", note.getCreateTime() + "").findFirst(Note.class);
             if ( noteAddress != null){
-                DataSupport.deleteAll(Photo.class, "objectType = ? and objectId = ?", 2 + "", currentNote.getId() + "");
-                for (int i = 0 ; i < noteAddress.size(); i++){
-                    noteAddress.get(i).setObjectType(2);
-                    noteAddress.get(i).setObjectId( currentNote.getId());
-                    noteAddress.get(i).save();
-                }
+                note.setAddress( noteAddress);
             }
-            complete();
+            note.setContent( noteContent);
+            createNotePresenter.update( note, noteAddress);
         }
     }
 
+    @Override
     public void complete(){
         Intent intent = new Intent();
         setResult(RESULT_OK, intent);
@@ -215,5 +192,14 @@ public class CreateNoteActivity extends AppCompatActivity {
             startActivity( intent);
         }
 
+    }
+
+    @Override
+    public void showData(Note note, List<Photo> list) {
+        content.setText( note.getContent());
+        toolbarTitle.setText("编辑");
+
+        easyGridviewAdapter = new EasyGridviewAdapter(this, list);
+        gridview.setAdapter( easyGridviewAdapter);
     }
 }

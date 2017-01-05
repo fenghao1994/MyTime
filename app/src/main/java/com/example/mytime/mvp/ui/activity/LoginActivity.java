@@ -13,13 +13,13 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.example.mytime.R;
-import com.example.mytime.mvp.ui.view.ILogin;
+import com.example.mytime.mvp.ui.view.ILoginView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class LoginActivity extends AppCompatActivity implements ILogin {
+public class LoginActivity extends AppCompatActivity implements ILoginView {
 
 
     @BindView(R.id.phone_number)

@@ -5,7 +5,7 @@ package com.example.mytime.mvp.ui.view;
  * mianActivity接口
  */
 
-public interface IMain {
+public interface IMainView {
 
     //展示天气
     void showWeather();

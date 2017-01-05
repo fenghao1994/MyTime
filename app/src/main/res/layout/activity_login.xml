@@ -6,7 +6,7 @@
     android:baselineAligned="false"
     android:gravity="center_horizontal"
     android:orientation="vertical"
-    tools:context="com.example.mytime.mvp.ui.activity.LoginActivity">
+    tools:context="com.example.mytime.mvp.ui.activity.LoginViewActivity">
 
 
     <android.support.v7.widget.Toolbar

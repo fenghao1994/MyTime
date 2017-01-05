@@ -18,13 +18,13 @@ import android.widget.TextView;
 import com.example.mytime.R;
 import com.example.mytime.mvp.ui.fragment.NoteFragment;
 import com.example.mytime.mvp.ui.fragment.PlanFragment;
-import com.example.mytime.mvp.ui.view.IMain;
+import com.example.mytime.mvp.ui.view.IMainView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class MainActivity extends AppCompatActivity implements IMain {
+public class MainActivity extends AppCompatActivity implements IMainView {
 
     @BindView(R.id.plan_text)
     TextView planText;
