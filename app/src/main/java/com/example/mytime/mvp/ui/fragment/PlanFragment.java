@@ -70,7 +70,7 @@ public class PlanFragment extends Fragment {
     }
 
     public void init(){
-        mList = DataSupport.findAll(Plan.class);
+        mList = DataSupport.order("editTime desc").find(Plan.class);
         adapter = new PlanAdapter(getActivity(), mList);
         recyclerView.setAdapter( adapter);
     }

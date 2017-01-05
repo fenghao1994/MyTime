@@ -89,7 +89,7 @@ public class CreatePlanActivity extends AppCompatActivity {
     }
 
     public void getAllPlanItems(){
-        List<PlanItem> planItems = DataSupport.where("planId = ?", plan.getPlanId() + "").find(PlanItem.class);
+        List<PlanItem> planItems = DataSupport.order("editTime desc").where("planId = ?", plan.getPlanId() + "").find(PlanItem.class);
         if ( planItems != null && planItems.size() > 0){
             adapter = new PlanItemAdapter(this, planItems);
             recyclerView.setAdapter( adapter);
