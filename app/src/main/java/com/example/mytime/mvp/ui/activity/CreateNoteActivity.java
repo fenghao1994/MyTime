@@ -35,7 +35,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnItemClick;
 
-public class CreateNoteActivity extends AppCompatActivity implements ICreateNoteView{
+public class CreateNoteActivity extends AppCompatActivity implements ICreateNoteView {
 
     private static final int IMAGE_PICKER = 1;
 
@@ -69,18 +69,26 @@ public class CreateNoteActivity extends AppCompatActivity implements ICreateNote
         setContentView(R.layout.activity_create_note);
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
-        createNotePresenter = new CreateNotePresenterImpl( this);
+        createNotePresenter = new CreateNotePresenterImpl(this);
         note = (Note) getIntent().getSerializableExtra("NOTE");
-        if (note != null){
-            createNotePresenter.showData( note);
+        if (note != null) {
+            createNotePresenter.showData(note);
         }
+    }
+
+    @Override
+    public void showData(Note note, List<Photo> list) {
+        content.setText(note.getContent());
+        toolbarTitle.setText("编辑");
+        easyGridviewAdapter = new EasyGridviewAdapter(this, list);
+        gridview.setAdapter(easyGridviewAdapter);
+        noteAddress = (ArrayList<Photo>) list;
     }
 
     private void takePhoto() {
         Intent intent = new Intent(this, ImageGridActivity.class);
         startActivityForResult(intent, IMAGE_PICKER);
     }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -91,12 +99,11 @@ public class CreateNoteActivity extends AppCompatActivity implements ICreateNote
                 ImageItemAdapter imageItemAdapter = new ImageItemAdapter(images, this);
                 gridview.setAdapter(imageItemAdapter);
                 imageItemAdapter.notifyDataSetChanged();
-
                 noteAddress = new ArrayList<>();
-                for (int i = 0 ; i < images.size(); i++){
+                for (int i = 0; i < images.size(); i++) {
                     Photo photo = new Photo();
-                    photo.setAddress( images.get(i).path);
-                    noteAddress.add( photo);
+                    photo.setAddress(images.get(i).path);
+                    noteAddress.add(photo);
                 }
             } else {
                 Toast.makeText(this, "没有数据", Toast.LENGTH_SHORT).show();
@@ -122,43 +129,41 @@ public class CreateNoteActivity extends AppCompatActivity implements ICreateNote
         }
     }
 
-    public void submit(){
+    public void submit() {
         noteContent = content.getText().toString();
-        if (TextUtils.isEmpty( noteContent)){
+        if (TextUtils.isEmpty(noteContent)) {
             Toast.makeText(this, "便签内容不能为空", Toast.LENGTH_SHORT).show();
             return;
         }
-        if (note == null){
+        if (note == null) {
             note = new Note();
             noteTitle = "";
             noteCreateTime = System.currentTimeMillis();
             noteEditTime = noteCreateTime;
             noteIsEdit = false;
+            note.setTitle(noteTitle);
+            note.setCreateTime(noteCreateTime);
+            note.setEditTime(noteEditTime);
+            note.setEdit(noteIsEdit);
+            note.setContent(noteContent);
+            note.setAddress(noteAddress);
 
-            note.setTitle( noteTitle);
-            note.setCreateTime( noteCreateTime);
-            note.setEditTime( noteEditTime);
-            note.setEdit( noteIsEdit);
-            note.setContent( noteContent);
+            createNotePresenter.saveNote(note, noteAddress);
 
-            note.setAddress( noteAddress);
-            createNotePresenter.saveNote( note, noteAddress);
-
-        }else {
+        } else {
             noteEditTime = System.currentTimeMillis();
             noteIsEdit = true;
-            note.setEditTime( noteEditTime);
-            note.setEdit( noteIsEdit);
-            if ( noteAddress != null){
-                note.setAddress( noteAddress);
-            }
-            note.setContent( noteContent);
-            createNotePresenter.update( note, noteAddress);
+            note.setEditTime(noteEditTime);
+            note.setEdit(noteIsEdit);
+            note.setAddress(noteAddress);
+            note.setContent(noteContent);
+
+            createNotePresenter.update(note, noteAddress);
         }
     }
 
     @Override
-    public void complete(){
+    public void complete() {
         Intent intent = new Intent();
         setResult(RESULT_OK, intent);
         this.finish();
@@ -181,21 +186,12 @@ public class CreateNoteActivity extends AppCompatActivity implements ICreateNote
     }
 
     @OnItemClick(R.id.gridview)
-    public void onItemClick(int position){
-        if (noteAddress != null){
+    public void onItemClick(int position) {
+        if (noteAddress != null) {
             Intent intent = new Intent(this, ImageZoomActivity.class);
-            intent.putExtra("image_path", noteAddress.get( position).getAddress());
-            startActivity( intent);
+            intent.putExtra("image_path", noteAddress.get(position).getAddress());
+            startActivity(intent);
         }
 
-    }
-
-    @Override
-    public void showData(Note note, List<Photo> list) {
-        content.setText( note.getContent());
-        toolbarTitle.setText("编辑");
-
-        easyGridviewAdapter = new EasyGridviewAdapter(this, list);
-        gridview.setAdapter( easyGridviewAdapter);
     }
 }
