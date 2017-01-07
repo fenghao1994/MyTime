@@ -7,6 +7,5 @@
         <mapping class="com.example.mytime.mvp.model.entity.Photo"></mapping>
         <mapping class="com.example.mytime.mvp.model.entity.Plan"></mapping>
         <mapping class="com.example.mytime.mvp.model.entity.PlanItem"></mapping>
-        <mapping class="com.example.mytime.mvp.model.entity.Time"></mapping>
     </list>
 </litepal>

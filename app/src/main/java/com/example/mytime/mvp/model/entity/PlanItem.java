@@ -31,14 +31,60 @@ public class PlanItem extends DataSupport implements Serializable{
     boolean isComplete;
 
     ArrayList<Photo> address;
-    ArrayList<Time> times;
+    int year;
+    int month;
+    int day;
+    int hour;
+    int minute;
+    int alarmWay;//0为默认 只提醒一次，1为每日，2为每周，3为每月
 
-    public ArrayList<Time> getTimes() {
-        return times;
+    public int getYear() {
+        return year;
     }
 
-    public void setTimes(ArrayList<Time> times) {
-        this.times = times;
+    public void setYear(int year) {
+        this.year = year;
+    }
+
+    public int getMonth() {
+        return month;
+    }
+
+    public void setMonth(int month) {
+        this.month = month;
+    }
+
+    public int getDay() {
+        return day;
+    }
+
+    public void setDay(int day) {
+        this.day = day;
+    }
+
+    public int getHour() {
+        return hour;
+    }
+
+    public void setHour(int hour) {
+        this.hour = hour;
+    }
+
+    public int getMinute() {
+        return minute;
+    }
+
+    public void setMinute(int minute) {
+        this.minute = minute;
+    }
+
+
+    public int getAlarmWay() {
+        return alarmWay;
+    }
+
+    public void setAlarmWay(int alarmWay) {
+        this.alarmWay = alarmWay;
     }
 
     public ArrayList<Photo> getAddress() {

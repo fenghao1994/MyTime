@@ -2,7 +2,6 @@ package com.example.mytime.mvp.model;
 
 import com.example.mytime.mvp.model.entity.Photo;
 import com.example.mytime.mvp.model.entity.PlanItem;
-import com.example.mytime.mvp.model.entity.Time;
 
 import java.util.List;
 
@@ -14,19 +13,16 @@ public interface ICreatePlanItemEntity {
     /**
      * @param planItem
      * @param photos
-     * @param times
      */
-    void saveNote(PlanItem planItem, List<Photo> photos, List<Time> times);
+    void savePlanItem(PlanItem planItem, List<Photo> photos);
 
     /**
      *
      * @param planItem
      * @param photos
-     * @param times
      */
-    void updatePlanItem(PlanItem planItem, List<Photo> photos, List<Time> times);
+    void updatePlanItem(PlanItem planItem, List<Photo> photos);
 
     List<Photo> getPhotoAddress(PlanItem planItem);
 
-    List<Time> getTimes(PlanItem planItem);
 }

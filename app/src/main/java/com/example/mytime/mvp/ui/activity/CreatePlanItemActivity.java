@@ -15,24 +15,22 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.mytime.R;
-import com.example.mytime.mvp.model.entity.Note;
 import com.example.mytime.mvp.model.entity.Photo;
 import com.example.mytime.mvp.model.entity.Plan;
 import com.example.mytime.mvp.model.entity.PlanItem;
-import com.example.mytime.mvp.model.entity.Time;
 import com.example.mytime.mvp.presenter.ICreatePlanItemPresenter;
 import com.example.mytime.mvp.presenter.impl.CreatePlanItemPresenterImpl;
 import com.example.mytime.mvp.ui.adapter.EasyGridviewAdapter;
 import com.example.mytime.mvp.ui.adapter.ImageItemAdapter;
+import com.example.mytime.mvp.ui.custom.DateDialog;
 import com.example.mytime.mvp.ui.custom.TimeDialog;
 import com.example.mytime.mvp.ui.view.ICreatePlanItemView;
 import com.lzy.imagepicker.ImagePicker;
 import com.lzy.imagepicker.bean.ImageItem;
 import com.lzy.imagepicker.ui.ImageGridActivity;
 
-import org.litepal.crud.DataSupport;
-
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import butterknife.BindView;
@@ -71,7 +69,9 @@ public class CreatePlanItemActivity extends AppCompatActivity implements ICreate
 
     ArrayList<ImageItem> images;
 
+    DateDialog dateDialog;
     TimeDialog timeDialog;
+
     List<Long> settingTimes = null;
 
     Plan plan;
@@ -91,8 +91,9 @@ public class CreatePlanItemActivity extends AppCompatActivity implements ICreate
     boolean planItemIsExpired;
     boolean planItemIsComplete;
     ArrayList<Photo> planItemAddress;
-    ArrayList<Time> planItemTimes;
 
+    //设置一个-1来判断是否真的点击设定按钮
+    int planItemYear = -1, planItemMonth, planItemDay, planItemHour = -1, planItemMinute, planItemAlarmWay;
     /**
      * 临时对象
      * 为了获取当前planitem对象的id
@@ -112,6 +113,7 @@ public class CreatePlanItemActivity extends AppCompatActivity implements ICreate
         createPlanItemPresenter = new CreatePlanItemPresenterImpl(this);
 
 
+        dateDialog = new DateDialog(this);
         timeDialog = new TimeDialog(this);
 
         Intent intent = getIntent();
@@ -119,32 +121,25 @@ public class CreatePlanItemActivity extends AppCompatActivity implements ICreate
 
         planItem = (PlanItem) intent.getSerializableExtra("PLANITEM");
         if (planItem != null) {
-
             createPlanItemPresenter.showData(planItem);
-//            toolbarTitle.setText("编辑");
-//            contentTitle.setText( planItem.getTitle());
-//            content.setText( planItem.getContent());
-
-//            planItemAddress = (ArrayList<Photo>) DataSupport.where("objectType = ? and objectId = ?", "1", planItem.getId() + "").find(Photo.class);
-//            easyGridviewAdapter = new EasyGridviewAdapter(this, planItemAddress);
-//            gridview.setAdapter( easyGridviewAdapter);
-
-//            planItemTimes = (ArrayList<Time>) DataSupport.where("planItemId = ?", planItem.getId() + "").find( Time.class);
-
         }
     }
 
     @Override
-    public void showData(PlanItem planItem, List<Photo> photos, List<Time> times) {
+    public void showData(PlanItem planItem, List<Photo> photos) {
         toolbarTitle.setText("编辑");
         contentTitle.setText(planItem.getTitle());
         content.setText(planItem.getContent());
         planItemAddress = (ArrayList<Photo>) photos;
         easyGridviewAdapter = new EasyGridviewAdapter(this, planItemAddress);
         gridview.setAdapter(easyGridviewAdapter);
-        planItemTimes = (ArrayList<Time>) times;
         planItemLocation = planItem.getLocation();
-
+        planItemYear = planItem.getYear();
+        planItemMonth = planItem.getMonth();
+        planItemDay = planItem.getDay();
+        planItemHour = planItem.getHour();
+        planItemMinute = planItem.getMinute();
+        planItemAlarmWay = planItem.getAlarmWay();
         planItemPhoneNumber = planItem.getPhoneNumber();
         planItemMessageContent = planItem.getMessageContent();
         planItemMessagePhoneNumber = planItem.getMessagePhoneNumber();
@@ -180,7 +175,7 @@ public class CreatePlanItemActivity extends AppCompatActivity implements ICreate
                 goLocation();
                 break;
             case R.id.time:
-                showTimeDialog();
+                showDateDialog();
                 break;
         }
     }
@@ -195,7 +190,7 @@ public class CreatePlanItemActivity extends AppCompatActivity implements ICreate
             Toast.makeText(this, "请输入标题或者内容", Toast.LENGTH_SHORT).show();
             return;
         }
-        if (planItemTimes == null) {
+        if (planItemYear == -1 || planItemHour == -1){
             Toast.makeText(this, "请选择提醒时间", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -203,8 +198,7 @@ public class CreatePlanItemActivity extends AppCompatActivity implements ICreate
         if (planItem == null) {
             planItemCreateTime = System.currentTimeMillis();
             planItemEditTime = System.currentTimeMillis();
-
-            if (planItemTimes.size() > 1) {
+            if ( planItemAlarmWay != 0){
                 planItemIsManyDays = true;
             }
             planItem = new PlanItem();
@@ -218,45 +212,23 @@ public class CreatePlanItemActivity extends AppCompatActivity implements ICreate
             planItem.setMessageContent(planItemMessageContent);
             planItem.setMessagePhoneNumber(planItemMessagePhoneNumber);
             planItem.setLocation(planItemLocation);
-            planItem.setTimes(planItemTimes);
+            planItem.setYear( planItemYear);
+            planItem.setMonth( planItemMonth);
+            planItem.setDay( planItemDay);
+            planItem.setHour( planItemHour);
+            planItem.setMinute( planItemMinute);
+            planItem.setAlarmWay( planItemAlarmWay);
             planItem.setAddress(planItemAddress);
             planItem.setEveryDay(planItemIsEveryDay);
             planItem.setManyDays(planItemIsManyDays);
             planItem.setExpired(planItemIsExpired);
             planItem.setComplete(planItemIsComplete);
 
-            createPlanItemPresenter.savePlanItem(planItem, planItemAddress, planItemTimes);
-
-            //存成功后，通过创建时间 得到当前对象，然后去存储time表和photo表
-//            if ( planItem.save()){
-//                currentPlanItem = DataSupport.where("createTime = ?", planItemCreateTime + "").findFirst( PlanItem.class);
-//                if (planItemTimes != null && planItemTimes.size() > 0){
-//                    for ( int i = 0; i < planItemTimes.size() ; i++){
-//                        planItemTimes.get(i).setPlanItemId( currentPlanItem.getId());
-//                        planItemTimes.get(i).save();
-//                    }
-//                }
-//                if (planItemAddress != null && planItemAddress.size() > 0){
-//                    for ( int i = 0; i < planItemAddress.size(); i++){
-//                        planItemAddress.get(i).setObjectType(1);
-//                        planItemAddress.get(i).setObjectId( currentPlanItem.getId());
-//                        planItemAddress.get(i).save();
-//                    }
-//                }
-
-//                setAlarmClock();
-//                complete();
-
-        }/*else {
-                Toast.makeText(this, "设置失败",Toast.LENGTH_SHORT).show();
-            }*/
-        /*}*/
+            createPlanItemPresenter.savePlanItem(planItem, planItemAddress/*, planItemTimes*/);
+        }
         else {
             planItemEditTime = System.currentTimeMillis();
             planItemIsEdit = true;
-            if (planItemTimes.size() > 1) {
-                planItemIsManyDays = true;
-            }
             planItem.setTitle(planItemTitle);
             planItem.setContent(planItemContentMessage);
             planItem.setEditTime(planItemEditTime);
@@ -265,35 +237,18 @@ public class CreatePlanItemActivity extends AppCompatActivity implements ICreate
             planItem.setMessageContent(planItemMessageContent);
             planItem.setMessagePhoneNumber(planItemMessagePhoneNumber);
             planItem.setLocation(planItemLocation);
-            planItem.setTimes(planItemTimes);
+            planItem.setYear( planItemYear);
+            planItem.setMonth( planItemMonth);
+            planItem.setDay( planItemDay);
+            planItem.setHour( planItemHour);
+            planItem.setMinute( planItemMinute);
+            planItem.setAlarmWay( planItemAlarmWay);
             planItem.setAddress(planItemAddress);
             planItem.setEveryDay(planItemIsEveryDay);
             planItem.setManyDays(planItemIsManyDays);
             planItem.setExpired(planItemIsExpired);
             planItem.setComplete(planItemIsComplete);
-            createPlanItemPresenter.updatePlanItem( planItem, planItemAddress, planItemTimes);
-
-//            planItem.update(planItem.getId());
-
-           /* DataSupport.deleteAll(Time.class, "planItemId = ?", planItem.getPlanId() + "");
-            if (planItemTimes != null && planItemTimes.size() > 0) {
-                for (int i = 0; i < planItemTimes.size(); i++) {
-                    planItemTimes.get(i).setPlanItemId(planItem.getId());
-                    planItemTimes.get(i).save();
-                }
-            }
-
-            if (planItemAddress != null) {
-                DataSupport.deleteAll(Photo.class, "objectType = ? and objectId = ?", 1 + "", planItem.getId() + "");
-                for (int i = 0; i < planItemAddress.size(); i++) {
-                    planItemAddress.get(i).setObjectType(1);
-                    planItemAddress.get(i).setObjectId(planItem.getId());
-                    planItemAddress.get(i).save();
-                }
-            }
-
-            setAlarmClock();
-            complete();*/
+            createPlanItemPresenter.updatePlanItem( planItem, planItemAddress/*, planItemTimes*/);
         }
     }
 
@@ -309,32 +264,33 @@ public class CreatePlanItemActivity extends AppCompatActivity implements ICreate
 
     //// TODO: 2017/1/5 设置闹钟
     @Override
-    public void setAlarm(List<Time> times) {
-
-    }
-
-    //TODO 取消闹钟
-    @Override
-    public void cancleAlarm(List<Time> times){
+    public void setAlarm(Calendar calendar) {
 
     }
 
     /**
      * 展示dialog
      */
-    public void showTimeDialog() {
-        timeDialog.show();
-        timeDialog.setOnOkListener(new TimeDialog.onOkListener() {
+    public void showDateDialog() {
+        dateDialog.show();
+        dateDialog.setOnOkListener(new DateDialog.onOkListener() {
             @Override
-            public void getDate(boolean isEveryDay, List<Long> setTimes) {
-                planItemIsEveryDay = isEveryDay;
-                planItemTimes = new ArrayList<Time>();
-                for (int i = 0; i < setTimes.size(); i++) {
-                    Time time = new Time();
-                    time.setTime(setTimes.get(i));
-                    planItemTimes.add(time);
-                }
-                timeDialog.dismiss();
+            public void getDate(int year, int month, int day) {
+                CreatePlanItemActivity.this.planItemYear = year;
+                CreatePlanItemActivity.this.planItemMonth = month;
+                CreatePlanItemActivity.this.planItemDay = day;
+                dateDialog.dismiss();
+
+                timeDialog.show();
+                timeDialog.setOnOkListener(new TimeDialog.onOkListener() {
+                    @Override
+                    public void getTime(int hour, int min, int alarmWay) {
+                        CreatePlanItemActivity.this.planItemHour = hour;
+                        CreatePlanItemActivity.this.planItemMinute = min;
+                        CreatePlanItemActivity.this.planItemAlarmWay = alarmWay;
+                        timeDialog.dismiss();
+                    }
+                });
             }
         });
     }
@@ -375,7 +331,7 @@ public class CreatePlanItemActivity extends AppCompatActivity implements ICreate
                     planItemAddress.add(photo);
                 }
             } else {
-                Toast.makeText(this, "meiyou fanhui shuju", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "没有数据", Toast.LENGTH_SHORT).show();
             }
         }
         if (resultCode == MapActivity.RESULT_LOCATION) {

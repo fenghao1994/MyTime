@@ -2,8 +2,8 @@ package com.example.mytime.mvp.ui.view;
 
 import com.example.mytime.mvp.model.entity.Photo;
 import com.example.mytime.mvp.model.entity.PlanItem;
-import com.example.mytime.mvp.model.entity.Time;
 
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -14,7 +14,7 @@ public interface ICreatePlanItemView {
     /**
      * 编辑状态下展示数据
      */
-    void showData(PlanItem planItem, List<Photo> photos, List<Time> times);
+    void showData(PlanItem planItem, List<Photo> photos/*, List<Time> times*/);
 
     void complete();
 
@@ -22,7 +22,7 @@ public interface ICreatePlanItemView {
      * 设置闹钟
      * @param times
      */
-    void setAlarm(List<Time> times);
+    void setAlarm(Calendar calendar);
 
-    void cancleAlarm(List<Time> times);
+//    void cancleAlarm(List<Time> times);
 }

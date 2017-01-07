@@ -13,11 +13,7 @@ import android.widget.TextView;
 
 import com.example.mytime.R;
 import com.example.mytime.mvp.model.entity.PlanItem;
-import com.example.mytime.mvp.model.entity.Time;
 import com.example.mytime.mvp.ui.activity.CreatePlanItemActivity;
-import com.example.mytime.util.MyUtil;
-
-import org.litepal.crud.DataSupport;
 
 import java.util.List;
 
@@ -31,7 +27,7 @@ import butterknife.ButterKnife;
 public class PlanItemAdapter extends RecyclerView.Adapter<PlanItemAdapter.ViewHolder> {
 
     private List<PlanItem> mList;
-    private List<Time> times;
+//    private List<Time> times;
     private Context mContext;
 
     public PlanItemAdapter(Context context, List<PlanItem> list) {
@@ -48,13 +44,17 @@ public class PlanItemAdapter extends RecyclerView.Adapter<PlanItemAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
-        times = DataSupport.where("planItemId = ?", mList.get( position).getId() + "").find(Time.class);
 
         //// TODO: 2017/1/4  显示的时间处理
-        if ( mList.get( position).isManyDays()){
-            holder.planItemTime.setText(MyUtil.dateHM( times.get(0).getTime()));
-        }else {
-            holder.planItemTime.setText(MyUtil.dateYMDHM( times.get( 0).getTime()));
+
+        //如果只提醒一次则显示年月日，否则不显示
+        PlanItem planItem = mList.get( position);
+        if (planItem.getAlarmWay() == 0){
+            holder.planItemTime.setText(planItem.getYear() + "." +
+                    planItem.getMonth() + "." + planItem.getDay() +
+            " " + planItem.getHour() + ":" + planItem.getMinute());
+        }else{
+            holder.planItemTime.setText(planItem.getHour() + ":" + planItem.getMinute());
         }
         holder.planItemContent.setText( mList.get( position).getContent());
         holder.planItemTitle.setText( mList.get(position).getTitle());
