@@ -269,9 +269,21 @@ public class CreatePlanItemActivity extends AppCompatActivity implements ICreate
     public void setAlarm(Calendar calendar) {
         Intent intent = new Intent(this, AlarmReceiver.class);
         PendingIntent pi = PendingIntent.getBroadcast(this, planItem.getId(), intent, 0);
-
         AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
-        am.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pi);
+        //AlarmManager.RTC_WAKEUP，硬件闹钟，当闹钟发射时唤醒手机休眠；
+
+        if (planItem.getAlarmWay() == 0){
+            am.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pi);
+        }else if (planItem.getAlarmWay() == 1){
+            //每天
+            long time = 1000 * 60 * 60 * 24;
+            am.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),time, pi);
+        }else if (planItem.getAlarmWay() == 2){
+            long time = 1000 * 60 * 60 * 24 * 7;
+            am.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),time, pi);
+        }/*else if (planItem.getAlarmWay() == 3){
+
+        }*/
     }
 
     /**

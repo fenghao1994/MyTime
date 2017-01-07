@@ -20,7 +20,6 @@ public interface ICreatePlanItemView {
 
     /**
      * 设置闹钟
-     * @param times
      */
     void setAlarm(Calendar calendar);
 

@@ -14,6 +14,4 @@ public interface ICreatePlanView {
     void showData(List<PlanItem> planItems);
 
     void complete();
-
-//    void onResumeShowData(List<PlanItem> planItems);
 }

@@ -38,6 +38,7 @@
                 android:layout_height="0dp"
                 android:text="每月"
                 android:layout_weight="1"
+                android:visibility="gone"
                 />
 
         </RadioGroup>
