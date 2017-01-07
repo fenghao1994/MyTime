@@ -1,5 +1,7 @@
 package com.example.mytime.mvp.ui.activity;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -20,11 +22,13 @@ import com.example.mytime.mvp.model.entity.Plan;
 import com.example.mytime.mvp.model.entity.PlanItem;
 import com.example.mytime.mvp.presenter.ICreatePlanItemPresenter;
 import com.example.mytime.mvp.presenter.impl.CreatePlanItemPresenterImpl;
+import com.example.mytime.mvp.ui.receiver.AlarmReceiver;
 import com.example.mytime.mvp.ui.adapter.EasyGridviewAdapter;
 import com.example.mytime.mvp.ui.adapter.ImageItemAdapter;
 import com.example.mytime.mvp.ui.custom.DateDialog;
 import com.example.mytime.mvp.ui.custom.TimeDialog;
 import com.example.mytime.mvp.ui.view.ICreatePlanItemView;
+import com.example.mytime.util.Extra;
 import com.lzy.imagepicker.ImagePicker;
 import com.lzy.imagepicker.bean.ImageItem;
 import com.lzy.imagepicker.ui.ImageGridActivity;
@@ -71,8 +75,6 @@ public class CreatePlanItemActivity extends AppCompatActivity implements ICreate
 
     DateDialog dateDialog;
     TimeDialog timeDialog;
-
-    List<Long> settingTimes = null;
 
     Plan plan;
     PlanItem planItem;
@@ -224,7 +226,7 @@ public class CreatePlanItemActivity extends AppCompatActivity implements ICreate
             planItem.setExpired(planItemIsExpired);
             planItem.setComplete(planItemIsComplete);
 
-            createPlanItemPresenter.savePlanItem(planItem, planItemAddress/*, planItemTimes*/);
+            createPlanItemPresenter.savePlanItem(planItem, planItemAddress);
         }
         else {
             planItemEditTime = System.currentTimeMillis();
@@ -248,7 +250,7 @@ public class CreatePlanItemActivity extends AppCompatActivity implements ICreate
             planItem.setManyDays(planItemIsManyDays);
             planItem.setExpired(planItemIsExpired);
             planItem.setComplete(planItemIsComplete);
-            createPlanItemPresenter.updatePlanItem( planItem, planItemAddress/*, planItemTimes*/);
+            createPlanItemPresenter.updatePlanItem( planItem, planItemAddress);
         }
     }
 
@@ -265,7 +267,11 @@ public class CreatePlanItemActivity extends AppCompatActivity implements ICreate
     //// TODO: 2017/1/5 设置闹钟
     @Override
     public void setAlarm(Calendar calendar) {
+        Intent intent = new Intent(this, AlarmReceiver.class);
+        PendingIntent pi = PendingIntent.getBroadcast(this, planItem.getId(), intent, 0);
 
+        AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
+        am.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pi);
     }
 
     /**

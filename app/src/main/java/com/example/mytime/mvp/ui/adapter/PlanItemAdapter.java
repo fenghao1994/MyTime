@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.example.mytime.R;
 import com.example.mytime.mvp.model.entity.PlanItem;
+import com.example.mytime.mvp.ui.activity.CreatePlanActivity;
 import com.example.mytime.mvp.ui.activity.CreatePlanItemActivity;
 
 import java.util.List;
@@ -63,7 +64,7 @@ public class PlanItemAdapter extends RecyclerView.Adapter<PlanItemAdapter.ViewHo
             public void onClick(View view) {
                 Intent intent = new Intent(mContext, CreatePlanItemActivity.class);
                 intent.putExtra("PLANITEM", mList.get( position));
-                mContext.startActivity( intent);
+                ((CreatePlanActivity)mContext).startActivityForResult( intent, CreatePlanActivity.REQUEST);
             }
         });
     }

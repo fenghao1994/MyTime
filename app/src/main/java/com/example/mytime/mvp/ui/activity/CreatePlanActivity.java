@@ -33,7 +33,7 @@ import butterknife.OnClick;
 
 public class CreatePlanActivity extends AppCompatActivity implements ICreatePlanView {
 
-    private static final int REQUEST = 1;
+    public static final int REQUEST = 1;
     @BindView(R.id.toolbar_title)
     TextView toolbarTitle;
     @BindView(R.id.ok)
@@ -61,8 +61,6 @@ public class CreatePlanActivity extends AppCompatActivity implements ICreatePlan
 
     private boolean isFromFab;
 
-//    Plan editPlan;
-//    List<PlanItem> editPlanItems;
 
     private ICreatePlanPresenter createPlanPresenter;
 
@@ -81,13 +79,7 @@ public class CreatePlanActivity extends AppCompatActivity implements ICreatePlan
         isFromFab = getIntent().getBooleanExtra("IS_FROM_FAB", false);
 
         if ( plan != null){
-//            toolbarTitle.setText("编辑");
-//            editPlanItems = DataSupport.where("planId = ?", editPlan.getPlanId() + "").find(PlanItem.class);
-
             createPlanPresenter.showData( plan);
-
-//            getAllPlanItems();
-//            editPlanData();
         }else {
             createPlanInData();
         }
@@ -96,9 +88,6 @@ public class CreatePlanActivity extends AppCompatActivity implements ICreatePlan
     @Override
     public void showData(List<PlanItem> planItems) {
         toolbarTitle.setText("编辑");
-//        planEditTime = System.currentTimeMillis();
-//        planTitle = "";
-//        planIsEdit = true;
 
         if ( planItems != null && planItems.size() > 0){
             adapter = new PlanItemAdapter(this, planItems);
@@ -112,16 +101,7 @@ public class CreatePlanActivity extends AppCompatActivity implements ICreatePlan
         if ( plan != null){
             createPlanPresenter.showData( plan);
         }
-//        getAllPlanItems();
     }
-
-    /*public void getAllPlanItems(){
-        List<PlanItem> planItems = DataSupport.order("editTime desc").where("planId = ?", plan.getPlanId() + "").find(PlanItem.class);
-        if ( planItems != null && planItems.size() > 0){
-            adapter = new PlanItemAdapter(this, planItems);
-            recyclerView.setAdapter( adapter);
-        }
-    }*/
 
     @OnClick({R.id.toolbar_title, R.id.ok, R.id.toolbar, R.id.recycler_view, R.id.activity_create_plan, R.id.fab})
     public void onClick(View view) {
@@ -170,12 +150,6 @@ public class CreatePlanActivity extends AppCompatActivity implements ICreatePlan
                 editPlanData();
                 createPlanPresenter.updatePlan( plan);
             }
-           /* if ( !planIsEdit){
-                plan.save();
-            }else {
-                plan.update( plan.getId());
-            }*/
-//            complete();
         }else {
             Toast.makeText(this, "设置失败", Toast.LENGTH_SHORT).show();
         }

@@ -16,11 +16,11 @@ public class CreatePlanItemEntityImpl implements ICreatePlanItemEntity {
     @Override
     public void savePlanItem(PlanItem planItem, List<Photo> photos/*, List<Time> times*/) {
         planItem.save();
-        PlanItem currentPlanItem = DataSupport.where("createTime = ?", planItem.getCreateTime() + "").findFirst( PlanItem.class);
+        planItem = DataSupport.where("createTime = ?", planItem.getCreateTime() + "").findFirst( PlanItem.class);
         if (photos != null && photos.size() > 0){
             for ( int i = 0; i < photos.size(); i++){
                 photos.get(i).setObjectType(1);
-                photos.get(i).setObjectId( currentPlanItem.getId());
+                photos.get(i).setObjectId( planItem.getId());
                 photos.get(i).save();
             }
         }

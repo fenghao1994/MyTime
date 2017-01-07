@@ -28,8 +28,9 @@ public class CreatePlanItemPresenterImpl implements ICreatePlanItemPresenter {
     public void savePlanItem(PlanItem planItem, List<Photo> photos) {
         createPlanItemEntity.savePlanItem( planItem, photos);
         Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
         calendar.set(Calendar.YEAR, planItem.getYear());
-        calendar.set(Calendar.MONTH, planItem.getMonth());
+        calendar.set(Calendar.MONTH, planItem.getMonth() - 1);
         calendar.set(Calendar.DAY_OF_MONTH, planItem.getDay());
         calendar.set(Calendar.HOUR_OF_DAY, planItem.getHour());
         calendar.set(Calendar.MINUTE, planItem.getMinute());
@@ -42,8 +43,9 @@ public class CreatePlanItemPresenterImpl implements ICreatePlanItemPresenter {
     public void updatePlanItem(PlanItem planItem, List<Photo> photos) {
         createPlanItemEntity.updatePlanItem( planItem, photos);
         Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
         calendar.set(Calendar.YEAR, planItem.getYear());
-        calendar.set(Calendar.MONTH, planItem.getMonth());
+        calendar.set(Calendar.MONTH, planItem.getMonth() - 1);
         calendar.set(Calendar.DAY_OF_MONTH, planItem.getDay());
         calendar.set(Calendar.HOUR_OF_DAY, planItem.getHour());
         calendar.set(Calendar.MINUTE, planItem.getMinute());
@@ -55,6 +57,6 @@ public class CreatePlanItemPresenterImpl implements ICreatePlanItemPresenter {
     @Override
     public void showData(PlanItem planItem) {
         List<Photo> photos = createPlanItemEntity.getPhotoAddress( planItem);
-        createPlanItemView.showData( planItem, photos/*, times*/);
+        createPlanItemView.showData( planItem, photos);
     }
 }

@@ -24,7 +24,7 @@
         android:theme="@style/AppTheme">
         <meta-data
             android:name="com.amap.api.v2.apikey"
-            android:value="619daa349b76d86765f84e2babd1f909"></meta-data>
+            android:value="619daa349b76d86765f84e2babd1f909" />
 
         <activity android:name=".mvp.ui.activity.MainActivity">
 
@@ -54,7 +54,12 @@
             android:theme="@style/AppTheme" />
         <activity android:name=".mvp.ui.activity.ImageZoomActivity" />
         <activity android:name=".mvp.ui.activity.MapActivity" />
-        <activity android:name=".mvp.ui.activity.POIActivity"></activity>
+        <activity android:name=".mvp.ui.activity.POIActivity" />
+
+        <receiver
+            android:name=".mvp.ui.receiver.AlarmReceiver"
+            android:enabled="true"
+            android:exported="true"></receiver>
     </application>
 
 </manifest>
