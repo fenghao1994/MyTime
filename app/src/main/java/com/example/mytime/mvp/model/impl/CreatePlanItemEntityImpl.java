@@ -14,7 +14,7 @@ import java.util.List;
 
 public class CreatePlanItemEntityImpl implements ICreatePlanItemEntity {
     @Override
-    public void savePlanItem(PlanItem planItem, List<Photo> photos/*, List<Time> times*/) {
+    public void savePlanItem(PlanItem planItem, List<Photo> photos) {
         planItem.save();
         planItem = DataSupport.where("createTime = ?", planItem.getCreateTime() + "").findFirst( PlanItem.class);
         if (photos != null && photos.size() > 0){
@@ -27,7 +27,7 @@ public class CreatePlanItemEntityImpl implements ICreatePlanItemEntity {
     }
 
     @Override
-    public void updatePlanItem(PlanItem planItem, List<Photo> photos/*, List<Time> times*/) {
+    public void updatePlanItem(PlanItem planItem, List<Photo> photos) {
         planItem.update(planItem.getId());
         if (photos != null) {
             DataSupport.deleteAll(Photo.class, "objectType = ? and objectId = ?", 1 + "", planItem.getId() + "");

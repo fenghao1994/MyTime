@@ -83,11 +83,11 @@ public class DateDialog extends Dialog {
 
         calendarView.setDateSelected(calendar, true);
         year = calendar.get(Calendar.YEAR);
-        month = calendar.get(Calendar.MONTH) + 1;
+        month = calendar.get(Calendar.MONTH);
         day = calendar.get(Calendar.DAY_OF_MONTH);
         calendarView.state().edit()
                 .setMinimumDate(calendar)
-                .setMaximumDate(CalendarDay.from(year, month, day))
+                .setMaximumDate(CalendarDay.from(year, month + 1, day))
                 .setCalendarDisplayMode(CalendarMode.MONTHS)
                 .commit();
 
@@ -95,7 +95,7 @@ public class DateDialog extends Dialog {
             @Override
             public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected) {
                 DateDialog.this.year = date.getYear();
-                DateDialog.this.month = date.getMonth() + 1;
+                DateDialog.this.month = date.getMonth();
                 DateDialog.this.day = date.getDay();
             }
         });

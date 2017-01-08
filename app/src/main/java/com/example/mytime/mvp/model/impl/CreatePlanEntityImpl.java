@@ -26,6 +26,6 @@ public class CreatePlanEntityImpl implements ICreatePlanEntity {
     @Override
     public List<PlanItem> getPlanItems(Plan plan) {
 
-        return DataSupport.where("planId = ?", plan.getPlanId() + "").find(PlanItem.class);
+        return DataSupport.order("editTime desc").where("planId = ?", plan.getPlanId() + "").find(PlanItem.class);
     }
 }

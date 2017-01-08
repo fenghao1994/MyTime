@@ -26,4 +26,16 @@ public class MyUtil {
         return s;
     }
 
+    /**
+     * 是否是闰年
+     * @return
+     */
+    public static boolean isRun(int year){
+        if((year % 4 == 0 && year % 100 != 0) || (year % 400 == 0)){
+            return true;
+        }
+        return false;
+    }
+
+
 }

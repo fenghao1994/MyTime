@@ -29,6 +29,7 @@ public class PlanItem extends DataSupport implements Serializable{
     boolean isManyDays;
     boolean isExpired;
     boolean isComplete;
+    boolean isDelete;
 
     ArrayList<Photo> address;
     int year;
@@ -38,63 +39,6 @@ public class PlanItem extends DataSupport implements Serializable{
     int minute;
     int alarmWay;//0为默认 只提醒一次，1为每日，2为每周，3为每月
 
-    public int getYear() {
-        return year;
-    }
-
-    public void setYear(int year) {
-        this.year = year;
-    }
-
-    public int getMonth() {
-        return month;
-    }
-
-    public void setMonth(int month) {
-        this.month = month;
-    }
-
-    public int getDay() {
-        return day;
-    }
-
-    public void setDay(int day) {
-        this.day = day;
-    }
-
-    public int getHour() {
-        return hour;
-    }
-
-    public void setHour(int hour) {
-        this.hour = hour;
-    }
-
-    public int getMinute() {
-        return minute;
-    }
-
-    public void setMinute(int minute) {
-        this.minute = minute;
-    }
-
-
-    public int getAlarmWay() {
-        return alarmWay;
-    }
-
-    public void setAlarmWay(int alarmWay) {
-        this.alarmWay = alarmWay;
-    }
-
-    public ArrayList<Photo> getAddress() {
-        return address;
-    }
-
-    public void setAddress(ArrayList<Photo> address) {
-        this.address = address;
-    }
-
     public int getId() {
         return id;
     }
@@ -103,6 +47,13 @@ public class PlanItem extends DataSupport implements Serializable{
         this.id = id;
     }
 
+    public long getPlanId() {
+        return planId;
+    }
+
+    public void setPlanId(long planId) {
+        this.planId = planId;
+    }
 
     public String getTitle() {
         return title;
@@ -120,14 +71,6 @@ public class PlanItem extends DataSupport implements Serializable{
         this.content = content;
     }
 
-    public long getPlanId() {
-        return planId;
-    }
-
-    public void setPlanId(long planId) {
-        this.planId = planId;
-    }
-
     public long getCreateTime() {
         return createTime;
     }
@@ -143,7 +86,6 @@ public class PlanItem extends DataSupport implements Serializable{
     public void setEditTime(long editTime) {
         this.editTime = editTime;
     }
-
 
     public boolean isEdit() {
         return isEdit;
@@ -185,7 +127,6 @@ public class PlanItem extends DataSupport implements Serializable{
         this.location = location;
     }
 
-
     public boolean isEveryDay() {
         return isEveryDay;
     }
@@ -216,5 +157,69 @@ public class PlanItem extends DataSupport implements Serializable{
 
     public void setComplete(boolean complete) {
         isComplete = complete;
+    }
+
+    public boolean isDelete() {
+        return isDelete;
+    }
+
+    public void setDelete(boolean delete) {
+        isDelete = delete;
+    }
+
+    public ArrayList<Photo> getAddress() {
+        return address;
+    }
+
+    public void setAddress(ArrayList<Photo> address) {
+        this.address = address;
+    }
+
+    public int getYear() {
+        return year;
+    }
+
+    public void setYear(int year) {
+        this.year = year;
+    }
+
+    public int getMonth() {
+        return month;
+    }
+
+    public void setMonth(int month) {
+        this.month = month;
+    }
+
+    public int getDay() {
+        return day;
+    }
+
+    public void setDay(int day) {
+        this.day = day;
+    }
+
+    public int getHour() {
+        return hour;
+    }
+
+    public void setHour(int hour) {
+        this.hour = hour;
+    }
+
+    public int getMinute() {
+        return minute;
+    }
+
+    public void setMinute(int minute) {
+        this.minute = minute;
+    }
+
+    public int getAlarmWay() {
+        return alarmWay;
+    }
+
+    public void setAlarmWay(int alarmWay) {
+        this.alarmWay = alarmWay;
     }
 }
