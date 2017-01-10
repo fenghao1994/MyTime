@@ -29,4 +29,11 @@ public interface ICreateNoteEntity {
 
     List<Photo> getPhotoAddress(Note note);
 
+    /**
+     * 返回所有Note
+     * @param desc 是否降序
+     * @return
+     */
+    List<Note> getNotes(boolean desc);
+
 }

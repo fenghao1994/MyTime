@@ -55,5 +55,13 @@ public class CreateNoteEntityImpl implements ICreateNoteEntity {
         return DataSupport.where("objectId = ? and objectType = ?", note.getId() + "", 2 + "").find(Photo.class);
     }
 
+    @Override
+    public List<Note> getNotes(boolean desc) {
+        if ( desc){
+            return DataSupport.order("createTime desc").find( Note.class);
+        }
+        return DataSupport.findAll(Note.class);
+    }
+
 
 }

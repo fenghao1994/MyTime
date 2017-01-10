@@ -59,7 +59,14 @@
         <receiver
             android:name=".mvp.ui.receiver.AlarmReceiver"
             android:enabled="true"
-            android:exported="true"></receiver>
+            android:exported="true" />
+
+        <activity android:name=".mvp.ui.activity.AllPlanActivity" />
+        <activity
+            android:name=".mvp.ui.activity.AllNoteActivity"
+            android:label="@string/title_activity_all_note"
+            android:theme="@style/AppTheme" />
+        <activity android:name=".mvp.ui.activity.FragmentActivity"></activity>
     </application>
 
 </manifest>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    >
+
+
+    <TextView
+        android:id="@+id/content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="内容内容内容内容内容内容内容内容"
+        android:textSize="20sp"
+        android:paddingLeft="16dp"
+        />
+
+    <TextView
+        android:id="@+id/create_time"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="2016.02.12 12:11"
+        android:gravity="right"
+        android:paddingRight="20dp"
+        />
+</LinearLayout>

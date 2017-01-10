@@ -1,5 +1,6 @@
 package com.example.mytime.mvp.ui.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -9,6 +10,8 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.example.mytime.R;
+import com.example.mytime.mvp.ui.activity.AllNoteActivity;
+import com.example.mytime.mvp.ui.activity.AllPlanActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -49,15 +52,34 @@ public class NavigationFragment extends Fragment {
             case R.id.header_img:
                 break;
             case R.id.plan_layout:
+                showAllPlan();
                 break;
             case R.id.complete_layout:
+                showCompletePlan();
                 break;
             case R.id.note_layout:
+                showAllNote();
                 break;
             case R.id.count_layout:
                 break;
             case R.id.sign_out_layout:
                 break;
         }
+    }
+
+    public void showAllNote(){
+        Intent intent = new Intent(getActivity(), AllNoteActivity.class);
+        startActivity( intent);
+    }
+    public void showAllPlan(){
+        Intent intent = new Intent(getActivity(), AllPlanActivity.class);
+        intent.putExtra("COMPLETEPLAN", false);
+        startActivity( intent);
+    }
+
+    public void showCompletePlan(){
+        Intent intent = new Intent(getActivity(), AllPlanActivity.class);
+        intent.putExtra("COMPLETEPLAN", true);
+        startActivity( intent);
     }
 }

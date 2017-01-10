@@ -16,4 +16,17 @@ public interface ICreatePlanEntity {
     void updatePlan(Plan plan);
 
     List<PlanItem> getPlanItems(Plan plan);
+
+    /**
+     * 获取所有的plan
+     * @param desc 是否倒序
+     */
+    List<Plan> getAllPlan(boolean desc);
+
+    /**
+     * 已经完成的plan
+     * @param desc
+     * @return
+     */
+    List<Plan> getAllCompletePlan(boolean desc);
 }

@@ -28,4 +28,20 @@ public class CreatePlanEntityImpl implements ICreatePlanEntity {
 
         return DataSupport.order("editTime desc").where("planId = ?", plan.getPlanId() + "").find(PlanItem.class);
     }
+
+    @Override
+    public List<Plan> getAllPlan(boolean desc) {
+        if (desc){
+            return DataSupport.order("createTime desc").find( Plan.class);
+        }
+        return DataSupport.findAll(Plan.class);
+    }
+
+    @Override
+    public List<Plan> getAllCompletePlan(boolean desc) {
+        if (desc){
+            return DataSupport.order("createTime desc").where("isComplete = ?", "true").find( Plan.class);
+        }
+        return DataSupport.where().where("isComplete = ?", "true").find( Plan.class);
+    }
 }
