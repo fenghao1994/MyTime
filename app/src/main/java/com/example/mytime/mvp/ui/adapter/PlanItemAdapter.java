@@ -15,11 +15,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.mytime.R;
-import com.example.mytime.mvp.model.entity.Plan;
 import com.example.mytime.mvp.model.entity.PlanItem;
 import com.example.mytime.mvp.ui.activity.CreatePlanActivity;
 import com.example.mytime.mvp.ui.activity.CreatePlanItemActivity;
-import com.example.mytime.mvp.ui.receiver.AlarmReceiver;
+import com.example.mytime.receiver.AlarmReceiver;
 import com.example.mytime.util.MyUtil;
 
 import java.util.Calendar;

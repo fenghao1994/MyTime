@@ -15,6 +15,16 @@
     <!-- 允许程序访问CellID或WiFi热点来获取粗略的位置 -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
+    <!-- 用于访问GPS定位 -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <!-- 用于获取wifi的获取权限，wifi信息会用来进行网络定位 -->
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <!-- 用于申请调用A-GPS模块 -->
+    <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
+    <!-- 用于申请获取蓝牙信息进行室内定位 -->
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+
     <application
         android:name=".application.MyApplication"
         android:allowBackup="true"
@@ -57,7 +67,7 @@
         <activity android:name=".mvp.ui.activity.POIActivity" />
 
         <receiver
-            android:name=".mvp.ui.receiver.AlarmReceiver"
+            android:name=".receiver.AlarmReceiver"
             android:enabled="true"
             android:exported="true" />
 
@@ -66,7 +76,12 @@
             android:name=".mvp.ui.activity.AllNoteActivity"
             android:label="@string/title_activity_all_note"
             android:theme="@style/AppTheme" />
-        <activity android:name=".mvp.ui.activity.FragmentActivity"></activity>
+        <activity android:name=".mvp.ui.activity.FragmentActivity" />
+
+        <service android:name=".service.LocalService" />
+        <service android:name="com.amap.api.location.APSService" />
+
+        <activity android:name=".mvp.ui.activity.WeathActivity"></activity>
     </application>
 
 </manifest>

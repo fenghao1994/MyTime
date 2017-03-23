@@ -45,4 +45,6 @@ dependencies {
     compile 'org.litepal.android:core:1.4.1'
     //calendarview
     compile 'com.prolificinteractive:material-calendarview:1.4.2'
+    //eventbus
+    compile 'org.greenrobot:eventbus:3.0.0'
 }

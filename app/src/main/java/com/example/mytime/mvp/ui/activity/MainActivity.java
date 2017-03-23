@@ -1,5 +1,7 @@
 package com.example.mytime.mvp.ui.activity;
 
+import android.app.IntentService;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -9,6 +11,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -16,15 +19,32 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.mytime.R;
+import com.example.mytime.event.LocalEvent;
+import com.example.mytime.mvp.model.entity.WeatherEntity;
+import com.example.mytime.mvp.presenter.IMainPresenter;
+import com.example.mytime.mvp.presenter.impl.MainPresenterImpl;
 import com.example.mytime.mvp.ui.fragment.NoteFragment;
 import com.example.mytime.mvp.ui.fragment.PlanFragment;
 import com.example.mytime.mvp.ui.view.IMainView;
+import com.example.mytime.service.LocalService;
+import com.google.gson.Gson;
+import com.mob.mobapi.API;
+import com.mob.mobapi.APICallback;
+import com.mob.mobapi.MobAPI;
+import com.mob.mobapi.apis.Weather;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class MainActivity extends AppCompatActivity implements IMainView {
+
+    private static final String TAG = "MainActivity";
 
     @BindView(R.id.plan_text)
     TextView planText;
@@ -45,6 +65,8 @@ public class MainActivity extends AppCompatActivity implements IMainView {
     private Fragment planFragment;
     private Fragment noteFragment;
 
+    private IMainPresenter mainPresenter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,12 +84,25 @@ public class MainActivity extends AppCompatActivity implements IMainView {
         } else if (chooseFragment == 1) {
             showNoteFragment();
         }
+
+        Intent intent = new Intent(this, LocalService.class);
+        startService( intent);
+        //注册event
+        EventBus.getDefault().register( this);
+
+        mainPresenter = new MainPresenterImpl( this);
     }
 
-    @Override
-    public void showWeather() {
+    @Subscribe
+    public void onLocalEvent(LocalEvent localEvent){
+        getWeatherInfo(localEvent);
+        mainPresenter.getWeatherInfo( localEvent);
+    }
+
+    public void getWeatherInfo(LocalEvent localEvent){
 
     }
+
 
     @Override
     public void clickWeather() {
@@ -98,6 +133,12 @@ public class MainActivity extends AppCompatActivity implements IMainView {
     public void clickFab() {
 
     }
+
+    @Override
+    public void showWeather(WeatherEntity entity) {
+
+    }
+
 
     @OnClick({R.id.plan_text, R.id.note_text, R.id.weather_layout, R.id.content_fragment_layout, R.id.activity_main})
     public void onClick(View view) {
@@ -141,5 +182,11 @@ public class MainActivity extends AppCompatActivity implements IMainView {
     //关闭侧栏
     private void closeNavLayout() {
         activityMain.closeDrawer(GravityCompat.START);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister( this);
     }
 }

@@ -1,14 +1,14 @@
 package com.example.mytime.mvp.ui.view;
 
+import com.example.mytime.event.LocalEvent;
+import com.example.mytime.mvp.model.entity.WeatherEntity;
+
 /**
  * Created by fenghao on 2016/12/24.
  * mianActivity接口
  */
 
 public interface IMainView {
-
-    //展示天气
-    void showWeather();
 
     //点击天气栏
     void clickWeather();
@@ -21,5 +21,9 @@ public interface IMainView {
 
     //点击添加fab
     void clickFab();
+
+    //获取天气预报
+
+    void showWeather(WeatherEntity entity);
 
 }
