@@ -66,6 +66,7 @@ public class MainActivity extends AppCompatActivity implements IMainView {
     private Fragment noteFragment;
 
     private IMainPresenter mainPresenter;
+    private WeatherEntity weatherEntity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -136,7 +137,7 @@ public class MainActivity extends AppCompatActivity implements IMainView {
 
     @Override
     public void showWeather(WeatherEntity entity) {
-
+        this.weatherEntity = entity;
     }
 
 
@@ -155,12 +156,19 @@ public class MainActivity extends AppCompatActivity implements IMainView {
                 }
                 break;
             case R.id.weather_layout:
+                gotoWeatherActivity();
                 break;
             case R.id.content_fragment_layout:
                 break;
             case R.id.activity_main:
                 break;
         }
+    }
+
+    public void gotoWeatherActivity(){
+        Intent intent = new Intent(this, WeatherActivity.class);
+        intent.putExtra("WEATHER", weatherEntity);
+        startActivity( intent);
     }
 
     @Override

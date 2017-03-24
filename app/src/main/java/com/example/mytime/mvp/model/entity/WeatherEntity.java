@@ -1,12 +1,13 @@
 package com.example.mytime.mvp.model.entity;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * Created by fenghao02 on 2017/3/23.
  */
 
-public class WeatherEntity {
+public class WeatherEntity implements Serializable {
 
     /**
      * msg : success

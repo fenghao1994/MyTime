@@ -4,7 +4,7 @@
     android:id="@+id/activity_weath"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.mytime.mvp.ui.activity.WeathActivity">
+    tools:context="com.example.mytime.mvp.ui.activity.WeatherActivity">
 
     <Button
         android:id="@+id/btn"
