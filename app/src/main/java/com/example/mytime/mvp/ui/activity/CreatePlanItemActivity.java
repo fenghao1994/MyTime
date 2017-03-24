@@ -17,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.mytime.R;
+import com.example.mytime.event.PlanItemRefreshEvent;
 import com.example.mytime.mvp.model.entity.Photo;
 import com.example.mytime.mvp.model.entity.Plan;
 import com.example.mytime.mvp.model.entity.PlanItem;
@@ -31,6 +32,8 @@ import com.example.mytime.mvp.ui.view.ICreatePlanItemView;
 import com.lzy.imagepicker.ImagePicker;
 import com.lzy.imagepicker.bean.ImageItem;
 import com.lzy.imagepicker.ui.ImageGridActivity;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -250,6 +253,13 @@ public class CreatePlanItemActivity extends AppCompatActivity implements ICreate
             planItem.setExpired(planItemIsExpired);
             planItem.setComplete(planItemIsComplete);
             createPlanItemPresenter.updatePlanItem( planItem, planItemAddress);
+        }
+
+        /**
+         * 如果加入了location，则加入服务中，不断查询是否到地方了
+         */
+        if ( !"".equals( planItemLocation) && null != planItemLocation){
+            EventBus.getDefault().post(new PlanItemRefreshEvent());
         }
     }
 

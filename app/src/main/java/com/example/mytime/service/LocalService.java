@@ -4,6 +4,7 @@ import android.app.IntentService;
 import android.app.Service;
 import android.content.Intent;
 import android.content.IntentSender;
+import android.location.Location;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -13,11 +14,17 @@ import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
 import com.amap.api.location.AMapLocationListener;
 import com.example.mytime.event.LocalEvent;
+import com.example.mytime.event.PlanItemRefreshEvent;
+import com.example.mytime.mvp.model.entity.PlanItem;
+import com.example.mytime.util.Extra;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.litepal.crud.DataSupport;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by fenghao02 on 2017/3/23.
@@ -28,6 +35,8 @@ public class LocalService extends Service {
     private LocalEvent localEvent;
 
     private AMapLocationClient mlocationClient;
+
+    private List<PlanItem> mPlanItem;
     ;
     //声明mLocationOption对象
     public AMapLocationClientOption mLocationOption = new AMapLocationClientOption();
@@ -43,7 +52,19 @@ public class LocalService extends Service {
         mlocationClient.setLocationOption( getDefaultOption());
         //启动定位
         mlocationClient.startLocation();
+
+        EventBus.getDefault().register( this);
+
+        getPlanItemsList( null);
+
     }
+
+    @Subscribe
+    private void getPlanItemsList(PlanItemRefreshEvent refreshEvent){
+        mPlanItem = DataSupport.where("isComplete = ? and location != ?", "false", "null").find(PlanItem.class);
+    }
+
+
 
     /**
      * 默认的定位参数
@@ -86,10 +107,13 @@ public class LocalService extends Service {
                     Date date = new Date(amapLocation.getTime());
                     df.format(date);//定位时间
 
+
+
                     localEvent = new LocalEvent(amapLocation.getProvince(), amapLocation.getCity());
                     EventBus.getDefault().post( localEvent);
-                    stopLocation();
-                    destroyLocation();
+//                    stopLocation();
+//                    destroyLocation();
+                    getDistance(amapLocation.getLatitude(), amapLocation.getLongitude());
                 } else {
                     //显示错误信息ErrCode是错误码，errInfo是错误信息，详见错误码表。
                     Log.e("AmapError", "location Error, ErrCode:"
@@ -101,6 +125,24 @@ public class LocalService extends Service {
             }
         }
     };
+
+    private void getDistance(double endLatitude, double endLongitude){
+        for (int i = 0 ; i < mPlanItem.size(); i++){
+            String distance = mPlanItem.get(i).getLocation();
+            String[] locations = distance.split(",");
+            double startLatitude = Double.parseDouble(locations[0]);
+            double startLongitude = Double.parseDouble(locations[1]);
+
+            float[] result = new float[1];
+            Location.distanceBetween(startLatitude, startLongitude, endLatitude, endLongitude, result);
+            if ( result[0] > 0.000001 && result[0] < 50){
+                Intent intent = new Intent();
+                intent.setAction(Extra.ALARM_LOCATION);
+                intent.putExtra("PLANITEM", mPlanItem.get( i));
+                sendBroadcast( intent);
+            }
+        }
+    }
 
     @Nullable
     @Override
@@ -138,5 +180,11 @@ public class LocalService extends Service {
             mlocationClient = null;
             mLocationOption = null;
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister( this);
     }
 }

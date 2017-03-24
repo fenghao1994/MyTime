@@ -68,6 +68,8 @@ public class MainActivity extends AppCompatActivity implements IMainView {
     private IMainPresenter mainPresenter;
     private WeatherEntity weatherEntity;
 
+    private boolean isFirstShowWeatherInfo = true;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,8 +98,12 @@ public class MainActivity extends AppCompatActivity implements IMainView {
 
     @Subscribe
     public void onLocalEvent(LocalEvent localEvent){
-        getWeatherInfo(localEvent);
-        mainPresenter.getWeatherInfo( localEvent);
+        if ( isFirstShowWeatherInfo){
+            getWeatherInfo(localEvent);
+            mainPresenter.getWeatherInfo( localEvent);
+            isFirstShowWeatherInfo = false;
+        }
+
     }
 
     public void getWeatherInfo(LocalEvent localEvent){
