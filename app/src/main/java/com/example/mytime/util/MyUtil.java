@@ -1,6 +1,8 @@
 package com.example.mytime.util;
 
 import java.text.SimpleDateFormat;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by fenghao on 2017/1/4.
@@ -35,6 +37,17 @@ public class MyUtil {
             return true;
         }
         return false;
+    }
+
+    /**
+     * 正则表达式 判断 手机号
+     * @param mobiles
+     * @return
+     */
+    public static final boolean isMobileNumber(String mobiles){
+        Pattern pattern = Pattern.compile("^((1[358][0-9])|(14[57])|(17[0678]))\\d{8}$");
+        Matcher matcher = pattern.matcher( mobiles);
+        return matcher.matches();
     }
 
 

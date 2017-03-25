@@ -1,33 +1,48 @@
 package com.example.mytime.mvp.ui.activity;
 
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
+import android.support.annotation.UiThread;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.telephony.TelephonyManager;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.mytime.R;
 import com.example.mytime.mvp.ui.view.ILoginView;
+import com.example.mytime.receiver.AlarmReceiver;
+import com.example.mytime.util.Extra;
+import com.example.mytime.util.MyUtil;
 
 import java.util.HashMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.OnTextChanged;
 import cn.smssdk.EventHandler;
+import cn.smssdk.OnSendMessageHandler;
 import cn.smssdk.SMSSDK;
-import cn.smssdk.gui.RegisterPage;
 
 public class LoginActivity extends AppCompatActivity implements ILoginView {
 
 
+    private static final String DEFAULT_COUNTRY_ID = "42";
     @BindView(R.id.phone_number)
     EditText phoneNumber;
     @BindView(R.id.input_verification_code)
@@ -36,11 +51,14 @@ public class LoginActivity extends AppCompatActivity implements ILoginView {
     TextView getVerificationCode;
 
     //多一秒 因为是先减去一秒后才发送的message
-    private static final int TIME_OUT = 6;
+    private static final int TIME_OUT = 60;
     @BindView(R.id.toolbar_title)
     TextView toolbarTitle;
     @BindView(R.id.text_login)
     TextView textLogin;
+
+    private BroadcastReceiver smsReceiver;
+    private EventHandler eventHandler;
 
     //是否可以点击获取验证码
     private boolean isClickVerificationCode;
@@ -88,11 +106,56 @@ public class LoginActivity extends AppCompatActivity implements ILoginView {
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
         isClickVerificationCode = true;
+
+        initView();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        initSMSSDK();
+        initSMSReceiver();
+    }
+
+    public void initView() {
+
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setHomeAsUpIndicator(R.drawable.logo);
         }
+        textLogin.setEnabled(false);
+        textLogin.setBackgroundColor(Color.GREEN);
+    }
 
+    public void initSMSSDK() {
+        eventHandler = new EventHandler() {
+            public void afterEvent(int event, int result, Object data) {
+                if (event == SMSSDK.EVENT_GET_VERIFICATION_CODE) {
+                    if (result == SMSSDK.RESULT_COMPLETE) {
+                        Log.i("LoginActivity-complete", data.toString());
+                    } else {
+                        Log.i("LoginActivity-error", data.toString());
+                    }
+                } else if (event == SMSSDK.EVENT_SUBMIT_VERIFICATION_CODE) {
+                    Toast.makeText(LoginActivity.this, new String(data.toString()), Toast.LENGTH_SHORT).show();
+                }
+            }
+        };
+        SMSSDK.registerEventHandler(eventHandler);
+    }
+
+    public void initSMSReceiver() {
+        smsReceiver = new AlarmReceiver(new SMSSDK.VerifyCodeReadListener() {
+            public void onReadVerifyCode(final String verifyCode) {
+                showVerifyCode(verifyCode);
+            }
+        });
+        this.registerReceiver(smsReceiver, new IntentFilter(Extra.SMS_RECEIVER));
+    }
+
+    @UiThread
+    public void showVerifyCode(String verifyCode) {
+        inputVerificationCode.setText(verifyCode);
     }
 
     @Override
@@ -121,38 +184,62 @@ public class LoginActivity extends AppCompatActivity implements ILoginView {
         }
     }
 
+    @OnTextChanged(value = R.id.input_verification_code, callback = OnTextChanged.Callback.TEXT_CHANGED)
+    public void verificationTextChanged(CharSequence s, int start, int before, int count) {
+        if (s.length() > 0) {
+            textLogin.setEnabled(true);
+            textLogin.setBackgroundColor(Color.RED);
+        } else {
+            textLogin.setEnabled(false);
+            textLogin.setBackgroundColor(Color.GREEN);
+        }
+    }
+
     //点击获取验证码按钮
     private void clickVerificationCode() {
+        checkMobileNumber();
         if (isClickVerificationCode) {
             isClickVerificationCode = false;
             getVerificationCode.setEnabled(isClickVerificationCode);
             getVerificationCode.setText("获取验证码");
             new Thread(runnable).start();
         }
+        SMSSDK.getVerificationCode("+86", phoneNumber.getText().toString().trim(), new OnSendMessageHandler() {
+            @Override
+            public boolean onSendMessage(String s, String s1) {
+                return false;
+            }
+        });
     }
 
     //验证成功跳转
     private void clickLogin() {
-//        Intent intent = new Intent(this, MainActivity.class);
-//        startActivity(intent);
-        //打开注册页面
-        RegisterPage registerPage = new RegisterPage();
-        registerPage.setRegisterCallback(new EventHandler() {
-            public void afterEvent(int event, int result, Object data) {
-// 解析注册结果
-                if (result == SMSSDK.RESULT_COMPLETE) {
-                    @SuppressWarnings("unchecked")
-                    HashMap<String,Object> phoneMap = (HashMap<String, Object>) data;
-                    String country = (String) phoneMap.get("country");
-                    String phone = (String) phoneMap.get("phone");
-                    Log.i("LoginActivity", data.toString());
+        checkMobileNumber();
+        if (!TextUtils.isEmpty(phoneNumber.getText().toString().trim()) && !TextUtils.isEmpty(inputVerificationCode.getText().toString().trim())) {
+            SMSSDK.submitVerificationCode("+86", phoneNumber.getText().toString().trim(), inputVerificationCode.getText().toString().trim());
+        }
+    }
 
-// 提交用户信息（此方法可以不调用）
-//                    registerUser(country, phone);
-                }
-            }
-        });
-        registerPage.show( this);
+    /**
+     * 检查手机号是否正确 不正确直接返回
+     */
+    public void checkMobileNumber() {
+        if (!MyUtil.isMobileNumber(phoneNumber.getText().toString().trim())) {
+            Toast.makeText(this, "请输入正确的手机号", Toast.LENGTH_SHORT).show();
+            return;
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        this.unregisterReceiver(smsReceiver);
+        SMSSDK.unregisterEventHandler(eventHandler);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 }
 

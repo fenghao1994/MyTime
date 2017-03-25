@@ -9,4 +9,6 @@ public class Extra {
     public static final String ALARM_CLOCK = "COM.EXAMPLE.MYTIME.ALARM_CLOCK";
 
     public static final String ALARM_LOCATION = "COM.EXAMPLE.MYTIME.ALARM_LOCATION";
+
+    public static final String SMS_RECEIVER = "android.provider.Telephony.SMS_RECEIVED";
 }
