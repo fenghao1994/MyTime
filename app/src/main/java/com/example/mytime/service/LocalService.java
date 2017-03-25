@@ -60,7 +60,7 @@ public class LocalService extends Service {
     }
 
     @Subscribe
-    private void getPlanItemsList(PlanItemRefreshEvent refreshEvent){
+    public void getPlanItemsList(PlanItemRefreshEvent refreshEvent){
         mPlanItem = DataSupport.where("isComplete = ? and location != ?", "false", "null").find(PlanItem.class);
     }
 

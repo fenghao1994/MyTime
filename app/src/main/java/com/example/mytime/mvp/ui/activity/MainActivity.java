@@ -75,10 +75,10 @@ public class MainActivity extends AppCompatActivity implements IMainView {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        setSupportActionBar( toolbar);
+        setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null){
-            actionBar.setDisplayHomeAsUpEnabled( true);
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setHomeAsUpIndicator(R.drawable.celan);
         }
 
@@ -89,24 +89,24 @@ public class MainActivity extends AppCompatActivity implements IMainView {
         }
 
         Intent intent = new Intent(this, LocalService.class);
-        startService( intent);
+        startService(intent);
         //注册event
-        EventBus.getDefault().register( this);
+        EventBus.getDefault().register(this);
 
-        mainPresenter = new MainPresenterImpl( this);
+        mainPresenter = new MainPresenterImpl(this);
     }
 
     @Subscribe
-    public void onLocalEvent(LocalEvent localEvent){
-        if ( isFirstShowWeatherInfo){
+    public void onLocalEvent(LocalEvent localEvent) {
+        if (isFirstShowWeatherInfo) {
             getWeatherInfo(localEvent);
-            mainPresenter.getWeatherInfo( localEvent);
+            mainPresenter.getWeatherInfo(localEvent);
             isFirstShowWeatherInfo = false;
         }
 
     }
 
-    public void getWeatherInfo(LocalEvent localEvent){
+    public void getWeatherInfo(LocalEvent localEvent) {
 
     }
 
@@ -171,15 +171,15 @@ public class MainActivity extends AppCompatActivity implements IMainView {
         }
     }
 
-    public void gotoWeatherActivity(){
+    public void gotoWeatherActivity() {
         Intent intent = new Intent(this, WeatherActivity.class);
         intent.putExtra("WEATHER", weatherEntity);
-        startActivity( intent);
+        startActivity(intent);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch ( item.getItemId()){
+        switch (item.getItemId()) {
             case android.R.id.home:
                 showNavLayout();
                 break;
@@ -201,6 +201,6 @@ public class MainActivity extends AppCompatActivity implements IMainView {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        EventBus.getDefault().unregister( this);
+        EventBus.getDefault().unregister(this);
     }
 }
