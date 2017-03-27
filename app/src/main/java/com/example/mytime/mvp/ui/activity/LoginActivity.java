@@ -2,24 +2,23 @@ package com.example.mytime.mvp.ui.activity;
 
 
 import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.annotation.UiThread;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.telephony.TelephonyManager;
-import android.text.Editable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,8 +27,10 @@ import com.example.mytime.mvp.ui.view.ILoginView;
 import com.example.mytime.receiver.AlarmReceiver;
 import com.example.mytime.util.Extra;
 import com.example.mytime.util.MyUtil;
+import com.google.gson.Gson;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -49,6 +50,12 @@ public class LoginActivity extends AppCompatActivity implements ILoginView {
     EditText inputVerificationCode;
     @BindView(R.id.get_verification_code)
     TextView getVerificationCode;
+    @BindView(R.id.layout_voice)
+    RelativeLayout layoutVoice;
+    @BindView(R.id.voice_sms)
+    TextView voiceSMS;
+    @BindView(R.id.progressBar)
+    ProgressBar progressBar;
 
     //多一秒 因为是先减去一秒后才发送的message
     private static final int TIME_OUT = 60;
@@ -63,6 +70,9 @@ public class LoginActivity extends AppCompatActivity implements ILoginView {
     //是否可以点击获取验证码
     private boolean isClickVerificationCode;
     private int second = TIME_OUT;
+    //控制语音发送短信的layout是否可见，当一次60s完了后，可见
+    private int clickSendSMSCount = 0;
+
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -73,7 +83,13 @@ public class LoginActivity extends AppCompatActivity implements ILoginView {
                 getVerificationCode.setEnabled(isClickVerificationCode);
                 getVerificationCode.setText("获取验证码");
                 handler.removeCallbacks(runnable);
+
+                clickSendSMSCount = 1;
             }
+            if (clickSendSMSCount == 1) {
+                layoutVoice.setVisibility(View.VISIBLE);
+            }
+
             super.handleMessage(msg);
         }
     };
@@ -133,15 +149,67 @@ public class LoginActivity extends AppCompatActivity implements ILoginView {
                 if (event == SMSSDK.EVENT_GET_VERIFICATION_CODE) {
                     if (result == SMSSDK.RESULT_COMPLETE) {
                         Log.i("LoginActivity-complete", data.toString());
+                        detileMessage("验证码发送成功");
                     } else {
+                        detileMessage(data);
                         Log.i("LoginActivity-error", data.toString());
                     }
                 } else if (event == SMSSDK.EVENT_SUBMIT_VERIFICATION_CODE) {
-                    Toast.makeText(LoginActivity.this, new String(data.toString()), Toast.LENGTH_SHORT).show();
+                    if (result == SMSSDK.RESULT_COMPLETE) {
+                        detileMessage("验证成功");
+                        Log.i("LoginActivity-verifi", data.toString());
+                        goMainActivity();
+                    } else {
+                        detileMessage(data);
+                        Log.i("LoginActivity-error", data.toString());
+                    }
+                    progressBarHide();
+
+                } else if (event == SMSSDK.EVENT_GET_VOICE_VERIFICATION_CODE) {
+                    if (result == SMSSDK.RESULT_COMPLETE){
+                        detileMessage("请等待，电话短信拨号中");
+                    }else {
+                        detileMessage(data);
+                    }
                 }
             }
         };
         SMSSDK.registerEventHandler(eventHandler);
+    }
+    public void showToast(final String message){
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(LoginActivity.this, message, Toast.LENGTH_SHORT).show();
+            }
+        });
+
+    }
+
+    public void detileMessage(Object data) {
+        Looper.prepare();
+        Gson gson = new Gson();
+        String message = "";
+        Map<String, String> map = new HashMap<>();
+        if ( data != null){
+            if (data instanceof Throwable){
+                message = ((Throwable) data).getMessage();
+                map = gson.fromJson( message, Map.class);
+                showToast( map.get("detail"));
+            }else {
+                message = data.toString();
+                    showToast( message);
+            }
+        }
+
+//        if (data != null) {
+//
+//            Map<String, String> map = (Map<String, String>) data;
+////            if ( )
+//            Toast.makeText(LoginActivity.this, new String(data.toString()), Toast.LENGTH_SHORT).show();
+//        } else {
+//            Toast.makeText(this, "请准备接电话", Toast.LENGTH_SHORT).show();
+//        }
     }
 
     public void initSMSReceiver() {
@@ -168,7 +236,7 @@ public class LoginActivity extends AppCompatActivity implements ILoginView {
         return false;
     }
 
-    @OnClick({R.id.phone_number, R.id.input_verification_code, R.id.get_verification_code, R.id.text_login})
+    @OnClick({R.id.phone_number, R.id.input_verification_code, R.id.get_verification_code, R.id.text_login, R.id.voice_sms})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.phone_number:
@@ -181,7 +249,18 @@ public class LoginActivity extends AppCompatActivity implements ILoginView {
             case R.id.text_login:
                 clickLogin();
                 break;
+            case R.id.voice_sms:
+                clickVoiceSMS();
+                break;
         }
+    }
+
+    private void clickVoiceSMS() {
+        checkMobileNumber();
+        SMSSDK.getVoiceVerifyCode("+86", phoneNumber.getText().toString().trim());
+        voiceSMS.setEnabled(false);
+        voiceSMS.setTextColor(Color.GRAY);
+
     }
 
     @OnTextChanged(value = R.id.input_verification_code, callback = OnTextChanged.Callback.TEXT_CHANGED)
@@ -215,8 +294,9 @@ public class LoginActivity extends AppCompatActivity implements ILoginView {
     //验证成功跳转
     private void clickLogin() {
         checkMobileNumber();
-        if (!TextUtils.isEmpty(phoneNumber.getText().toString().trim()) && !TextUtils.isEmpty(inputVerificationCode.getText().toString().trim())) {
+        if (!TextUtils.isEmpty(inputVerificationCode.getText().toString().trim())) {
             SMSSDK.submitVerificationCode("+86", phoneNumber.getText().toString().trim(), inputVerificationCode.getText().toString().trim());
+            progressBarShow();
         }
     }
 
@@ -228,6 +308,25 @@ public class LoginActivity extends AppCompatActivity implements ILoginView {
             Toast.makeText(this, "请输入正确的手机号", Toast.LENGTH_SHORT).show();
             return;
         }
+    }
+
+    private void goMainActivity() {
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+    }
+
+    /**
+     * 隐藏progressbar
+     */
+    public void progressBarHide(){
+        progressBar.setVisibility(View.GONE);
+    }
+
+    /**
+     * 显示progressbar
+     */
+    public void progressBarShow(){
+        progressBar.setVisibility(View.VISIBLE);
     }
 
     @Override
