@@ -1,5 +1,7 @@
 package com.example.mytime.mvp.model.impl;
 
+import android.util.Log;
+
 import com.example.mytime.mvp.model.IWeatherEntity;
 import com.example.mytime.mvp.model.entity.Citys;
 import com.example.mytime.mvp.model.entity.WeatherEntity;
@@ -9,6 +11,8 @@ import com.mob.mobapi.API;
 import com.mob.mobapi.APICallback;
 import com.mob.mobapi.MobAPI;
 import com.mob.mobapi.apis.Weather;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.Map;
 
@@ -29,11 +33,12 @@ public class WeatherEntityImpl implements IWeatherEntity {
                 Gson gson = new Gson();
                 String str = gson.toJson( map);
                 mCitys = gson.fromJson(str, Citys.class);
+                EventBus.getDefault().post( mCitys);
             }
 
             @Override
             public void onError(API api, int i, Throwable throwable) {
-
+                String a = "";
             }
         });
 

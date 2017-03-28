@@ -44,23 +44,21 @@
 
         <activity android:name=".mvp.ui.activity.MainActivity">
 
-            <!--
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            -->
         </activity>
         <activity android:name=".mvp.ui.activity.GuideActivity" />
         <activity
             android:name=".mvp.ui.activity.LoginActivity"
             android:label="My Time">
-            <intent-filter>
+           <!-- <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            </intent-filter>-->
         </activity>
         <activity android:name=".mvp.ui.activity.CreatePlanActivity" />
         <activity android:name=".mvp.ui.activity.CreatePlanItemActivity" />

@@ -1,6 +1,5 @@
 package com.example.mytime.mvp.ui.activity;
 
-import android.app.IntentService;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -17,9 +16,11 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.mytime.R;
 import com.example.mytime.event.LocalEvent;
+import com.example.mytime.event.WeatherEvent;
 import com.example.mytime.mvp.model.entity.WeatherEntity;
 import com.example.mytime.mvp.presenter.IMainPresenter;
 import com.example.mytime.mvp.presenter.impl.MainPresenterImpl;
@@ -27,16 +28,10 @@ import com.example.mytime.mvp.ui.fragment.NoteFragment;
 import com.example.mytime.mvp.ui.fragment.PlanFragment;
 import com.example.mytime.mvp.ui.view.IMainView;
 import com.example.mytime.service.LocalService;
-import com.google.gson.Gson;
-import com.mob.mobapi.API;
-import com.mob.mobapi.APICallback;
-import com.mob.mobapi.MobAPI;
-import com.mob.mobapi.apis.Weather;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -90,25 +85,37 @@ public class MainActivity extends AppCompatActivity implements IMainView {
 
         Intent intent = new Intent(this, LocalService.class);
         startService(intent);
-        //注册event
-        EventBus.getDefault().register(this);
+
 
         mainPresenter = new MainPresenterImpl(this);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        //注册event
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        EventBus.getDefault().unregister(this);
     }
 
     @Subscribe
     public void onLocalEvent(LocalEvent localEvent) {
         if (isFirstShowWeatherInfo) {
-            getWeatherInfo(localEvent);
+//            getWeatherInfo(localEvent);
             mainPresenter.getWeatherInfo(localEvent);
             isFirstShowWeatherInfo = false;
         }
 
     }
 
-    public void getWeatherInfo(LocalEvent localEvent) {
-
-    }
+//    public void getWeatherInfo(LocalEvent localEvent) {
+//
+//    }
 
 
     @Override
@@ -143,7 +150,19 @@ public class MainActivity extends AppCompatActivity implements IMainView {
 
     @Override
     public void showWeather(WeatherEntity entity) {
-        this.weatherEntity = entity;
+
+    }
+
+    //// TODO: 2017/3/28  weather数据加载
+    @Subscribe
+    public void showWeathers(WeatherEvent entity) {
+        if ( entity.isSuccess()){
+            this.weatherEntity = entity.getWeatherEntity();
+        }else {
+            //加载默认的
+        }
+        Log.i("WeatherInfoFragment", "clf ---- 》>>>>> " + entity.toString());
+
     }
 
 
@@ -201,6 +220,6 @@ public class MainActivity extends AppCompatActivity implements IMainView {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        EventBus.getDefault().unregister(this);
+
     }
 }

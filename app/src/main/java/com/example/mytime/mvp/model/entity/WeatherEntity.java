@@ -43,7 +43,7 @@ public class WeatherEntity implements Serializable {
         this.result = result;
     }
 
-    public static class ResultBean {
+    public static class ResultBean implements Serializable {
         /**
          * airCondition : 良
          * city : 北京
@@ -238,7 +238,7 @@ public class WeatherEntity implements Serializable {
             this.future = future;
         }
 
-        public static class FutureBean {
+        public static class FutureBean implements Serializable {
             /**
              * date : 2015-09-09
              * dayTime : 阵雨

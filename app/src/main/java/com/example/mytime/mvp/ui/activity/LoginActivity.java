@@ -166,9 +166,9 @@ public class LoginActivity extends AppCompatActivity implements ILoginView {
                     progressBarHide();
 
                 } else if (event == SMSSDK.EVENT_GET_VOICE_VERIFICATION_CODE) {
-                    if (result == SMSSDK.RESULT_COMPLETE){
+                    if (result == SMSSDK.RESULT_COMPLETE) {
                         detileMessage("请等待，电话短信拨号中");
-                    }else {
+                    } else {
                         detileMessage(data);
                     }
                 }
@@ -176,7 +176,8 @@ public class LoginActivity extends AppCompatActivity implements ILoginView {
         };
         SMSSDK.registerEventHandler(eventHandler);
     }
-    public void showToast(final String message){
+
+    public void showToast(final String message) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -191,25 +192,16 @@ public class LoginActivity extends AppCompatActivity implements ILoginView {
         Gson gson = new Gson();
         String message = "";
         Map<String, String> map = new HashMap<>();
-        if ( data != null){
-            if (data instanceof Throwable){
+        if (data != null) {
+            if (data instanceof Throwable) {
                 message = ((Throwable) data).getMessage();
-                map = gson.fromJson( message, Map.class);
-                showToast( map.get("detail"));
-            }else {
+                map = gson.fromJson(message, Map.class);
+                showToast(map.get("detail"));
+            } else {
                 message = data.toString();
-                    showToast( message);
+                showToast(message);
             }
         }
-
-//        if (data != null) {
-//
-//            Map<String, String> map = (Map<String, String>) data;
-////            if ( )
-//            Toast.makeText(LoginActivity.this, new String(data.toString()), Toast.LENGTH_SHORT).show();
-//        } else {
-//            Toast.makeText(this, "请准备接电话", Toast.LENGTH_SHORT).show();
-//        }
     }
 
     public void initSMSReceiver() {
@@ -313,19 +305,20 @@ public class LoginActivity extends AppCompatActivity implements ILoginView {
     private void goMainActivity() {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
+        this.finish();
     }
 
     /**
      * 隐藏progressbar
      */
-    public void progressBarHide(){
+    public void progressBarHide() {
         progressBar.setVisibility(View.GONE);
     }
 
     /**
      * 显示progressbar
      */
-    public void progressBarShow(){
+    public void progressBarShow() {
         progressBar.setVisibility(View.VISIBLE);
     }
 
