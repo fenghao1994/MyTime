@@ -12,6 +12,7 @@ import android.widget.Toast;
 import com.example.mytime.R;
 import com.example.mytime.mvp.ui.activity.AllNoteActivity;
 import com.example.mytime.mvp.ui.activity.AllPlanActivity;
+import com.example.mytime.mvp.ui.activity.CountActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -61,10 +62,16 @@ public class NavigationFragment extends Fragment {
                 showAllNote();
                 break;
             case R.id.count_layout:
+                showCountPlan();
                 break;
             case R.id.sign_out_layout:
                 break;
         }
+    }
+
+    private void showCountPlan() {
+        Intent intent = new Intent(getActivity(), CountActivity.class);
+        startActivity( intent);
     }
 
     public void showAllNote(){

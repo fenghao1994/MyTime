@@ -7,6 +7,7 @@ import com.lzy.imagepicker.ImagePicker;
 import com.lzy.imagepicker.view.CropImageView;
 import com.mob.mobapi.MobAPI;
 
+import org.greenrobot.eventbus.EventBus;
 import org.litepal.LitePal;
 
 import cn.smssdk.SMSSDK;
@@ -39,5 +40,6 @@ public class MyApplication extends Application {
         MobAPI.initSDK(this, "1b7fe4470b808");
 
         SMSSDK.initSDK(this, "1c65bcce52490", "1b30899dd5a451437bf17a4b9275fd20");
+
     }
 }
