@@ -39,6 +39,9 @@ public class PlanItem extends DataSupport implements Serializable{
     int minute;
     int alarmWay;//0为默认 只提醒一次，1为每日，2为每周，3为每月
 
+    //目前用于到达目的后通知，显示一次后不再显示，默认为null 到达目的地通知后变为 LOCATED
+    String describe;
+
     public int getId() {
         return id;
     }
@@ -221,5 +224,13 @@ public class PlanItem extends DataSupport implements Serializable{
 
     public void setAlarmWay(int alarmWay) {
         this.alarmWay = alarmWay;
+    }
+
+    public String getDescribe() {
+        return describe;
+    }
+
+    public void setDescribe(String describe) {
+        this.describe = describe;
     }
 }

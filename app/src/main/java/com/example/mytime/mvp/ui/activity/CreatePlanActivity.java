@@ -150,6 +150,7 @@ public class CreatePlanActivity extends AppCompatActivity implements ICreatePlan
                 editPlanData();
                 createPlanPresenter.updatePlan( plan);
             }
+            Toast.makeText(this, "设置成功", Toast.LENGTH_SHORT).show();
         }else {
             Toast.makeText(this, "设置失败", Toast.LENGTH_SHORT).show();
         }
