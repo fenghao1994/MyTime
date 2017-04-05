@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -21,6 +22,7 @@ import com.example.mytime.mvp.model.entity.PlanItem;
 import com.example.mytime.mvp.presenter.ICreatePlanPresenter;
 import com.example.mytime.mvp.presenter.impl.CreatePlanPresenterImpl;
 import com.example.mytime.mvp.ui.adapter.PlanItemAdapter;
+import com.example.mytime.mvp.ui.custom.TitleDialog;
 import com.example.mytime.mvp.ui.view.ICreatePlanView;
 
 import org.litepal.crud.DataSupport;
@@ -144,18 +146,33 @@ public class CreatePlanActivity extends AppCompatActivity implements ICreatePlan
 
     public void clickOk(){
 
-
-        if ( isCompletePlanItem && plan != null){
-            if ( isFromFab){
-                createPlanPresenter.savePlan( plan);
-            }else {
-                editPlanData();
-                createPlanPresenter.updatePlan( plan);
+        final TitleDialog titleDialog = new TitleDialog(this);
+        titleDialog.show();
+        titleDialog.setResultListener(new TitleDialog.ResultListener() {
+            @Override
+            public void onResultListener(String str) {
+                if ( !TextUtils.isEmpty(str)){
+                    plan.setTitle( str);
+                    if ( isCompletePlanItem && plan != null){
+                        if ( isFromFab){
+                            createPlanPresenter.savePlan( plan);
+                        }else {
+                            editPlanData();
+                            createPlanPresenter.updatePlan( plan);
+                        }
+                        Toast.makeText(CreatePlanActivity.this, "设置成功", Toast.LENGTH_SHORT).show();
+                    }else {
+                        Toast.makeText(CreatePlanActivity.this, "设置失败", Toast.LENGTH_SHORT).show();
+                    }
+                }else {
+                    Toast.makeText(CreatePlanActivity.this, "请输入标题", Toast.LENGTH_SHORT).show();
+                }
+            titleDialog.dismiss();
             }
-            Toast.makeText(this, "设置成功", Toast.LENGTH_SHORT).show();
-        }else {
-            Toast.makeText(this, "设置失败", Toast.LENGTH_SHORT).show();
-        }
+        });
+
+
+
     }
 
 

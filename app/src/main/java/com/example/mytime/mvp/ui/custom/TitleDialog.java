@@ -41,18 +41,17 @@ public class TitleDialog extends Dialog {
         this.setContentView(R.layout.layout_title_dialog);
     }
 
-    @OnClick
+    @OnClick(R.id.ok)
     public void okClick(){
         mResultListener.onResultListener( mTitleDialog.getText().toString());
-        this.dismiss();
     }
 
-    @OnClick
+    @OnClick(R.id.cancel)
     public void onCancel(){
         this.dismiss();
     }
 
-    interface ResultListener{
+    public interface ResultListener{
         void onResultListener(String str);
     }
 
