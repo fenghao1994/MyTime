@@ -143,6 +143,8 @@ public class CreatePlanActivity extends AppCompatActivity implements ICreatePlan
     }
 
     public void clickOk(){
+
+
         if ( isCompletePlanItem && plan != null){
             if ( isFromFab){
                 createPlanPresenter.savePlan( plan);
