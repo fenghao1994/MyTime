@@ -187,6 +187,7 @@ public class MapActivity extends AppCompatActivity implements LocationSource, AM
         if (mlocationClient == null) {
             mlocationClient = new AMapLocationClient(this);
             mLocationOption = new AMapLocationClientOption();
+            mLocationOption.setOnceLocation( true);
             //设置定位监听
             mlocationClient.setLocationListener(this);
             //设置为高精度定位模式

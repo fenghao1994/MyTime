@@ -29,6 +29,7 @@ import com.example.mytime.mvp.ui.adapter.ImageItemAdapter;
 import com.example.mytime.mvp.ui.custom.DateDialog;
 import com.example.mytime.mvp.ui.custom.TimeDialog;
 import com.example.mytime.mvp.ui.view.ICreatePlanItemView;
+import com.example.mytime.util.Extra;
 import com.lzy.imagepicker.ImagePicker;
 import com.lzy.imagepicker.bean.ImageItem;
 import com.lzy.imagepicker.ui.ImageGridActivity;
@@ -277,6 +278,7 @@ public class CreatePlanItemActivity extends AppCompatActivity implements ICreate
     @Override
     public void setAlarm(Calendar calendar) {
         Intent intent = new Intent(this, AlarmReceiver.class);
+        intent.setAction(Extra.ALARM_CLOCK);
         PendingIntent pi = PendingIntent.getBroadcast(this, planItem.getId(), intent, 0);
         AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
         //AlarmManager.RTC_WAKEUP，硬件闹钟，当闹钟发射时唤醒手机休眠；

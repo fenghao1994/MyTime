@@ -24,7 +24,7 @@ public class AlarmReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        if (intent != null){
+        if (intent != null && intent.getAction() != null){
             if (intent.getAction().equals(Extra.ALARM_CLOCK)){
                 Toast.makeText( context, "闹钟响了", Toast.LENGTH_SHORT).show();
                 Log.e("ALARM", "xxxxxxxxxxxxxxx");
