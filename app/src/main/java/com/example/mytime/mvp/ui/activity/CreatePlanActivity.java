@@ -71,18 +71,18 @@ public class CreatePlanActivity extends AppCompatActivity implements ICreatePlan
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_plan);
         ButterKnife.bind(this);
-        setSupportActionBar( toolbar);
-        createPlanPresenter = new CreatePlanPresenterImpl( this);
+        setSupportActionBar(toolbar);
+        createPlanPresenter = new CreatePlanPresenterImpl(this);
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager( this);
-        recyclerView.setLayoutManager( layoutManager);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
 
         plan = (Plan) getIntent().getSerializableExtra("PLAN");
         isFromFab = getIntent().getBooleanExtra("IS_FROM_FAB", false);
 
-        if ( plan != null){
-            createPlanPresenter.showData( plan);
-        }else {
+        if (plan != null) {
+            createPlanPresenter.showData(plan);
+        } else {
             createPlanInData();
         }
     }
@@ -91,17 +91,17 @@ public class CreatePlanActivity extends AppCompatActivity implements ICreatePlan
     public void showData(List<PlanItem> planItems) {
         toolbarTitle.setText("编辑");
 
-        if ( planItems != null && planItems.size() > 0){
+        if (planItems != null && planItems.size() > 0) {
             adapter = new PlanItemAdapter(this, planItems);
-            recyclerView.setAdapter( adapter);
+            recyclerView.setAdapter(adapter);
         }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        if ( plan != null){
-            createPlanPresenter.showData( plan);
+        if (plan != null) {
+            createPlanPresenter.showData(plan);
         }
     }
 
@@ -126,7 +126,6 @@ public class CreatePlanActivity extends AppCompatActivity implements ICreatePlan
     }
 
 
-
     private void createPlanItem() {
         Intent intent = new Intent(this, CreatePlanItemActivity.class);
         intent.putExtra("PLAN", plan);
@@ -137,48 +136,60 @@ public class CreatePlanActivity extends AppCompatActivity implements ICreatePlan
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK){
-            if ( requestCode == REQUEST){
+        if (resultCode == RESULT_OK) {
+            if (requestCode == REQUEST) {
                 isCompletePlanItem = true;
             }
         }
     }
 
-    public void clickOk(){
+    public void clickOk() {
 
-        final TitleDialog titleDialog = new TitleDialog(this);
+        final TitleDialog titleDialog = new TitleDialog(this,R.style.MyDialog, plan.getTitle());
         titleDialog.show();
         titleDialog.setResultListener(new TitleDialog.ResultListener() {
             @Override
             public void onResultListener(String str) {
-                if ( !TextUtils.isEmpty(str)){
-                    plan.setTitle( str);
-                    if ( isCompletePlanItem && plan != null){
-                        if ( isFromFab){
-                            createPlanPresenter.savePlan( plan);
-                        }else {
+                if (!TextUtils.isEmpty(str)) {
+                    if (isCompletePlanItem && plan != null) {
+                        if (isFromFab) {
+                            plan.setTitle(str);
+                            createPlanPresenter.savePlan(plan);
+                        } else {
+                            plan.setTitle(str);
                             editPlanData();
-                            createPlanPresenter.updatePlan( plan);
+                            createPlanPresenter.updatePlan(plan);
                         }
+                        titleDialog.dismiss();
                         Toast.makeText(CreatePlanActivity.this, "设置成功", Toast.LENGTH_SHORT).show();
-                    }else {
+                        return;
+                    } else {
+                        if (plan != null && plan.getTitle() != null) {
+                            if (!plan.getTitle().equals(str)) {
+                                plan.setTitle(str);
+                                editPlanData();
+                                createPlanPresenter.updatePlan(plan);
+                            }
+                            Toast.makeText(CreatePlanActivity.this, "设置成功", Toast.LENGTH_SHORT).show();
+                            titleDialog.dismiss();
+                            return;
+                        }
                         Toast.makeText(CreatePlanActivity.this, "设置失败", Toast.LENGTH_SHORT).show();
+                        titleDialog.dismiss();
+                        return;
                     }
-                }else {
+                } else {
                     Toast.makeText(CreatePlanActivity.this, "请输入标题", Toast.LENGTH_SHORT).show();
                 }
-            titleDialog.dismiss();
             }
         });
-
 
 
     }
 
 
-
     @Override
-    public void complete(){
+    public void complete() {
         Intent intent = new Intent();
         setResult(RESULT_OK, intent);
         this.finish();
@@ -187,7 +198,7 @@ public class CreatePlanActivity extends AppCompatActivity implements ICreatePlan
     /**
      * 创建一个新的plan对象
      */
-    public void createPlanInData(){
+    public void createPlanInData() {
         planCreateTime = System.currentTimeMillis();
         planEditTime = planCreateTime;
         planPlanId = planCreateTime;
@@ -198,27 +209,28 @@ public class CreatePlanActivity extends AppCompatActivity implements ICreatePlan
 
         plan = new Plan();
 
-        plan.setPlanId( planPlanId);
-        plan.setCreateTime( planCreateTime);
-        plan.setEdit( planIsEdit);
-        plan.setExpired( planIsExpired);
-        plan.setEditTime( planEditTime);
-        plan.setComplete( planIsComplete);
-        plan.setTitle( planTitle);
+        plan.setPlanId(planPlanId);
+        plan.setCreateTime(planCreateTime);
+        plan.setEdit(planIsEdit);
+        plan.setExpired(planIsExpired);
+        plan.setEditTime(planEditTime);
+        plan.setComplete(planIsComplete);
+        plan.setTitle(planTitle);
     }
 
     /**
      * 编辑plan对象
+     *
      * @return
      */
-    public void editPlanData(){
+    public void editPlanData() {
         planEditTime = System.currentTimeMillis();
-        planTitle = "";
+//        planTitle = "";
         planIsEdit = true;
 
-        plan.setEdit( planIsEdit);
-        plan.setEditTime( planEditTime);
-        plan.setTitle( planTitle);
+        plan.setEdit(planIsEdit);
+        plan.setEditTime(planEditTime);
+//        plan.setTitle(planTitle);
     }
 
     @Override

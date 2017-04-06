@@ -3,6 +3,8 @@ package com.example.mytime.mvp.ui.custom;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.view.MotionEvent;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
@@ -18,40 +20,55 @@ import butterknife.OnClick;
  */
 
 public class TitleDialog extends Dialog {
-    @BindView(R.id.title_dialog)
     EditText mTitleDialog;
-    @BindView(R.id.cancel)
     Button mCancel;
-    @BindView(R.id.ok)
     Button mOk;
     private Context mContext;
+    private String str;
 
-    public TitleDialog(Context context) {
-        this(context, R.style.MyDialog);
-    }
 
-    public TitleDialog(Context context, int themeResId) {
+    public TitleDialog(Context context, int themeResId, String str) {
         super(context, themeResId);
         this.mContext = context;
+        this.str = str;
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.setContentView(R.layout.layout_title_dialog);
+        mTitleDialog = (EditText) this.getWindow().findViewById(R.id.title_dialog);
+        mCancel = (Button) this.getWindow().findViewById(R.id.cancel);
+        mOk = (Button) this.getWindow().findViewById(R.id.ok);
+
+        if (str != null || !"".equals(str)) {
+            mTitleDialog.setText(str);
+        }
+
+        mOk.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                okClick();
+            }
+        });
+        mCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onCancel();
+            }
+        });
     }
 
-    @OnClick(R.id.ok)
-    public void okClick(){
-        mResultListener.onResultListener( mTitleDialog.getText().toString());
+
+    public void okClick() {
+        mResultListener.onResultListener(mTitleDialog.getText().toString());
     }
 
-    @OnClick(R.id.cancel)
-    public void onCancel(){
+    public void onCancel() {
         this.dismiss();
     }
 
-    public interface ResultListener{
+    public interface ResultListener {
         void onResultListener(String str);
     }
 
