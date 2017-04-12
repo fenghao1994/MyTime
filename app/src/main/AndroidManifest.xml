@@ -32,7 +32,7 @@
     <application
         android:name=".application.MyApplication"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/logo"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
@@ -41,24 +41,22 @@
             android:value="619daa349b76d86765f84e2babd1f909"/>
 
         <activity android:name=".mvp.ui.activity.MainActivity">
-            <intent-filter>
+           <!-- <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
+            </intent-filter>-->
         </activity>
         <activity android:name=".mvp.ui.activity.GuideActivity"/>
         <activity
             android:name=".mvp.ui.activity.LoginActivity"
             android:label="My Time">
 
-            <!--
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            -->
         </activity>
         <activity android:name=".mvp.ui.activity.CreatePlanActivity"/>
         <activity android:name=".mvp.ui.activity.CreatePlanItemActivity"/>

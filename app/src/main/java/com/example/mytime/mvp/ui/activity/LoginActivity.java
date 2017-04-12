@@ -63,33 +63,50 @@ public class LoginActivity extends AppCompatActivity implements ILoginView {
     TextView toolbarTitle;
     @BindView(R.id.text_login)
     TextView textLogin;
+    @BindView(R.id.layout_login)
+    RelativeLayout mLayoutLogin;
 
     private BroadcastReceiver smsReceiver;
     private EventHandler eventHandler;
 
     //是否可以点击获取验证码
     private boolean isClickVerificationCode;
+
+    //是否点击了获取语音验证码
+    private boolean isClickVoiceSMS;
     private int second = TIME_OUT;
     //控制语音发送短信的layout是否可见，当一次60s完了后，可见
     private int clickSendSMSCount = 0;
 
+    private int voiceSecond = TIME_OUT;
+
+
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            getVerificationCode.setText("再次发送(" + second + ")");
-            if (second <= 0) {
-                second = TIME_OUT;
-                isClickVerificationCode = true;
-                getVerificationCode.setEnabled(isClickVerificationCode);
-                getVerificationCode.setText("获取验证码");
-                handler.removeCallbacks(runnable);
-
-                clickSendSMSCount = 1;
+            if (msg.what == 1) {
+                getVerificationCode.setText("再次发送(" + second + ")");
+                if (second <= 0) {
+                    second = TIME_OUT;
+                    isClickVerificationCode = true;
+                    getVerificationCode.setEnabled(isClickVerificationCode);
+                    getVerificationCode.setText("获取验证码");
+                    handler.removeCallbacks(runnable);
+                    clickSendSMSCount = 1;
+                }
+                if (clickSendSMSCount == 1) {
+                    layoutVoice.setVisibility(View.VISIBLE);
+                }
+            } else if (msg.what == 2) {
+                voiceSMS.setText("再次发送（" + voiceSecond + ")");
+                if (voiceSecond <= 0) {
+                    voiceSecond = TIME_OUT;
+                    isClickVoiceSMS = true;
+                    voiceSMS.setEnabled(isClickVoiceSMS);
+                    voiceSMS.setText("短信没收到？用电话接收吧!");
+                    handler.removeCallbacks(runnable);
+                }
             }
-            if (clickSendSMSCount == 1) {
-                layoutVoice.setVisibility(View.VISIBLE);
-            }
-
             super.handleMessage(msg);
         }
     };
@@ -115,6 +132,26 @@ public class LoginActivity extends AppCompatActivity implements ILoginView {
             }
         }
     };
+    //获取语音验证码runnable
+    private Runnable voiceRunnable = new Runnable() {
+        @Override
+        public void run() {
+            try {
+                while (true) {
+                    Message message = new Message();
+                    message.what = 2;
+                    Thread.sleep(1000);
+                    voiceSecond -= 1;
+                    handler.sendMessage(message);
+                    if (voiceSecond <= 0) {
+                        break;
+                    }
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    };
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -122,6 +159,7 @@ public class LoginActivity extends AppCompatActivity implements ILoginView {
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
         isClickVerificationCode = true;
+        isClickVoiceSMS = true;
 
         initView();
     }
@@ -139,8 +177,8 @@ public class LoginActivity extends AppCompatActivity implements ILoginView {
         if (actionBar != null) {
             actionBar.setHomeAsUpIndicator(R.drawable.logo);
         }
-        textLogin.setEnabled(false);
-        textLogin.setBackgroundColor(Color.GREEN);
+        mLayoutLogin.setEnabled(false);
+        mLayoutLogin.setBackgroundColor(getResources().getColor(R.color.darkGray));
     }
 
     public void initSMSSDK() {
@@ -228,7 +266,7 @@ public class LoginActivity extends AppCompatActivity implements ILoginView {
         return false;
     }
 
-    @OnClick({R.id.phone_number, R.id.input_verification_code, R.id.get_verification_code, R.id.text_login, R.id.voice_sms})
+    @OnClick({R.id.phone_number, R.id.input_verification_code, R.id.get_verification_code, R.id.text_login, R.id.voice_sms, R.id.layout_login})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.phone_number:
@@ -238,7 +276,7 @@ public class LoginActivity extends AppCompatActivity implements ILoginView {
             case R.id.get_verification_code:
                 clickVerificationCode();
                 break;
-            case R.id.text_login:
+            case R.id.layout_login:
                 clickLogin();
                 break;
             case R.id.voice_sms:
@@ -249,20 +287,23 @@ public class LoginActivity extends AppCompatActivity implements ILoginView {
 
     private void clickVoiceSMS() {
         checkMobileNumber();
+        if (isClickVoiceSMS) {
+            isClickVoiceSMS = false;
+            voiceSMS.setEnabled(isClickVoiceSMS);
+            voiceSMS.setText("短信没收到？用电话接收吧!");
+            new Thread(voiceRunnable).start();
+        }
         SMSSDK.getVoiceVerifyCode("+86", phoneNumber.getText().toString().trim());
-        voiceSMS.setEnabled(false);
-        voiceSMS.setTextColor(Color.GRAY);
-
     }
 
     @OnTextChanged(value = R.id.input_verification_code, callback = OnTextChanged.Callback.TEXT_CHANGED)
     public void verificationTextChanged(CharSequence s, int start, int before, int count) {
         if (s.length() > 0) {
-            textLogin.setEnabled(true);
-            textLogin.setBackgroundColor(Color.RED);
+            mLayoutLogin.setEnabled(true);
+            mLayoutLogin.setBackgroundColor(getResources().getColor(R.color.logoGreen));
         } else {
-            textLogin.setEnabled(false);
-            textLogin.setBackgroundColor(Color.GREEN);
+            mLayoutLogin.setEnabled(false);
+            mLayoutLogin.setBackgroundColor(getResources().getColor(R.color.darkGray));
         }
     }
 
@@ -289,6 +330,8 @@ public class LoginActivity extends AppCompatActivity implements ILoginView {
         if (!TextUtils.isEmpty(inputVerificationCode.getText().toString().trim())) {
             SMSSDK.submitVerificationCode("+86", phoneNumber.getText().toString().trim(), inputVerificationCode.getText().toString().trim());
             progressBarShow();
+        } else {
+            Toast.makeText(this, "请先输入验证码", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -312,7 +355,12 @@ public class LoginActivity extends AppCompatActivity implements ILoginView {
      * 隐藏progressbar
      */
     public void progressBarHide() {
-        progressBar.setVisibility(View.GONE);
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                progressBar.setVisibility(View.GONE);
+            }
+        });
     }
 
     /**
