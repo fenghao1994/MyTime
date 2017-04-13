@@ -23,12 +23,12 @@ import com.example.mytime.mvp.model.entity.Plan;
 import com.example.mytime.mvp.model.entity.PlanItem;
 import com.example.mytime.mvp.presenter.ICreatePlanItemPresenter;
 import com.example.mytime.mvp.presenter.impl.CreatePlanItemPresenterImpl;
-import com.example.mytime.receiver.AlarmReceiver;
 import com.example.mytime.mvp.ui.adapter.EasyGridviewAdapter;
 import com.example.mytime.mvp.ui.adapter.ImageItemAdapter;
 import com.example.mytime.mvp.ui.custom.DateDialog;
 import com.example.mytime.mvp.ui.custom.TimeDialog;
 import com.example.mytime.mvp.ui.view.ICreatePlanItemView;
+import com.example.mytime.receiver.AlarmReceiver;
 import com.example.mytime.util.Extra;
 import com.lzy.imagepicker.ImagePicker;
 import com.lzy.imagepicker.bean.ImageItem;
@@ -49,6 +49,9 @@ public class CreatePlanItemActivity extends AppCompatActivity implements ICreate
 
     private static final int IMAGE_PICKER = 1;
     private static final int REQUEST_LOCATION = 2;
+    public static final int ONLY_PHONE = 3;
+    public static final int MESSAGE_CONTENT = 4;
+    private static final int REQUEST_CODE = 0;
     @BindView(R.id.toolbar_title)
     TextView toolbarTitle;
     @BindView(R.id.ok)
@@ -73,6 +76,7 @@ public class CreatePlanItemActivity extends AppCompatActivity implements ICreate
     LinearLayout activityCreatePlanItem;
     @BindView(R.id.gridview)
     GridView gridview;
+
 
     ArrayList<ImageItem> images;
 
@@ -108,6 +112,16 @@ public class CreatePlanItemActivity extends AppCompatActivity implements ICreate
     EasyGridviewAdapter easyGridviewAdapter;
 
     ICreatePlanItemPresenter createPlanItemPresenter;
+    @BindView(R.id.call_phone_gou)
+    ImageView mCallPhoneGou;
+    @BindView(R.id.send_message_gou)
+    ImageView mSendMessageGou;
+    @BindView(R.id.photo_gou)
+    ImageView mPhotoGou;
+    @BindView(R.id.location_gou)
+    ImageView mLocationGou;
+    @BindView(R.id.time_gou)
+    ImageView mTimeGou;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,8 +140,25 @@ public class CreatePlanItemActivity extends AppCompatActivity implements ICreate
 
         planItem = (PlanItem) intent.getSerializableExtra("PLANITEM");
         if (planItem != null) {
+            initView();
             createPlanItemPresenter.showData(planItem);
         }
+    }
+
+    public void initView(){
+        if ( !TextUtils.isEmpty(planItem.getPhoneNumber())){
+            mCallPhoneGou.setVisibility(View.VISIBLE);
+        }
+        if (!TextUtils.isEmpty(planItem.getMessageContent())){
+            mSendMessageGou.setVisibility(View.VISIBLE);
+        }
+        if (planItem.getAddress() != null && planItem.getAddress().size() > 0){
+            mPhotoGou.setVisibility(View.VISIBLE);
+        }
+        if (!TextUtils.isEmpty(planItem.getLocation())){
+            mLocationGou.setVisibility(View.VISIBLE);
+        }
+        mTimeGou.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -170,8 +201,10 @@ public class CreatePlanItemActivity extends AppCompatActivity implements ICreate
             case R.id.content:
                 break;
             case R.id.call_phone:
+                clickCallPhone();
                 break;
             case R.id.send_message:
+                clickSendMessage();
                 break;
             case R.id.photo:
                 takePhoto();
@@ -185,6 +218,21 @@ public class CreatePlanItemActivity extends AppCompatActivity implements ICreate
         }
     }
 
+    private void clickSendMessage() {
+        Intent intent = new Intent(this, PhoneAndMessageActivity.class);
+        intent.putExtra("ONLYPHONE", false);
+        intent.putExtra("PHONE",  planItemMessagePhoneNumber);
+        intent.putExtra("MESSAGE", planItemMessageContent);
+        startActivityForResult(intent, REQUEST_CODE);
+    }
+
+    public void clickCallPhone(){
+        Intent intent = new Intent(this, PhoneAndMessageActivity.class);
+        intent.putExtra("ONLYPHONE", true);
+        intent.putExtra("PHONE",planItemPhoneNumber);
+        startActivityForResult(intent, REQUEST_CODE);
+    }
+
     /**
      * 提交信息
      */
@@ -195,7 +243,7 @@ public class CreatePlanItemActivity extends AppCompatActivity implements ICreate
             Toast.makeText(this, "请输入标题或者内容", Toast.LENGTH_SHORT).show();
             return;
         }
-        if (planItemYear == -1 || planItemHour == -1){
+        if (planItemYear == -1 || planItemHour == -1) {
             Toast.makeText(this, "请选择提醒时间", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -203,7 +251,7 @@ public class CreatePlanItemActivity extends AppCompatActivity implements ICreate
         if (planItem == null) {
             planItemCreateTime = System.currentTimeMillis();
             planItemEditTime = System.currentTimeMillis();
-            if ( planItemAlarmWay != 0){
+            if (planItemAlarmWay != 0) {
                 planItemIsManyDays = true;
             }
             planItem = new PlanItem();
@@ -217,12 +265,12 @@ public class CreatePlanItemActivity extends AppCompatActivity implements ICreate
             planItem.setMessageContent(planItemMessageContent);
             planItem.setMessagePhoneNumber(planItemMessagePhoneNumber);
             planItem.setLocation(planItemLocation);
-            planItem.setYear( planItemYear);
-            planItem.setMonth( planItemMonth);
-            planItem.setDay( planItemDay);
-            planItem.setHour( planItemHour);
-            planItem.setMinute( planItemMinute);
-            planItem.setAlarmWay( planItemAlarmWay);
+            planItem.setYear(planItemYear);
+            planItem.setMonth(planItemMonth);
+            planItem.setDay(planItemDay);
+            planItem.setHour(planItemHour);
+            planItem.setMinute(planItemMinute);
+            planItem.setAlarmWay(planItemAlarmWay);
             planItem.setAddress(planItemAddress);
             planItem.setEveryDay(planItemIsEveryDay);
             planItem.setManyDays(planItemIsManyDays);
@@ -230,8 +278,7 @@ public class CreatePlanItemActivity extends AppCompatActivity implements ICreate
             planItem.setComplete(planItemIsComplete);
 
             createPlanItemPresenter.savePlanItem(planItem, planItemAddress);
-        }
-        else {
+        } else {
             planItemEditTime = System.currentTimeMillis();
             planItemIsEdit = true;
             planItem.setTitle(planItemTitle);
@@ -242,24 +289,24 @@ public class CreatePlanItemActivity extends AppCompatActivity implements ICreate
             planItem.setMessageContent(planItemMessageContent);
             planItem.setMessagePhoneNumber(planItemMessagePhoneNumber);
             planItem.setLocation(planItemLocation);
-            planItem.setYear( planItemYear);
-            planItem.setMonth( planItemMonth);
-            planItem.setDay( planItemDay);
-            planItem.setHour( planItemHour);
-            planItem.setMinute( planItemMinute);
-            planItem.setAlarmWay( planItemAlarmWay);
+            planItem.setYear(planItemYear);
+            planItem.setMonth(planItemMonth);
+            planItem.setDay(planItemDay);
+            planItem.setHour(planItemHour);
+            planItem.setMinute(planItemMinute);
+            planItem.setAlarmWay(planItemAlarmWay);
             planItem.setAddress(planItemAddress);
             planItem.setEveryDay(planItemIsEveryDay);
             planItem.setManyDays(planItemIsManyDays);
             planItem.setExpired(planItemIsExpired);
             planItem.setComplete(planItemIsComplete);
-            createPlanItemPresenter.updatePlanItem( planItem, planItemAddress);
+            createPlanItemPresenter.updatePlanItem(planItem, planItemAddress);
         }
 
         /**
          * 如果加入了location，则加入服务中，不断查询是否到地方了
          */
-        if ( !"".equals( planItemLocation) && null != planItemLocation){
+        if (!"".equals(planItemLocation) && null != planItemLocation) {
             EventBus.getDefault().post(new PlanItemRefreshEvent());
         }
     }
@@ -283,15 +330,15 @@ public class CreatePlanItemActivity extends AppCompatActivity implements ICreate
         AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
         //AlarmManager.RTC_WAKEUP，硬件闹钟，当闹钟发射时唤醒手机休眠；
 
-        if (planItem.getAlarmWay() == 0){
+        if (planItem.getAlarmWay() == 0) {
             am.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pi);
-        }else if (planItem.getAlarmWay() == 1){
+        } else if (planItem.getAlarmWay() == 1) {
             //每天
             long time = 1000 * 60 * 60 * 24;
-            am.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),time, pi);
-        }else if (planItem.getAlarmWay() == 2){
+            am.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), time, pi);
+        } else if (planItem.getAlarmWay() == 2) {
             long time = 1000 * 60 * 60 * 24 * 7;
-            am.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),time, pi);
+            am.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), time, pi);
         }/*else if (planItem.getAlarmWay() == 3){
 
         }*/
@@ -318,6 +365,12 @@ public class CreatePlanItemActivity extends AppCompatActivity implements ICreate
                         CreatePlanItemActivity.this.planItemMinute = min;
                         CreatePlanItemActivity.this.planItemAlarmWay = alarmWay;
                         timeDialog.dismiss();
+
+                        if ( hour != -1 && min != -1){
+                            CreatePlanItemActivity.this.mTimeGou.setVisibility(View.VISIBLE);
+                        }else {
+                            CreatePlanItemActivity.this.mTimeGou.setVisibility(View.GONE);
+                        }
                     }
                 });
             }
@@ -359,15 +412,45 @@ public class CreatePlanItemActivity extends AppCompatActivity implements ICreate
                     photo.setAddress(images.get(i).path);
                     planItemAddress.add(photo);
                 }
+                if ( planItemAddress != null && planItemAddress.size() > 0){
+                    mPhotoGou.setVisibility(View.VISIBLE);
+                }else {
+                    mPhotoGou.setVisibility(View.GONE);
+                }
             } else {
+                mPhotoGou.setVisibility(View.GONE);
                 Toast.makeText(this, "没有数据", Toast.LENGTH_SHORT).show();
             }
         }
         if (resultCode == MapActivity.RESULT_LOCATION) {
             if (data != null && requestCode == REQUEST_LOCATION) {
                 planItemLocation = data.getStringExtra("LOCATION");
+                if ( !TextUtils.isEmpty(planItemLocation)){
+                    mLocationGou.setVisibility(View.VISIBLE);
+                }else {
+                    mLocationGou.setVisibility(View.GONE);
+                }
             }
         }
+        if (requestCode == REQUEST_CODE){
+            if (resultCode == CreatePlanItemActivity.ONLY_PHONE ){
+                planItemPhoneNumber = data.getStringExtra("PHONENUMBER");
+                if ( !TextUtils.isEmpty( planItemPhoneNumber)){
+                    mCallPhoneGou.setVisibility(View.VISIBLE);
+                }else {
+                    mCallPhoneGou.setVisibility(View.GONE);
+                }
+            }else if (resultCode == CreatePlanItemActivity.MESSAGE_CONTENT){
+                planItemMessagePhoneNumber = data.getStringExtra("PHONENUMBER");
+                planItemMessageContent = data.getStringExtra("MESSAGECONTENT");
+                if ( !TextUtils.isEmpty(planItemMessagePhoneNumber) && !TextUtils.isEmpty(planItemMessageContent)){
+                    mSendMessageGou.setVisibility(View.VISIBLE);
+                }else {
+                    mSendMessageGou.setVisibility(View.GONE);
+                }
+            }
+        }
+
     }
 
     @Override
