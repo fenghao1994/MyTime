@@ -28,11 +28,13 @@ import butterknife.ButterKnife;
 public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.ViewHolder> {
     private List<Plan> mList;
     private Context mContext;
+    private List<String> mCount;
 
 
-    public PlanAdapter(Context context, List<Plan> list){
+    public PlanAdapter(Context context, List<Plan> list, List<String> count){
         this.mContext = context;
         this.mList = list;
+        this.mCount = count;
     }
 
     @Override
@@ -51,6 +53,7 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.ViewHolder> {
             holder.planName.setText(mList.get( position).getTitle());
         }
         holder.planTime.setText(MyUtil.dateYMDHM( mList.get( position).getEditTime()));
+        holder.countPlanItem.setText(mCount.get( position));
         holder.planView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -79,6 +82,8 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.ViewHolder> {
         ImageView planCha;
         @BindView(R.id.alarm_layout)
         LinearLayout alarmLayout;
+        @BindView(R.id.count_plan_item)
+        TextView countPlanItem;
 
         View planView;
 

@@ -12,20 +12,23 @@
         android:id="@+id/alarm_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:layout_marginTop="16dp"
+        android:layout_marginLeft="36dp"
+        >
 
         <ImageView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:src="@drawable/alarm"
-            android:layout_gravity="center_vertical"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:src="@drawable/rectangle"
+            android:layout_marginTop="8dp"
             />
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="160dp"
-            android:gravity="center_vertical"
-            android:orientation="vertical">
+            android:layout_height="100dp"
+            android:orientation="vertical"
+            >
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -39,7 +42,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="计划表名"
-                    android:textSize="24sp" />
+                    android:textSize="24sp"
+                    android:gravity="top"
+                    />
 
                 <ImageView
                     android:visibility="gone"
@@ -59,12 +64,23 @@
                 android:orientation="horizontal"
                 android:paddingLeft="20dp">
 
+                <ImageView
+                    android:id="@+id/layout_time"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:src="@drawable/time"
+                    android:layout_centerVertical="true"
+                    />
+
                 <TextView
                     android:id="@+id/plan_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="2016.05.12.12:12"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"
+                    android:layout_toRightOf="@id/layout_time"
+                    android:layout_marginLeft="10dp"
+                    />
 
                 <ImageView
                     android:visibility="gone"
@@ -74,6 +90,27 @@
                     android:layout_alignParentRight="true"
                     android:layout_marginRight="10dp"
                     android:src="@drawable/cha" />
+                
+                
+                <ImageView
+                    android:id="@+id/layout_count"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:src="@drawable/count_plan"
+                    android:layout_toRightOf="@id/plan_time"
+                    android:layout_marginLeft="30dp"
+                    android:layout_centerVertical="true"
+                    />
+
+                <TextView
+                    android:id="@+id/count_plan_item"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="5"
+                    android:textSize="16sp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_toRightOf="@id/layout_count"
+                    />
 
             </RelativeLayout>
 

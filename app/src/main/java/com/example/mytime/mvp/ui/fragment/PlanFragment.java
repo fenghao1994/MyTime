@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 
 import com.example.mytime.R;
 import com.example.mytime.mvp.model.entity.Plan;
+import com.example.mytime.mvp.model.entity.PlanItem;
 import com.example.mytime.mvp.ui.activity.CreatePlanActivity;
 import com.example.mytime.mvp.ui.adapter.PlanAdapter;
 
@@ -43,6 +44,7 @@ public class PlanFragment extends Fragment {
     private PlanAdapter adapter;
 
     private List<Plan> mList;
+    private List<String> count;
     
     public PlanFragment() {
         // Required empty public constructor
@@ -58,8 +60,6 @@ public class PlanFragment extends Fragment {
         init();
         LinearLayoutManager layoutManager = new LinearLayoutManager( getActivity());
         recyclerView.setLayoutManager( layoutManager);
-
-        
         return view;
     }
 
@@ -71,7 +71,12 @@ public class PlanFragment extends Fragment {
 
     public void init(){
         mList = DataSupport.order("editTime desc").find(Plan.class);
-        adapter = new PlanAdapter(getActivity(), mList);
+        count = new ArrayList<>();
+        for (int i = 0; i < mList.size() ; i++){
+            int num = DataSupport.where( "planId = ?", mList.get(i).getPlanId() + "").count(PlanItem.class);
+            count.add( num + "");
+        }
+        adapter = new PlanAdapter(getActivity(), mList, count);
         recyclerView.setAdapter( adapter);
     }
 
