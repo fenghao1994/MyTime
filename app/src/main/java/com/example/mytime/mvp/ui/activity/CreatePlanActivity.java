@@ -9,8 +9,11 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.view.Display;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -145,8 +148,17 @@ public class CreatePlanActivity extends AppCompatActivity implements ICreatePlan
 
     public void clickOk() {
 
-        final TitleDialog titleDialog = new TitleDialog(this,R.style.MyDialog, plan.getTitle());
+        final TitleDialog titleDialog = new TitleDialog(this, plan.getTitle());
         titleDialog.show();
+
+        Window window = titleDialog.getWindow();
+        WindowManager windowManager = getWindowManager();
+        Display display = windowManager.getDefaultDisplay();
+        WindowManager.LayoutParams layoutParams = window.getAttributes();
+//        layoutParams.height = (int)(display.getHeight() * 0.2);
+        layoutParams.width = (int)(display.getWidth() * 0.9);
+        window.setAttributes( layoutParams);
+
         titleDialog.setResultListener(new TitleDialog.ResultListener() {
             @Override
             public void onResultListener(String str) {

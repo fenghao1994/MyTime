@@ -2,7 +2,9 @@ package com.example.mytime.mvp.ui.activity;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -28,58 +30,30 @@ import lecho.lib.hellocharts.view.LineChartView;
  */
 public class CountActivity extends AppCompatActivity {
 
-    private ChartView mChartView;
-    private ImageView back;
-    private TextView title;
-    private RelativeLayout relative;
     private LineChartView mLineChartView;
     private LineChartData data;
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_count);
-        mChartView = (ChartView) findViewById(R.id.chart_view);
-        back = (ImageView) findViewById(R.id.back);
-        title = (TextView) findViewById(R.id.title);
-        relative = (RelativeLayout) findViewById(R.id.relative);
-
         mLineChartView = (LineChartView) findViewById(R.id.chart);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
 
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                CountActivity.this.finish();
-            }
-        });
         List<Line> lines = initLine();
         data = initData(lines);
         mLineChartView.setLineChartData( data);
         Viewport viewport = initViewPort();
         mLineChartView.setMaximumViewport(viewport);
         mLineChartView.setCurrentViewport(viewport);
-
-      /*  DisplayMetrics dm = new DisplayMetrics();
-        //取得窗口属性
-        getWindowManager().getDefaultDisplay().getMetrics(dm);
-
-        final int windowWidth = dm.widthPixels;
-        final int windowHeight =dm.heightPixels;
-
-        relative.post(new Runnable() {
-            @Override
-            public void run() {
-                int titleHeight = relative.getHeight();
-                mChartView.setData(windowWidth, windowHeight - getStatusBarHeight() - titleHeight, 0);
-                mChartView.invalidate();
-            }
-        });*/
     }
 
     private Viewport initViewPort() {
         Viewport viewport = new Viewport();
-        viewport.top = 10;//y轴最大值
+        viewport.top = 11;//y轴最大值
         viewport.bottom = 0;
         viewport.left = 0;
         viewport.right = 7;//x轴显示7列
@@ -98,7 +72,7 @@ public class CountActivity extends AppCompatActivity {
         //后加字符
 //        axisX.setFormatter(new SimpleAxisValueFormatter().setAppendedText("aaaa".toCharArray()));
 //        axisX.setFormatter(new SimpleAxisValueFormatter());
-        axisY.setName("销量");
+        axisY.setName("数量");
         //设置轴
         data.setAxisYLeft(axisY);
         data.setAxisXBottom(axisX);
@@ -136,21 +110,14 @@ public class CountActivity extends AppCompatActivity {
         return lineList;
 
     }
-
-    /*private int getStatusBarHeight() {
-        Class<?> c = null;
-        Object obj = null;
-        Field field = null;
-        int x = 0, sbar = 0;
-        try {
-            c = Class.forName("com.android.internal.R$dimen");
-            obj = c.newInstance();
-            field = c.getField("status_bar_height");
-            x = Integer.parseInt(field.get(obj).toString());
-            sbar = this.getResources().getDimensionPixelSize(x);
-        } catch (Exception e1) {
-            e1.printStackTrace();
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                this.finish();
+                break;
         }
-        return sbar;
-    }*/
+
+        return true;
+    }
 }

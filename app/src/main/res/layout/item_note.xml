@@ -65,6 +65,15 @@
                     android:layout_alignParentRight="true"
                     android:paddingRight="16dp"
                     android:layout_marginBottom="10dp"
+                    android:layout_centerVertical="true"
+                    />
+
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:src="@drawable/edit_time"
+                    android:layout_toLeftOf="@id/time_text"
+                    android:layout_centerVertical="true"
                     />
             </RelativeLayout>
         </LinearLayout>

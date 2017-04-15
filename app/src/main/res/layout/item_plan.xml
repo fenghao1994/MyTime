@@ -70,7 +70,7 @@
                     android:id="@+id/layout_time"
                     android:layout_width="16dp"
                     android:layout_height="16dp"
-                    android:src="@drawable/time"
+                    android:src="@drawable/edit_time"
                     android:layout_centerVertical="true"
                     />
 

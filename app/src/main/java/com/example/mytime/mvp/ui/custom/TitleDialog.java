@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
@@ -26,6 +27,12 @@ public class TitleDialog extends Dialog {
     private Context mContext;
     private String str;
 
+    public TitleDialog(Context context, String str) {
+        super(context);
+        this.mContext = context;
+        this.str = str;
+    }
+
 
     public TitleDialog(Context context, int themeResId, String str) {
         super(context, themeResId);
@@ -36,6 +43,7 @@ public class TitleDialog extends Dialog {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.setContentView(R.layout.layout_title_dialog);
         mTitleDialog = (EditText) this.getWindow().findViewById(R.id.title_dialog);
         mCancel = (Button) this.getWindow().findViewById(R.id.cancel);
@@ -45,6 +53,7 @@ public class TitleDialog extends Dialog {
             mTitleDialog.setText(str);
             mTitleDialog.setSelection(str.length());
         }
+//        setTitle("请输入计划表名");
 
         mOk.setOnClickListener(new View.OnClickListener() {
             @Override
