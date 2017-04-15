@@ -2,9 +2,12 @@ package com.example.mytime.mvp.ui.adapter;
 
 import android.content.Context;
 import android.net.Uri;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
@@ -22,10 +25,12 @@ public class EasyGridviewAdapter extends BaseAdapter{
 
     private List<Photo> mList;
     private Context mContext;
+    private int mImageWidth;
 
-    public EasyGridviewAdapter(Context context, List<Photo> list){
+    public EasyGridviewAdapter(Context context, List<Photo> list, int imageWidth){
         this.mContext = context;
         this.mList = list;
+        this.mImageWidth = imageWidth;
     }
 
     @Override
@@ -54,7 +59,11 @@ public class EasyGridviewAdapter extends BaseAdapter{
         }else {
             viewHolder = (ImageItemAdapter.ViewHolder) view.getTag();
         }
+        ViewGroup.LayoutParams param = viewHolder.imageView.getLayoutParams();
+        param.height = mImageWidth;
+        param.width = mImageWidth;
 
+        viewHolder.imageView.setLayoutParams(param);
         Glide.with(mContext).load(mList.get(i).getAddress()).into( viewHolder.imageView);
         return view;
     }

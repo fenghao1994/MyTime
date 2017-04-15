@@ -31,7 +31,6 @@
                     android:layout_height="wrap_content"
                     android:text="新建便签"
                     android:textSize="16sp"
-                    android:layout_centerHorizontal="true"
                     />
                 <ImageView
                     android:id="@+id/ok"
@@ -56,22 +55,33 @@
             android:background="@null"
             />
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="40dp">
             <ImageView
-                android:layout_weight="1"
                 android:id="@+id/photo"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:src="@drawable/photo"
+                android:layout_centerHorizontal="true"
                 />
-        </LinearLayout>
+            <ImageView
+                android:id="@+id/photo_gou"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/gou_right_bottom"
+                android:layout_toRightOf="@id/photo"
+                android:layout_alignParentBottom="true"
+                android:visibility="gone"
+                />
+        </RelativeLayout>
 
         <GridView
             android:id="@+id/gridview"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"></GridView>
+            android:layout_height="match_parent"
+            android:numColumns="3"
+            ></GridView>
     </LinearLayout>
 
 </android.support.design.widget.CoordinatorLayout>

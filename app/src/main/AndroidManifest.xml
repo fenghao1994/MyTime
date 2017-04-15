@@ -97,6 +97,7 @@
         </activity>
         <activity android:name=".mvp.ui.activity.PhoneAndMessageActivity">
         </activity>
+        <activity android:name=".mvp.ui.activity.ImageOneActivity"/>
     </application>
 
 </manifest>

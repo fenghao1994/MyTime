@@ -9,10 +9,17 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.mytime.R;
 import com.example.mytime.mvp.ui.activity.AllNoteActivity;
 import com.example.mytime.mvp.ui.activity.AllPlanActivity;
 import com.example.mytime.mvp.ui.activity.CountActivity;
+import com.example.mytime.mvp.ui.activity.ImageOneActivity;
+import com.lzy.imagepicker.ImagePicker;
+import com.lzy.imagepicker.bean.ImageItem;
+import com.lzy.imagepicker.ui.ImageGridActivity;
+
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -38,6 +45,8 @@ public class NavigationFragment extends Fragment {
     @BindView(R.id.sign_out_layout)
     LinearLayout signOutLayout;
 
+    private ArrayList<ImageItem> mImageItem;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -51,6 +60,7 @@ public class NavigationFragment extends Fragment {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.header_img:
+                choosePhoto();
                 break;
             case R.id.plan_layout:
                 showAllPlan();
@@ -66,6 +76,24 @@ public class NavigationFragment extends Fragment {
                 break;
             case R.id.sign_out_layout:
                 break;
+        }
+    }
+
+    private void choosePhoto() {
+        Intent intent = new Intent(getActivity(), ImageOneActivity.class);
+        startActivityForResult(intent, 1);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == ImagePicker.RESULT_CODE_ITEMS) {
+            if (data != null && requestCode == 1) {
+                mImageItem = (ArrayList<ImageItem>) data.getSerializableExtra(ImagePicker.EXTRA_RESULT_ITEMS);
+                Glide.with(this).load( mImageItem.get(0).path).into( headerImg);
+            } else {
+                Toast.makeText(getActivity(), "没有数据", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 

@@ -7,8 +7,10 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.view.Display;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -122,6 +124,7 @@ public class CreatePlanItemActivity extends AppCompatActivity implements ICreate
     ImageView mLocationGou;
     @BindView(R.id.time_gou)
     ImageView mTimeGou;
+    private int mWidth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -163,11 +166,13 @@ public class CreatePlanItemActivity extends AppCompatActivity implements ICreate
 
     @Override
     public void showData(PlanItem planItem, List<Photo> photos) {
+        getWidth();
+
         toolbarTitle.setText("编辑");
         contentTitle.setText(planItem.getTitle());
         content.setText(planItem.getContent());
         planItemAddress = (ArrayList<Photo>) photos;
-        easyGridviewAdapter = new EasyGridviewAdapter(this, planItemAddress);
+        easyGridviewAdapter = new EasyGridviewAdapter(this, planItemAddress, mWidth);
         gridview.setAdapter(easyGridviewAdapter);
         planItemLocation = planItem.getLocation();
         planItemYear = planItem.getYear();
@@ -396,6 +401,15 @@ public class CreatePlanItemActivity extends AppCompatActivity implements ICreate
     private void takePhoto() {
         Intent intent = new Intent(this, ImageGridActivity.class);
         startActivityForResult(intent, IMAGE_PICKER);
+    }
+
+    /**
+     * 获取屏幕宽度的1/3
+     */
+    public void getWidth(){
+        WindowManager windowManager = getWindowManager();
+        Display display = windowManager.getDefaultDisplay();
+        mWidth = display.getWidth() / 3;
     }
 
     @Override

@@ -76,6 +76,7 @@ public class MainActivity extends AppCompatActivity implements IMainView {
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setHomeAsUpIndicator(R.drawable.celan);
         }
+        initLabel();
 
         if (chooseFragment == 0) {
             showPlanFragment();
@@ -165,6 +166,16 @@ public class MainActivity extends AppCompatActivity implements IMainView {
 
     }
 
+    private void initLabel(){
+        if ( chooseFragment == 0){
+            planText.setBackgroundColor(this.getResources().getColor(R.color.logoGreen));
+            noteText.setBackgroundColor(this.getResources().getColor(R.color.darkGray));
+        }else {
+            noteText.setBackgroundColor(this.getResources().getColor(R.color.logoGreen));
+            planText.setBackgroundColor(this.getResources().getColor(R.color.darkGray));
+        }
+    }
+
 
     @OnClick({R.id.plan_text, R.id.note_text, R.id.weather_layout, R.id.content_fragment_layout, R.id.activity_main})
     public void onClick(View view) {
@@ -173,11 +184,13 @@ public class MainActivity extends AppCompatActivity implements IMainView {
                 //当当前页不是展示的plan的时候才重新加载
                 if (chooseFragment == 1) {
                     showPlanFragment();
+                    initLabel();
                 }
                 break;
             case R.id.note_text:
                 if (chooseFragment == 0) {
                     showNoteFragment();
+                    initLabel();
                 }
                 break;
             case R.id.weather_layout:

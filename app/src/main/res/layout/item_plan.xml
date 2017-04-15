@@ -20,7 +20,7 @@
         <ImageView
             android:layout_width="18dp"
             android:layout_height="18dp"
-            android:src="@drawable/rectangle"
+            android:src="@drawable/plan_icon"
             android:layout_marginTop="8dp"
             />
 
@@ -44,6 +44,8 @@
                     android:text="计划表名"
                     android:textSize="24sp"
                     android:gravity="top"
+                    android:maxLines="1"
+                    android:ellipsize="end"
                     />
 
                 <ImageView

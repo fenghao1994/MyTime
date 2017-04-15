@@ -5,8 +5,10 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.view.Display;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -52,6 +54,8 @@ public class CreateNoteActivity extends AppCompatActivity implements ICreateNote
     ImageView photo;
     @BindView(R.id.gridview)
     GridView gridview;
+    @BindView(R.id.photo_gou)
+    ImageView photoGou;
 
     String noteTitle;
     String noteContent;
@@ -62,6 +66,8 @@ public class CreateNoteActivity extends AppCompatActivity implements ICreateNote
     Note note;
     EasyGridviewAdapter easyGridviewAdapter;
     ICreateNotePresenter createNotePresenter;
+
+    private int mWidth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,13 +82,28 @@ public class CreateNoteActivity extends AppCompatActivity implements ICreateNote
         }
     }
 
+    /**
+     * 获取屏幕宽度的1/3
+     */
+    public void getWidth(){
+        WindowManager windowManager = getWindowManager();
+        Display display = windowManager.getDefaultDisplay();
+        mWidth = display.getWidth() / 3;
+    }
+
     @Override
     public void showData(Note note, List<Photo> list) {
+        getWidth();
         content.setText(note.getContent());
         toolbarTitle.setText("编辑");
-        easyGridviewAdapter = new EasyGridviewAdapter(this, list);
+        easyGridviewAdapter = new EasyGridviewAdapter(this, list, mWidth);
         gridview.setAdapter(easyGridviewAdapter);
         noteAddress = (ArrayList<Photo>) list;
+        note.setAddress( noteAddress);
+
+        if (note.getAddress() != null && note.getAddress().size() > 0){
+            photoGou.setVisibility(View.VISIBLE);
+        }
     }
 
     private void takePhoto() {
@@ -104,6 +125,9 @@ public class CreateNoteActivity extends AppCompatActivity implements ICreateNote
                     Photo photo = new Photo();
                     photo.setAddress(images.get(i).path);
                     noteAddress.add(photo);
+                }
+                if (images != null && images.size() > 0){
+                    photoGou.setVisibility(View.VISIBLE);
                 }
             } else {
                 Toast.makeText(this, "没有数据", Toast.LENGTH_SHORT).show();

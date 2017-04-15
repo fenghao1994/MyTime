@@ -42,9 +42,6 @@
 
     </android.support.v7.widget.Toolbar>
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -209,17 +206,14 @@
             </LinearLayout>
 
             <GridView
+                android:layout_marginTop="10dp"
                 android:id="@+id/gridview"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center"
-                android:horizontalSpacing="10dp"
                 android:numColumns="3"
                 android:stretchMode="columnWidth"
-                android:verticalSpacing="10dp"
                 ></GridView>
 
         </LinearLayout>
-
-    </ScrollView>
 </LinearLayout>

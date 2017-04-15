@@ -2,8 +2,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#515151"
-    tools:context="com.example.mytime.mvp.ui.fragment.NavigationFragment">
+    android:background="@color/logoGreen"
+    tools:context="com.example.mytime.mvp.ui.fragment.NavigationFragment"
+    >
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -12,10 +13,12 @@
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/header_img"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
             android:layout_gravity="center_horizontal"
-            android:src="@mipmap/ic_launcher" />
+            android:src="@drawable/head_img"
+            android:layout_marginTop="10dp"
+            />
 
         <LinearLayout
             android:id="@+id/plan_layout"
@@ -36,8 +39,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:text="所有计划"
-                android:textColor="#FFF"
-                android:textSize="20sp" />
+                android:textColor="#F8FCFC"
+                android:textSize="20sp"
+                />
 
         </LinearLayout>
 
@@ -60,7 +64,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:text="所有便签"
-                android:textColor="#FFF"
+                android:textColor="#F8FCFC"
                 android:textSize="20sp" />
 
         </LinearLayout>
@@ -84,8 +88,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:text="完成计划"
-                android:textColor="#FFF"
-                android:textSize="20sp" />
+                android:textColor="#F8FCFC"
+                android:textSize="20sp"
+                android:id="@+id/textView"/>
 
         </LinearLayout>
 
@@ -108,7 +113,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:text="完成统计"
-                android:textColor="#FFF"
+                android:textColor="#F8FCFC"
                 android:textSize="20sp" />
 
         </LinearLayout>
@@ -120,6 +125,7 @@
         android:orientation="horizontal"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="20dp"
+        android:gravity="center_vertical"
         >
         <ImageView
             android:layout_width="wrap_content"
@@ -132,7 +138,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:text="退出登陆"
-            android:textColor="#FFF"
+            android:textColor="#F8FCFC"
             android:textSize="20sp" />
 
     </LinearLayout>
