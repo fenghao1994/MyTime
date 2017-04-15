@@ -43,6 +43,7 @@ public class TitleDialog extends Dialog {
 
         if (str != null || !"".equals(str)) {
             mTitleDialog.setText(str);
+            mTitleDialog.setSelection(str.length());
         }
 
         mOk.setOnClickListener(new View.OnClickListener() {

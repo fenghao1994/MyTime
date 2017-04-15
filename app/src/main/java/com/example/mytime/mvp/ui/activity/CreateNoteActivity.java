@@ -95,6 +95,10 @@ public class CreateNoteActivity extends AppCompatActivity implements ICreateNote
     public void showData(Note note, List<Photo> list) {
         getWidth();
         content.setText(note.getContent());
+
+        //光标置于文末处
+        content.setSelection(note.getContent().length());
+
         toolbarTitle.setText("编辑");
         easyGridviewAdapter = new EasyGridviewAdapter(this, list, mWidth);
         gridview.setAdapter(easyGridviewAdapter);

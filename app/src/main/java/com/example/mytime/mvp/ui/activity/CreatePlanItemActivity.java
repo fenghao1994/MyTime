@@ -170,6 +170,10 @@ public class CreatePlanItemActivity extends AppCompatActivity implements ICreate
 
         toolbarTitle.setText("编辑");
         contentTitle.setText(planItem.getTitle());
+
+        //光标置于文末处
+        contentTitle.setSelection(planItem.getTitle().length());
+
         content.setText(planItem.getContent());
         planItemAddress = (ArrayList<Photo>) photos;
         easyGridviewAdapter = new EasyGridviewAdapter(this, planItemAddress, mWidth);
