@@ -57,6 +57,7 @@
         android:layout_height="wrap_content"
         android:text="阴转多云"
         android:textColor="#FFF"
+        android:gravity="center"
         android:layout_gravity="center"/>
 
 </LinearLayout>

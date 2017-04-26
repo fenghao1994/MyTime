@@ -4,16 +4,17 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.example.mytime.R;
 import com.example.mytime.event.LocalEvent;
+import com.example.mytime.event.WeatherEvent;
 import com.example.mytime.mvp.model.IMainEntity;
 import com.example.mytime.mvp.model.entity.Citys;
 import com.example.mytime.mvp.model.entity.WeatherEntity;
@@ -23,6 +24,8 @@ import com.example.mytime.mvp.presenter.impl.WeatherPresenterImpl;
 import com.example.mytime.mvp.ui.activity.WeatherActivity;
 import com.example.mytime.mvp.ui.adapter.CityListAdapter;
 import com.example.mytime.mvp.ui.view.IWeatherView;
+import com.example.mytime.util.ACache;
+import com.example.mytime.util.WeatherUtil;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -48,6 +51,14 @@ public class CityListFragment extends Fragment implements IWeatherView {
 
     IWeatherPresenter weatherPresenter;
     WeatherEntity weatherEntity;
+    @BindView(R.id.temperature)
+    TextView mTemperature;
+    @BindView(R.id.weather_icon)
+    ImageView mWeatherIcon;
+    @BindView(R.id.weather_dec)
+    TextView mWeatherDec;
+    @BindView(R.id.swipeLayout)
+    SwipeRefreshLayout mSwipeLayout;
 
     private CityListAdapter mCityListAdapter;
     private List<String> mCityNameList = new ArrayList<>();
@@ -57,18 +68,30 @@ public class CityListFragment extends Fragment implements IWeatherView {
     private String mCurrentCity;
 
     private IMainEntity mIMainEntity;
+    private WeatherEvent mWeatherEvent;
 
     /**
      * 列表显示等级  省为第一级，市为第二级
      */
     private int currentLevel = 1;
+//    private ACache mACache;
+    private Citys mCitys;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_city_list, container, false);
         ButterKnife.bind(this, view);
-
+//        mACache = ACache.get(getActivity());
+//        mWeatherEvent = (WeatherEvent) mACache.getAsObject("WEATHEREVENT");
+//        if (mWeatherEvent != null) {
+//            showWeatherEvent();
+//        }
+//        mCitys = (Citys) mACache.getAsObject("CITYS");
+        if (mCitys != null){
+            showProviceAndCityList(mCitys);
+        }
+        mSwipeLayout.setRefreshing(true);
         mIMainEntity = new MainEntityImpl();
         Intent intent = this.getActivity().getIntent();
         weatherEntity = (WeatherEntity) intent.getSerializableExtra("WEATHER");
@@ -79,16 +102,20 @@ public class CityListFragment extends Fragment implements IWeatherView {
         return view;
     }
 
+    private void showWeatherEvent() {
+        showWeatherInfo(mWeatherEvent.getWeatherEntity().getResult().get(0));
+    }
+
     @Override
     public void onStart() {
         super.onStart();
-        EventBus.getDefault().register( this);
+        EventBus.getDefault().register(this);
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        EventBus.getDefault().unregister( this);
+        EventBus.getDefault().unregister(this);
     }
 
     public void getCityList() {
@@ -102,39 +129,39 @@ public class CityListFragment extends Fragment implements IWeatherView {
 
     @OnItemClick(R.id.list_view)
     public void onItemClick(int position) {
-        if( currentLevel == 1){
-            mCurrentProvice = mResultBeenList.get( position).getProvince();
-            mCityBeanList = mResultBeenList.get( position).getCity();
+        if (currentLevel == 1) {
+            mCurrentProvice = mResultBeenList.get(position).getProvince();
+            mCityBeanList = mResultBeenList.get(position).getCity();
             mCityNameList.clear();
-            for (int i = 0; i < mCityBeanList.size(); i++){
-                mCityNameList.add( mCityBeanList.get(i).getCity());
+            for (int i = 0; i < mCityBeanList.size(); i++) {
+                mCityNameList.add(mCityBeanList.get(i).getCity());
             }
             currentLevel = 2;
             mCityListAdapter.notifyDataSetChanged();
-        }else if (currentLevel == 2){
-            mCurrentCity = mCityBeanList.get( position).getCity();
+        } else if (currentLevel == 2) {
+            mCurrentCity = mCityBeanList.get(position).getCity();
             LocalEvent localEvent = new LocalEvent(mCurrentProvice, mCurrentCity);
-            mIMainEntity.getWeatherInfo( localEvent);
+            mIMainEntity.getWeatherInfo(localEvent);
             navState();
-            ((WeatherActivity)getActivity()).closeNavLayout();
+            ((WeatherActivity) getActivity()).closeNavLayout();
 
         }
     }
 
     @OnClick(R.id.back)
-    public void onClickBack(){
+    public void onClickBack() {
         navState();
     }
 
     /**
      * 侧边栏状态
      */
-    public void navState(){
-        if ( currentLevel == 1){
-            ((WeatherActivity)getActivity()).closeNavLayout();
-        }else if (currentLevel == 2){
+    public void navState() {
+        if (currentLevel == 1) {
+            ((WeatherActivity) getActivity()).closeNavLayout();
+        } else if (currentLevel == 2) {
             mCityNameList.clear();
-            for (int i = 0 ;i < mResultBeenList.size(); i++){
+            for (int i = 0; i < mResultBeenList.size(); i++) {
                 mCityNameList.add(mResultBeenList.get(i).getProvince());
             }
             currentLevel = 1;
@@ -143,16 +170,30 @@ public class CityListFragment extends Fragment implements IWeatherView {
     }
 
     @Subscribe
-    public void showProviceAndCityList(Citys citys){
-        if ( citys == null){
+    public void showWeatherInfo(WeatherEntity.ResultBean resultBean) {
+        mTemperature.setText(resultBean.getTemperature());
+        mTemperature.setText(resultBean.getTemperature());
+        mWeatherDec.setText(resultBean.getWeather());
+        int drawablePath = WeatherUtil.getLikeMapPath(resultBean.getWeather());
+        if (drawablePath == 0){
+            drawablePath = R.drawable.w00;
+        }
+        mWeatherIcon.setImageDrawable(getActivity().getResources().getDrawable(drawablePath));
+    }
+
+    @Subscribe
+    public void showProviceAndCityList(Citys citys) {
+        mSwipeLayout.setRefreshing(false);
+        if (citys == null) {
             return;
         }
+//        mACache.put("CITYS", citys, ACache.TIME_DAY * 10);
         mResultBeenList = citys.getResult();
         for (int i = 0; i < mResultBeenList.size(); i++) {
             mCityNameList.add(mResultBeenList.get(i).getProvince());
         }
         mCityListAdapter = new CityListAdapter(getActivity(), mCityNameList);
-        mListView.setAdapter( mCityListAdapter);
+        mListView.setAdapter(mCityListAdapter);
     }
 
     @Override

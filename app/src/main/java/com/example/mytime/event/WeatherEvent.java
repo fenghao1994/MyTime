@@ -2,11 +2,13 @@ package com.example.mytime.event;
 
 import com.example.mytime.mvp.model.entity.WeatherEntity;
 
+import java.io.Serializable;
+
 /**
  * Created by fenghao02 on 2017/3/28.
  */
 
-public class WeatherEvent {
+public class WeatherEvent implements Serializable {
     private WeatherEntity mWeatherEntity;
     private boolean isSuccess;
 

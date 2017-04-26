@@ -1,11 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
+              android:layout_width="wrap_content"
+              android:layout_height="match_parent"
+              android:background="#FFF"
+              android:orientation="horizontal"
+              android:gravity="left|center_vertical"
+              android:paddingLeft="30dp"
+              android:minHeight="60dp"
+    >
 
     <TextView
+        android:id="@+id/draw_text"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:background="@drawable/circle_blue"
+        android:text="重"
+        android:textColor="#FFF"
+        android:gravity="center"
+        />
+
+    <TextView
+
         android:id="@+id/city_name"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:gravity="center"
+        android:text="重庆"
+        android:textSize="18sp"
+        android:layout_marginLeft="20dp"
+        />
 
 </LinearLayout>

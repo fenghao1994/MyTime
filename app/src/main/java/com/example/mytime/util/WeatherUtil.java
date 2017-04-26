@@ -31,10 +31,12 @@ public class WeatherUtil {
     }
 
     public static int getLikeMapPath(String str){
-        Map<String, Integer> map = getWeahterIcon();
-        for (Map.Entry<String, Integer> entry: map.entrySet()){
-            if (str.indexOf(entry.getKey()) > -1){
-                return entry.getValue();
+        if (str != null){
+            Map<String, Integer> map = getWeahterIcon();
+            for (Map.Entry<String, Integer> entry: map.entrySet()){
+                if (str.indexOf(entry.getKey()) > -1){
+                    return entry.getValue();
+                }
             }
         }
         return 0;

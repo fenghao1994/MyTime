@@ -47,6 +47,9 @@ public class FutureWeatherAdapter extends RecyclerView.Adapter<FutureWeatherAdap
         Map<String, Integer> map = WeatherUtil.getWeahterIcon();
 //        int drawablePath = map.get(futureBeanList.get(position).getDayTime());
         int drawablePath = WeatherUtil.getLikeMapPath(futureBeanList.get(position).getDayTime());
+        if (drawablePath == 0){
+            drawablePath = R.drawable.w00;
+        }
         holder.mWeekIcon.setImageDrawable(mContext.getResources().getDrawable(drawablePath));
         String weatherTemperature = futureBeanList.get(position).getTemperature();
         String[] strs = weatherTemperature.trim().split("/");
