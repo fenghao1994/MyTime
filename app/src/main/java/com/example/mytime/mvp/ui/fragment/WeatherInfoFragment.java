@@ -140,14 +140,14 @@ public class WeatherInfoFragment extends Fragment implements SwipeRefreshLayout.
                 drawablePath = R.drawable.w00;
             }
             mWeatherIcon.setImageDrawable(getActivity().getResources().getDrawable(drawablePath));
-            mWind.setText(resultBean.getWind());
-            mHumidity.setText(resultBean.getHumidity());
-            mDressingIndex.setText(resultBean.getDressingIndex());
-            mColdIndex.setText(resultBean.getColdIndex());
-            mSunRise.setText(resultBean.getSunrise());
-            mSunSet.setText(resultBean.getSunset());
-            mAirCondition.setText(resultBean.getAirCondition());
-            mExerciseIndex.setText(resultBean.getExerciseIndex());
+            mWind.setText(resultBean.getWind().equals("") ? "--": resultBean.getWind());
+            mHumidity.setText(resultBean.getHumidity().equals("") ? "--" : resultBean.getHumidity());
+            mDressingIndex.setText(resultBean.getDressingIndex().equals("") ? "--" : resultBean.getDressingIndex());
+            mColdIndex.setText(resultBean.getColdIndex().equals("") ? "--" : resultBean.getColdIndex());
+            mSunRise.setText(resultBean.getSunrise().equals("") ? "--" : resultBean.getSunrise());
+            mSunSet.setText(resultBean.getSunset().equals("") ? "--": resultBean.getSunset());
+            mAirCondition.setText(resultBean.getAirCondition().equals("")? "--": resultBean.getAirCondition());
+            mExerciseIndex.setText(resultBean.getExerciseIndex().equals("") ? "--" : resultBean.getExerciseIndex());
         } else {
 
         }
@@ -180,9 +180,9 @@ public class WeatherInfoFragment extends Fragment implements SwipeRefreshLayout.
                         @Override
                         public void run() {
                             mSwipeLayout.setRefreshing(false);
-                            if (mWeatherEvent != null){
+                            /*if (mWeatherEvent != null){
                                 showWeather(mWeatherEvent);
-                            }
+                            }*/
                             long time = System.currentTimeMillis();
                             String str = MyUtil.dateYMDHM(time);
                             Toast.makeText(getActivity(), "更新成功\n" + str, Toast.LENGTH_SHORT).show();

@@ -65,6 +65,8 @@ public class MainActivity extends AppCompatActivity implements IMainView {
 
     private boolean isFirstShowWeatherInfo = true;
 
+    private LocalEvent mLocalEvent;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,7 +88,7 @@ public class MainActivity extends AppCompatActivity implements IMainView {
 
         Intent intent = new Intent(this, LocalService.class);
         startService(intent);
-
+        EventBus.getDefault().register(this);
 
         mainPresenter = new MainPresenterImpl(this);
     }
@@ -95,18 +97,22 @@ public class MainActivity extends AppCompatActivity implements IMainView {
     protected void onStart() {
         super.onStart();
         //注册event
-        EventBus.getDefault().register(this);
+
+        if (mLocalEvent != null){
+            mainPresenter.getWeatherInfo(mLocalEvent);
+        }
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        EventBus.getDefault().unregister(this);
+
     }
 
     @Subscribe
     public void onLocalEvent(LocalEvent localEvent) {
         if (isFirstShowWeatherInfo) {
+            mLocalEvent = localEvent;
 //            getWeatherInfo(localEvent);
             mainPresenter.getWeatherInfo(localEvent);
             isFirstShowWeatherInfo = false;
@@ -233,6 +239,6 @@ public class MainActivity extends AppCompatActivity implements IMainView {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
+        EventBus.getDefault().unregister(this);
     }
 }
