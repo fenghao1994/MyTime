@@ -1,5 +1,6 @@
 package com.example.mytime.mvp.ui.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -98,6 +99,11 @@ public class WeatherInfoFragment extends Fragment implements SwipeRefreshLayout.
 //            showWeather(mWeatherEvent);
 //        }
         mSwipeLayout.setOnRefreshListener(this);
+        Intent intent = getActivity().getIntent();
+        mWeatherEvent = (WeatherEvent) intent.getSerializableExtra("WEATHER_EVENT");
+        if (mWeatherEvent != null){
+            showWeather(mWeatherEvent);
+        }
         return view;
     }
 

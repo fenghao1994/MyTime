@@ -1,86 +1,138 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<android.support.v4.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    >
-    <LinearLayout
+    android:layout_height="match_parent">
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipeLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        >
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
+        android:layout_height="match_parent">
+
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:navigationIcon="@drawable/celan"
-            app:navigationIcon="@drawable/celan"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
             >
-            <RelativeLayout
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:layout_marginRight="5dp"
+                android:layout_height="?attr/actionBarSize"
+                android:navigationIcon="@drawable/celan"
+                app:navigationIcon="@drawable/celan"
                 >
-                <TextView
-                    android:layout_width="wrap_content"
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="My Time"
+                    android:layout_marginRight="5dp"
+                    android:gravity="center_vertical"
+                    >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:text="My Time"
+                        />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="30dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginLeft="10dp"
+                        android:background="@drawable/rectangle"
+                        >
+
+                        <TextView
+                            android:id="@+id/plan_text"
+                            android:layout_width="40dp"
+                            android:layout_height="match_parent"
+                            android:background="#CCC"
+                            android:gravity="center"
+                            android:text="计划"
+                            android:textSize="10sp"
+                            />
+
+                        <TextView
+                            android:id="@+id/note_text"
+                            android:layout_width="40dp"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:text="便签"
+                            android:textSize="10sp"
+                            />
+
+                    </LinearLayout>
+
+                </RelativeLayout>
+
+            </android.support.v7.widget.Toolbar>
+
+            <RelativeLayout
+                android:id="@+id/weather_layout"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:background="@drawable/weather_nav_bg"
+                android:gravity="center|top"
+                >
+
+                <TextView
+                    android:id="@+id/temperature"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_centerVertical="true"
+                    android:text="24°"
+                    android:textColor="#FFF"
+                    android:textSize="80sp"
                     />
 
                 <LinearLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="30dp"
-                    android:layout_alignParentRight="true"
-                    android:layout_marginLeft="10dp"
-                    android:background="@drawable/rectangle"
+                    android:layout_height="match_parent"
+                    android:layout_centerVertical="true"
+                    android:layout_marginTop="10dp"
+                    android:layout_toRightOf="@id/temperature"
+                    android:gravity="center"
+                    android:orientation="vertical"
                     >
-                    <TextView
-                        android:id="@+id/plan_text"
-                        android:layout_width="40dp"
-                        android:layout_height="match_parent"
-                        android:text="计划"
-                        android:gravity="center"
-                        android:textSize="10sp"
-                        android:background="#CCC"
-                        />
-                    <TextView
-                        android:id="@+id/note_text"
-                        android:layout_width="40dp"
-                        android:layout_height="match_parent"
-                        android:text="便签"
-                        android:gravity="center"
-                        android:textSize="10sp"
+
+                    <ImageView
+                        android:id="@+id/weather_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:src="@drawable/w00"
                         />
 
+                    <TextView
+                        android:id="@+id/weather_dec"
+                        android:layout_width="wrap_content"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="阴"
+                        android:textColor="#FFF"
+                        />
                 </LinearLayout>
-
             </RelativeLayout>
 
-        </android.support.v7.widget.Toolbar>
-        
-        <RelativeLayout
-            android:id="@+id/weather_layout"
-            android:layout_width="match_parent"
-            android:layout_height="100dp">
 
-        </RelativeLayout>
-
-        <FrameLayout
-            android:id="@+id/content_fragment_layout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"></FrameLayout>
-    </LinearLayout>
-
+            <FrameLayout
+                android:id="@+id/content_fragment_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"></FrameLayout>
+        </LinearLayout>
+    </android.support.v4.widget.SwipeRefreshLayout>
 
     <fragment
         android:id="@+id/nav_fragment_layout"
+        android:name="com.example.mytime.mvp.ui.fragment.NavigationFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        android:name="com.example.mytime.mvp.ui.fragment.NavigationFragment"
         ></fragment>
 </android.support.v4.widget.DrawerLayout>

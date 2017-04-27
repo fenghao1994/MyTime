@@ -2,11 +2,14 @@ package com.example.mytime.mvp.ui.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -14,6 +17,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,16 +32,17 @@ import com.example.mytime.mvp.ui.fragment.NoteFragment;
 import com.example.mytime.mvp.ui.fragment.PlanFragment;
 import com.example.mytime.mvp.ui.view.IMainView;
 import com.example.mytime.service.LocalService;
+import com.example.mytime.util.MyUtil;
+import com.example.mytime.util.WeatherUtil;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
-
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class MainActivity extends AppCompatActivity implements IMainView {
+public class MainActivity extends AppCompatActivity implements IMainView ,SwipeRefreshLayout.OnRefreshListener{
 
     private static final String TAG = "MainActivity";
 
@@ -53,6 +58,14 @@ public class MainActivity extends AppCompatActivity implements IMainView {
     DrawerLayout activityMain;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
+    @BindView(R.id.temperature)
+    TextView mTemperature;
+    @BindView(R.id.weather_icon)
+    ImageView mWeatherIcon;
+    @BindView(R.id.weather_dec)
+    TextView mWeatherDec;
+    @BindView(R.id.swipeLayout)
+    SwipeRefreshLayout mSwipeLayout;
 
     //plan和note的选择 0为plan 、1为note
     private int chooseFragment;
@@ -66,6 +79,7 @@ public class MainActivity extends AppCompatActivity implements IMainView {
     private boolean isFirstShowWeatherInfo = true;
 
     private LocalEvent mLocalEvent;
+    private WeatherEvent mWeatherEvent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,15 +105,28 @@ public class MainActivity extends AppCompatActivity implements IMainView {
         EventBus.getDefault().register(this);
 
         mainPresenter = new MainPresenterImpl(this);
+
+        mSwipeLayout.setRefreshing(true);
+        mSwipeLayout.setOnRefreshListener(this);
     }
+
+    Handler mHandler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+        }
+    };
 
     @Override
     protected void onStart() {
         super.onStart();
         //注册event
 
-        if (mLocalEvent != null){
+        if (mLocalEvent != null) {
             mainPresenter.getWeatherInfo(mLocalEvent);
+        }
+        if (weatherEntity != null){
+            displayWeather(weatherEntity);
         }
     }
 
@@ -117,7 +144,6 @@ public class MainActivity extends AppCompatActivity implements IMainView {
             mainPresenter.getWeatherInfo(localEvent);
             isFirstShowWeatherInfo = false;
         }
-
     }
 
 //    public void getWeatherInfo(LocalEvent localEvent) {
@@ -163,20 +189,35 @@ public class MainActivity extends AppCompatActivity implements IMainView {
     //// TODO: 2017/3/28  weather数据加载
     @Subscribe
     public void showWeathers(WeatherEvent entity) {
-        if ( entity.isSuccess()){
+        mWeatherEvent = entity;
+        if (entity.isSuccess()) {
             this.weatherEntity = entity.getWeatherEntity();
-        }else {
+            displayWeather(weatherEntity);
+        } else {
             //加载默认的
+            Toast.makeText(this, "天气获取失败", Toast.LENGTH_SHORT).show();
         }
+        mSwipeLayout.setRefreshing(false);
         Log.i("WeatherInfoFragment", "clf ---- 》>>>>> " + entity.toString());
-
     }
 
-    private void initLabel(){
-        if ( chooseFragment == 0){
+    public void displayWeather(WeatherEntity weatherEntity){
+        WeatherEntity.ResultBean resultBean = weatherEntity.getResult().get(0);
+        mTemperature.setText(resultBean.getTemperature());
+        mTemperature.setText(resultBean.getTemperature());
+        mWeatherDec.setText(resultBean.getWeather());
+        int drawablePath = WeatherUtil.getLikeMapPath(resultBean.getWeather());
+        if (drawablePath == 0) {
+            drawablePath = R.drawable.w00;
+        }
+        mWeatherIcon.setImageDrawable(this.getResources().getDrawable(drawablePath));
+    }
+
+    private void initLabel() {
+        if (chooseFragment == 0) {
             planText.setBackgroundColor(this.getResources().getColor(R.color.logoGreen));
             noteText.setBackgroundColor(this.getResources().getColor(R.color.darkGray));
-        }else {
+        } else {
             noteText.setBackgroundColor(this.getResources().getColor(R.color.logoGreen));
             planText.setBackgroundColor(this.getResources().getColor(R.color.darkGray));
         }
@@ -212,6 +253,7 @@ public class MainActivity extends AppCompatActivity implements IMainView {
     public void gotoWeatherActivity() {
         Intent intent = new Intent(this, WeatherActivity.class);
         intent.putExtra("WEATHER", weatherEntity);
+        intent.putExtra("WEATHER_EVENT", mWeatherEvent);
         startActivity(intent);
     }
 
@@ -240,5 +282,28 @@ public class MainActivity extends AppCompatActivity implements IMainView {
     protected void onDestroy() {
         super.onDestroy();
         EventBus.getDefault().unregister(this);
+    }
+
+    @Override
+    public void onRefresh() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(1500);
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            mSwipeLayout.setRefreshing(false);
+                            long time = System.currentTimeMillis();
+                            String str = MyUtil.dateYMDHM(time);
+                            Toast.makeText(MainActivity.this, "更新成功\n" + str, Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
     }
 }
