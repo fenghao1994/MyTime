@@ -1,6 +1,8 @@
 package com.example.mytime.mvp.ui.activity;
 
 import android.app.Activity;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.view.GravityCompat;
@@ -30,6 +32,12 @@ public class WeatherActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_weath);
         ButterKnife.bind(this);
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+
+            // create our manager instance after the content view is set
+
+        }
     }
 
 

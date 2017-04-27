@@ -87,7 +87,8 @@
         <service android:name=".service.LocalService"/>
         <service android:name="com.amap.api.location.APSService"/>
 
-        <activity android:name=".mvp.ui.activity.WeatherActivity"/>
+        <activity android:name=".mvp.ui.activity.WeatherActivity"
+            />
         <activity
             android:name="com.mob.tools.MobUIShell"
             android:configChanges="keyboardHidden|orientation|screenSize"

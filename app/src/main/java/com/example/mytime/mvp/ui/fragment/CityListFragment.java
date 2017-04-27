@@ -2,15 +2,19 @@ package com.example.mytime.mvp.ui.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.mytime.R;
 import com.example.mytime.event.LocalEvent;
@@ -25,6 +29,7 @@ import com.example.mytime.mvp.ui.activity.WeatherActivity;
 import com.example.mytime.mvp.ui.adapter.CityListAdapter;
 import com.example.mytime.mvp.ui.view.IWeatherView;
 import com.example.mytime.util.ACache;
+import com.example.mytime.util.MyUtil;
 import com.example.mytime.util.WeatherUtil;
 
 import org.greenrobot.eventbus.EventBus;
@@ -42,7 +47,7 @@ import butterknife.OnItemClick;
  * Created by fenghao02 on 2017/3/27.
  */
 
-public class CityListFragment extends Fragment implements IWeatherView {
+public class CityListFragment extends Fragment implements IWeatherView , SwipeRefreshLayout.OnRefreshListener{
 
     @BindView(R.id.back)
     ImageView mBack;
@@ -98,6 +103,27 @@ public class CityListFragment extends Fragment implements IWeatherView {
         weatherPresenter = new WeatherPresenterImpl(this);
 //        showWeatherInfo(weatherEntity);
         getCityList();
+        mSwipeLayout.setOnRefreshListener(this);
+
+        mListView.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                boolean enable = false;
+                if (mListView != null && mListView.getChildCount() > 0){
+                    boolean firstItemVisible = mListView.getFirstVisiblePosition() == 0;
+                    // check if the top of the first item is visible
+                    boolean topOfFirstItemVisible = mListView.getChildAt(0).getTop() == 0;
+                    // enabling or disabling the refresh layout
+                    enable = firstItemVisible && topOfFirstItemVisible;
+                }
+                mSwipeLayout.setEnabled(enable);
+            }
+        });
 
         return view;
     }
@@ -144,9 +170,16 @@ public class CityListFragment extends Fragment implements IWeatherView {
             mIMainEntity.getWeatherInfo(localEvent);
             navState();
             ((WeatherActivity) getActivity()).closeNavLayout();
-
         }
     }
+
+    private Handler mHandler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+        }
+    };
+
 
     @OnClick(R.id.back)
     public void onClickBack() {
@@ -203,5 +236,27 @@ public class CityListFragment extends Fragment implements IWeatherView {
 
     @Override
     public void showWeatherInfo(WeatherEntity weatherEntity) {
+    }
+
+    @Override
+    public void onRefresh() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(1500);
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            mSwipeLayout.setRefreshing(false);
+                            String time = MyUtil.dateYMDHM(System.currentTimeMillis());
+                            Toast.makeText(getActivity(), "城市列表更新成功\n" + time, Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
     }
 }

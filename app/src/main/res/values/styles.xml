@@ -10,8 +10,6 @@
 
     <style name="Theme.WeatherAcitivy" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- translucent system bars -->
-        <item name="android:windowTranslucentStatus">true</item>
-        <item name="android:windowTranslucentNavigation">true</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
