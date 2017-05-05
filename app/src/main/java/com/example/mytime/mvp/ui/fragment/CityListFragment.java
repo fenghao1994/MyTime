@@ -99,7 +99,10 @@ public class CityListFragment extends Fragment implements IWeatherView , SwipeRe
         mSwipeLayout.setRefreshing(true);
         mIMainEntity = new MainEntityImpl();
         Intent intent = this.getActivity().getIntent();
-        weatherEntity = (WeatherEntity) intent.getSerializableExtra("WEATHER");
+        mWeatherEvent = (WeatherEvent) intent.getSerializableExtra("WEATHER_EVENT");
+        if (mWeatherEvent != null){
+            showWeatherEvent();
+        }
         weatherPresenter = new WeatherPresenterImpl(this);
 //        showWeatherInfo(weatherEntity);
         getCityList();

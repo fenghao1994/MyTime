@@ -46,16 +46,28 @@ public class FutureWeatherAdapter extends RecyclerView.Adapter<FutureWeatherAdap
         holder.mWeekDay.setText(futureBeanList.get(position).getWeek());
         Map<String, Integer> map = WeatherUtil.getWeahterIcon();
 //        int drawablePath = map.get(futureBeanList.get(position).getDayTime());
-        int drawablePath = WeatherUtil.getLikeMapPath(futureBeanList.get(position).getDayTime());
+        int drawablePath = 0;
+        if (futureBeanList.get(position).getDayTime() != null && !"".equals(futureBeanList.get(position).getDayTime())){
+            drawablePath = WeatherUtil.getLikeMapPath(futureBeanList.get(position).getDayTime());
+            holder.mWeekWeather.setText(futureBeanList.get(position).getDayTime());
+        }else {
+            drawablePath = WeatherUtil.getLikeMapPath(futureBeanList.get(position).getNight());
+            holder.mWeekWeather.setText(futureBeanList.get(position).getNight());
+        }
+
         if (drawablePath == 0){
             drawablePath = R.drawable.w00;
         }
         holder.mWeekIcon.setImageDrawable(mContext.getResources().getDrawable(drawablePath));
         String weatherTemperature = futureBeanList.get(position).getTemperature();
         String[] strs = weatherTemperature.trim().split("/");
-        holder.mWeekDayTemperature.setText(strs[0].trim().toString());
-        holder.mWeekNightTemperature.setText(strs[1].trim().toString());
-        holder.mWeekWeather.setText(futureBeanList.get(position).getDayTime());
+        if (strs.length == 2){
+            holder.mWeekDayTemperature.setText(strs[0].trim().toString());
+            holder.mWeekNightTemperature.setText(strs[1].trim().toString());
+        }else {
+            holder.mWeekDayTemperature.setText(strs[0].trim().toString());
+        }
+
     }
 
     @Override
