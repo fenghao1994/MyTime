@@ -3,6 +3,7 @@ package com.example.mytime.mvp.ui.activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -42,6 +43,10 @@ public class MapActivity extends AppCompatActivity implements LocationSource, AM
     AMap aMap;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
+    @BindView(R.id.ok)
+    TextView ok;
+    @BindView(R.id.activity_map)
+    CoordinatorLayout activityMap;
     private OnLocationChangedListener mListener;
     private AMapLocationClient mlocationClient;
     private AMapLocationClientOption mLocationOption;
@@ -187,7 +192,7 @@ public class MapActivity extends AppCompatActivity implements LocationSource, AM
         if (mlocationClient == null) {
             mlocationClient = new AMapLocationClient(this);
             mLocationOption = new AMapLocationClientOption();
-            mLocationOption.setOnceLocation( true);
+            mLocationOption.setOnceLocation(true);
             //设置定位监听
             mlocationClient.setLocationListener(this);
             //设置为高精度定位模式
@@ -216,14 +221,15 @@ public class MapActivity extends AppCompatActivity implements LocationSource, AM
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                returnLocation();
+                this.finish();
                 break;
         }
         return true;
     }
 
-    public void returnLocation(){
-        if ( longtitude != 0){
+    @OnClick(R.id.ok)
+    public void returnLocation() {
+        if (longtitude != 0) {
             Intent intent = new Intent();
             intent.putExtra("LOCATION", latitude + "," + longtitude);
             setResult(RESULT_LOCATION, intent);
@@ -233,7 +239,7 @@ public class MapActivity extends AppCompatActivity implements LocationSource, AM
 
     @Override
     public void onBackPressed() {
-        returnLocation();
+        this.finish();
         super.onBackPressed();
 
     }
