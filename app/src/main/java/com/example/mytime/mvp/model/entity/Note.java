@@ -18,6 +18,7 @@ public class Note extends DataSupport implements Serializable{
     long createTime;
     long editTime;
     boolean isEdit;
+    boolean isDelete;
     ArrayList<Photo> address;
 
     public ArrayList<Photo> getAddress() {
@@ -74,5 +75,13 @@ public class Note extends DataSupport implements Serializable{
 
     public void setEdit(boolean edit) {
         isEdit = edit;
+    }
+
+    public boolean isDelete() {
+        return isDelete;
+    }
+
+    public void setDelete(boolean delete) {
+        isDelete = delete;
     }
 }

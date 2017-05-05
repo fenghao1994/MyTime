@@ -180,7 +180,7 @@ public class CreatePlanActivity extends AppCompatActivity implements ICreatePlan
                             if (!plan.getTitle().equals(str)) {
                                 plan.setTitle(str);
                                 editPlanData();
-                                createPlanPresenter.updatePlan(plan);
+                                createPlanPresenter.savePlan(plan);
                             }
                             Toast.makeText(CreatePlanActivity.this, "设置成功", Toast.LENGTH_SHORT).show();
                             titleDialog.dismiss();

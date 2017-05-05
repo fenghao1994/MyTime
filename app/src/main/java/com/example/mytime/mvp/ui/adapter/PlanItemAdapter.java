@@ -3,7 +3,10 @@ package com.example.mytime.mvp.ui.adapter;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Paint;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -21,6 +24,9 @@ import com.example.mytime.mvp.ui.activity.CreatePlanItemActivity;
 import com.example.mytime.receiver.AlarmReceiver;
 import com.example.mytime.util.MyUtil;
 
+import org.litepal.crud.DataSupport;
+
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -35,13 +41,22 @@ import static android.content.Context.ALARM_SERVICE;
 
 public class PlanItemAdapter extends RecyclerView.Adapter<PlanItemAdapter.ViewHolder> {
 
-    private List<PlanItem> mList;
+    private List<PlanItem> mList = new ArrayList<>();
     //    private List<Time> times;
     private Context mContext;
+    private AlertDialog alertDialog;
 
     public PlanItemAdapter(Context context, List<PlanItem> list) {
         this.mContext = context;
-        this.mList = list;
+        initData(list);
+    }
+
+    private void initData(List<PlanItem> list){
+        for (int i = 0 ; i < list.size() ; i++){
+            if ( !list.get(i).isDelete()){
+                this.mList.add(list.get(i));
+            }
+        }
     }
 
     @Override
@@ -57,7 +72,22 @@ public class PlanItemAdapter extends RecyclerView.Adapter<PlanItemAdapter.ViewHo
         //// TODO: 2017/1/4  显示的时间处理
 
         //如果只提醒一次则显示年月日，否则不显示
-        PlanItem planItem = mList.get(position);
+        final PlanItem planItem = mList.get(position);
+        if (planItem.isDelete()){
+            holder.cardView.setVisibility(View.GONE);
+        }
+        if (planItem.isComplete()){
+            holder.planItemOk.setImageDrawable(mContext.getResources().getDrawable(R.drawable.gou_gray));
+            holder.planItemOk.setClickable(false);
+            holder.planItemTitle.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);
+            holder.planItemContent.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);
+        }
+        if (planItem.isDelete()){
+            holder.planItemView.setVisibility(View.GONE);
+        }  if (planItem.isDelete()){
+            holder.planItemView.setVisibility(View.GONE);
+        }
+
         if (planItem.getAlarmWay() == 0) {
             holder.planItemTime.setText(planItem.getYear() + "." +
                     (planItem.getMonth() + 1) + "." + planItem.getDay() +
@@ -78,18 +108,57 @@ public class PlanItemAdapter extends RecyclerView.Adapter<PlanItemAdapter.ViewHo
         holder.planItemCha.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(mContext, "删除任务成功!", Toast.LENGTH_SHORT).show();
-                cancelAlarmClock(mList.get(position));
-                mList.get(position).setDelete(true);
-                mList.get(position).update(mList.get(position).getId());
+                alertDialog = new AlertDialog.Builder(mContext)
+                        .setMessage("确定要删除吗?")
+                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Toast.makeText(mContext, "删除任务成功!", Toast.LENGTH_SHORT).show();
+                                cancelAlarmClock(mList.get(position));
+                                mList.get(position).setDelete(true);
+                                mList.get(position).setEditTime(System.currentTimeMillis());
+                                mList.get(position).update(mList.get(position).getId());
+                                mList.remove(position);
+                                PlanItemAdapter.this.notifyDataSetChanged();
+                                alertDialog.dismiss();
+                            }
+                        })
+                        .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                alertDialog.dismiss();
+                            }
+                        })
+                        .show();
             }
         });
 
         holder.planItemOk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                completeAlarmClock(mList.get( position));
-                Toast.makeText(mContext, "wanchengle", Toast.LENGTH_SHORT).show();
+                alertDialog = new AlertDialog.Builder(mContext)
+                        .setMessage("确定完成任务吗?")
+                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                completeAlarmClock(mList.get( position));
+                                PlanItem planItem1 = mList.get(position);
+                                planItem1.setComplete(true);
+                                planItem1.setEditTime(System.currentTimeMillis());
+                                planItem1.update(planItem1.getId());
+                                Toast.makeText(mContext, "恭喜完成该任务", Toast.LENGTH_SHORT).show();
+                                PlanItemAdapter.this.notifyDataSetChanged();
+                                alertDialog.dismiss();
+                            }
+                        })
+                        .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                alertDialog.dismiss();
+                            }
+                        })
+                        .show();
+
             }
         });
     }

@@ -40,8 +40,8 @@ public class CreatePlanEntityImpl implements ICreatePlanEntity {
     @Override
     public List<Plan> getAllCompletePlan(boolean desc) {
         if (desc){
-            return DataSupport.order("createTime desc").where("isComplete = ?", "true").find( Plan.class);
+            return DataSupport.order("createTime desc").where("isComplete = ?", "1").find( Plan.class);
         }
-        return DataSupport.where().where("isComplete = ?", "true").find( Plan.class);
+        return DataSupport.where().where("isComplete = ?", "1").find( Plan.class);
     }
 }

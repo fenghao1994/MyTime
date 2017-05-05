@@ -2,6 +2,7 @@ package com.example.mytime.mvp.ui.fragment;
 
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -73,7 +74,7 @@ public class PlanFragment extends Fragment {
         mList = DataSupport.order("editTime desc").find(Plan.class);
         count = new ArrayList<>();
         for (int i = 0; i < mList.size() ; i++){
-            int num = DataSupport.where( "planId = ?", mList.get(i).getPlanId() + "").count(PlanItem.class);
+            int num =  DataSupport.where( "planId = ? and isDelete = ?", mList.get(i).getPlanId() + "", "0").count(PlanItem.class);
             count.add( num + "");
         }
         adapter = new PlanAdapter(getActivity(), mList, count);

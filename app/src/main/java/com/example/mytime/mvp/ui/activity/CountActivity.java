@@ -11,13 +11,19 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.mytime.R;
+import com.example.mytime.mvp.model.entity.PlanItem;
 import com.example.mytime.mvp.ui.custom.ChartView;
 import com.example.mytime.util.MyUtil;
 
+import org.litepal.crud.DataSupport;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import lecho.lib.hellocharts.model.Axis;
+import lecho.lib.hellocharts.model.AxisValue;
 import lecho.lib.hellocharts.model.Line;
 import lecho.lib.hellocharts.model.LineChartData;
 import lecho.lib.hellocharts.model.PointValue;
@@ -33,6 +39,7 @@ public class CountActivity extends AppCompatActivity {
     private LineChartView mLineChartView;
     private LineChartData data;
     private Toolbar toolbar;
+    private ArrayList<PlanItem> allCompletePlanItems;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +56,8 @@ public class CountActivity extends AppCompatActivity {
         Viewport viewport = initViewPort();
         mLineChartView.setMaximumViewport(viewport);
         mLineChartView.setCurrentViewport(viewport);
+
+//        getAllCompletePlanItem();
     }
 
     private Viewport initViewPort() {
@@ -67,20 +76,12 @@ public class CountActivity extends AppCompatActivity {
         Axis axisX = new Axis();
         Axis axisY = new Axis().setHasLines(true);
         axisX.setName("时间");
-        //前加字符
-//        axisX.setFormatter(new SimpleAxisValueFormatter().setPrependedText("aaaa".toCharArray()));
-        //后加字符
-//        axisX.setFormatter(new SimpleAxisValueFormatter().setAppendedText("aaaa".toCharArray()));
-//        axisX.setFormatter(new SimpleAxisValueFormatter());
         axisY.setName("数量");
         //设置轴
         data.setAxisYLeft(axisY);
         data.setAxisXBottom(axisX);
-        //设置负值 设置为负无穷 默认为0
-//        data.setBaseValue(Float.NEGATIVE_INFINITY);
 
         return data;
-
     }
 
     private List<Line> initLine() {
@@ -110,6 +111,31 @@ public class CountActivity extends AppCompatActivity {
         return lineList;
 
     }
+
+    public void getAllCompletePlanItem(){
+        allCompletePlanItems = (ArrayList<PlanItem>) DataSupport.where("isComplete = ?", "1").find( PlanItem.class);
+        initData();
+    }
+
+    public void initData(){
+        Map<String, ArrayList<PlanItem>> map = new HashMap<>();
+        for (int i = 0 ;i < allCompletePlanItems.size() ;i++){
+            String date = MyUtil.dateYMD(allCompletePlanItems.get(i).getEditTime());
+            if ( map.containsKey(date)){
+                map.get(date).add( allCompletePlanItems.get(i));
+            }else {
+                ArrayList<PlanItem> arrayList = new ArrayList();
+                arrayList.add(allCompletePlanItems.get(i));
+                map.put(date, arrayList);
+            }
+        }
+        for (Map.Entry<String, ArrayList<PlanItem>> entry : map.entrySet()){
+            String key = entry.getKey();
+            int count = entry.getValue().size();
+
+        }
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {

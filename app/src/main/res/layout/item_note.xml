@@ -43,8 +43,20 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="top"
-                    android:text="便签内容"
+                    android:text="便签内容便签内容便签容便签容便签容便签容便签容便签容便签内容便签内容便签内容便签内容便签内容便签内容"
                     android:textSize="20sp"
+                    android:layout_marginRight="40dp"
+                    android:ellipsize="end"
+                    />
+
+                <ImageView
+                    android:id="@+id/delete"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/cha"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="10dp"
                     />
             </RelativeLayout>
 
