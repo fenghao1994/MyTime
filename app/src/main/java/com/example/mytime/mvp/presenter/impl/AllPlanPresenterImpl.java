@@ -2,6 +2,7 @@ package com.example.mytime.mvp.presenter.impl;
 
 import com.example.mytime.mvp.model.ICreatePlanEntity;
 import com.example.mytime.mvp.model.entity.Plan;
+import com.example.mytime.mvp.model.entity.PlanItem;
 import com.example.mytime.mvp.model.impl.CreatePlanEntityImpl;
 import com.example.mytime.mvp.presenter.IAllPlanPresenter;
 import com.example.mytime.mvp.ui.view.IAllPlanView;
@@ -29,7 +30,7 @@ public class AllPlanPresenterImpl implements IAllPlanPresenter{
 
     @Override
     public void showAllCompletePlan(boolean desc) {
-        List<Plan> list = createPlanEntity.getAllCompletePlan( desc);
+        List<PlanItem> list = createPlanEntity.getAllCompletePlan( desc);
         allPlanView.showAllComplete( list);
     }
 }

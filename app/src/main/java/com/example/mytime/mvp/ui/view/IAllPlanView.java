@@ -1,6 +1,7 @@
 package com.example.mytime.mvp.ui.view;
 
 import com.example.mytime.mvp.model.entity.Plan;
+import com.example.mytime.mvp.model.entity.PlanItem;
 
 import java.util.List;
 
@@ -11,5 +12,5 @@ import java.util.List;
 public interface IAllPlanView {
     void showAllPlan(List<Plan> list);
 
-    void showAllComplete(List<Plan> list);
+    void showAllComplete(List<PlanItem> list);
 }

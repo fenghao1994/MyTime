@@ -16,6 +16,7 @@ import com.example.mytime.mvp.presenter.impl.AllPlanPresenterImpl;
 import com.example.mytime.mvp.ui.adapter.AllNoteAdapter;
 import com.example.mytime.mvp.ui.adapter.AllPlanAdapter;
 import com.example.mytime.mvp.ui.adapter.PlanAdapter;
+import com.example.mytime.mvp.ui.adapter.PlanItemAdapter;
 import com.example.mytime.mvp.ui.view.IAllPlanView;
 
 import org.litepal.crud.DataSupport;
@@ -58,24 +59,23 @@ public class AllPlanActivity extends AppCompatActivity implements IAllPlanView{
 
     @Override
     public void showAllPlan(List<Plan> list) {
-        showData(list);
+//        showData(list);
     }
 
     @Override
-    public void showAllComplete(List<Plan> list) {
+    public void showAllComplete(List<PlanItem> list) {
         showData(list);
     }
 
-    public void showData(List<Plan> list){
-        ArrayList<String> count = new ArrayList<>();
-        for (int i = 0; i < list.size(); i++){
-            int num = DataSupport.where( "planId = ?", list.get(i).getPlanId() + "").count(PlanItem.class);
-            count.add( num + "");
-        }
-
+    public void showData(List<PlanItem> list){
+//        ArrayList<String> count = new ArrayList<>();
+//        for (int i = 0; i < list.size(); i++){
+//            int num = DataSupport.where( "planId = ?", list.get(i).getPlanId() + "").count(PlanItem.class);
+//            count.add( num + "");
+//        }
         LinearLayoutManager layoutManager = new LinearLayoutManager( this);
         recyclerView.setLayoutManager( layoutManager);
-        PlanAdapter adapter = new PlanAdapter(this, list, count);
+        PlanItemAdapter adapter = new PlanItemAdapter(this, list);
         recyclerView.setAdapter( adapter);
     }
 

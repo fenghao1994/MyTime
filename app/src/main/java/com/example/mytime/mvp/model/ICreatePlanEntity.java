@@ -28,5 +28,5 @@ public interface ICreatePlanEntity {
      * @param desc
      * @return
      */
-    List<Plan> getAllCompletePlan(boolean desc);
+    List<PlanItem> getAllCompletePlan(boolean desc);
 }

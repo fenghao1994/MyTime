@@ -100,9 +100,14 @@ public class PlanItemAdapter extends RecyclerView.Adapter<PlanItemAdapter.ViewHo
         holder.planItemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(mContext, CreatePlanItemActivity.class);
-                intent.putExtra("PLANITEM", mList.get(position));
-                ((CreatePlanActivity) mContext).startActivityForResult(intent, CreatePlanActivity.REQUEST);
+                if (mContext instanceof CreatePlanActivity){
+                    Intent intent = new Intent(mContext, CreatePlanItemActivity.class);
+                    intent.putExtra("PLANITEM", mList.get(position));
+                    ((CreatePlanActivity) mContext).startActivityForResult(intent, CreatePlanActivity.REQUEST);
+                }else {
+                    Toast.makeText(mContext, "此页面只能进行删除计划操作", Toast.LENGTH_SHORT).show();
+                }
+
             }
         });
         holder.planItemCha.setOnClickListener(new View.OnClickListener() {
