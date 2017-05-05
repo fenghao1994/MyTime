@@ -49,15 +49,7 @@ public class CountActivity extends AppCompatActivity {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-
-        List<Line> lines = initLine();
-        data = initData(lines);
-        mLineChartView.setLineChartData( data);
-        Viewport viewport = initViewPort();
-        mLineChartView.setMaximumViewport(viewport);
-        mLineChartView.setCurrentViewport(viewport);
-
-//        getAllCompletePlanItem();
+        getAllCompletePlanItem();
     }
 
     private Viewport initViewPort() {
@@ -70,48 +62,6 @@ public class CountActivity extends AppCompatActivity {
 
     }
 
-    private LineChartData initData(List<Line> lines) {
-        LineChartData data = new LineChartData(lines);
-        //初始化轴
-        Axis axisX = new Axis();
-        Axis axisY = new Axis().setHasLines(true);
-        axisX.setName("时间");
-        axisY.setName("数量");
-        //设置轴
-        data.setAxisYLeft(axisY);
-        data.setAxisXBottom(axisX);
-
-        return data;
-    }
-
-    private List<Line> initLine() {
-        List<Line> lineList = new ArrayList<>();
-
-        List<PointValue> pointValueList = new ArrayList<>();
-        PointValue pointValue1 = new PointValue(1,4);
-        pointValueList.add(pointValue1);
-        PointValue pointValue2 = new PointValue(2,3);
-        pointValueList.add(pointValue2);
-        PointValue pointValue3 = new PointValue(3,6);
-        pointValueList.add(pointValue3);
-        PointValue pointValue4 = new PointValue(4,1);
-        pointValueList.add(pointValue4);
-        PointValue pointValue5 = new PointValue(5,5);
-        pointValueList.add(pointValue5);
-        PointValue pointValue6 = new PointValue(6,0);
-        pointValueList.add(pointValue6);
-        PointValue pointValue7 = new PointValue(7, 10);
-        pointValueList.add(pointValue7);
-
-        Line line = new Line(pointValueList);
-        line.setColor(getResources().getColor(R.color.colorAccent));
-        line.setShape(ValueShape.CIRCLE);
-        lineList.add(line);
-
-        return lineList;
-
-    }
-
     public void getAllCompletePlanItem(){
         allCompletePlanItems = (ArrayList<PlanItem>) DataSupport.where("isComplete = ?", "1").find( PlanItem.class);
         initData();
@@ -119,6 +69,11 @@ public class CountActivity extends AppCompatActivity {
 
     public void initData(){
         Map<String, ArrayList<PlanItem>> map = new HashMap<>();
+        ArrayList<String> keyList = new ArrayList<>();
+        ArrayList<Integer> countList = new ArrayList<>();
+        ArrayList<PointValue> pointValues = new ArrayList<>();
+
+        List<Line> lineList = new ArrayList<>();
         for (int i = 0 ;i < allCompletePlanItems.size() ;i++){
             String date = MyUtil.dateYMD(allCompletePlanItems.get(i).getEditTime());
             if ( map.containsKey(date)){
@@ -132,8 +87,39 @@ public class CountActivity extends AppCompatActivity {
         for (Map.Entry<String, ArrayList<PlanItem>> entry : map.entrySet()){
             String key = entry.getKey();
             int count = entry.getValue().size();
-
+            keyList.add(key);
+            countList.add(count);
         }
+
+        ArrayList<AxisValue> aX = new ArrayList<>();
+        ArrayList<AxisValue> aY = new ArrayList<>();
+        for (int i = 0 ;i < keyList.size(); i++){
+            aX.add(new AxisValue(i + 1).setValue(i + 1).setLabel(keyList.get(i)));
+            aY.add(new AxisValue(i + 1).setValue(countList.get(i)));
+            pointValues.add(new PointValue(i + 1, countList.get(i)));
+        }
+
+        Axis axisX = new Axis();
+        Axis axisY = new Axis();
+        axisX.setValues( aX);
+        axisX.setName("时间");
+        axisY.setValues( aY);
+        axisY.setName("数量");
+        axisX.setHasTiltedLabels(true);// 设置X轴文字向左旋转45度
+
+        Line line = new Line(pointValues);
+        line.setColor(getResources().getColor(R.color.colorAccent));
+        line.setShape(ValueShape.CIRCLE);
+        lineList.add(line);
+        LineChartData data = new LineChartData(lineList);
+        //设置轴
+        data.setAxisYLeft(axisY);
+        data.setAxisXBottom(axisX);
+
+        mLineChartView.setLineChartData( data);
+        Viewport viewport = initViewPort();
+        mLineChartView.setMaximumViewport(viewport);
+        mLineChartView.setCurrentViewport(viewport);
     }
 
     @Override
