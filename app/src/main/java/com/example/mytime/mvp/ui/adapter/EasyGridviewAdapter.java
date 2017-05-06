@@ -15,6 +15,7 @@ import com.bumptech.glide.Glide;
 import com.example.mytime.R;
 import com.example.mytime.mvp.model.entity.Photo;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -27,10 +28,22 @@ public class EasyGridviewAdapter extends BaseAdapter{
     private Context mContext;
     private int mImageWidth;
 
-    public EasyGridviewAdapter(Context context, List<Photo> list, int imageWidth){
+    /*public EasyGridviewAdapter(Context context, List<Photo> list, int imageWidth){
         this.mContext = context;
         this.mList = list;
         this.mImageWidth = imageWidth;
+    }*/
+
+    public EasyGridviewAdapter(Context context, int imageWidth){
+        this.mContext = context;
+        this.mList = new ArrayList<>();
+        this.mImageWidth = imageWidth;
+    }
+
+    public void setData(List<Photo> list){
+        this.mList.clear();
+        this.mList.addAll(list);
+        notifyDataSetChanged();
     }
 
     @Override

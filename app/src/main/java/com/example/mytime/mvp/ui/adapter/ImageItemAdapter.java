@@ -24,10 +24,12 @@ public class ImageItemAdapter extends BaseAdapter {
 
     private ArrayList<ImageItem> mArrayList;
     private Context mContext;
+    private int mImageWidth;
 
-    public ImageItemAdapter(ArrayList<ImageItem> arrayList, Context context){
+    public ImageItemAdapter(ArrayList<ImageItem> arrayList, Context context, int imageWidth){
         this.mArrayList = arrayList;
         this.mContext = context;
+        this.mImageWidth = imageWidth;
     }
 
     @Override
@@ -56,6 +58,10 @@ public class ImageItemAdapter extends BaseAdapter {
         }else {
             viewHolder = (ViewHolder) view.getTag();
         }
+        ViewGroup.LayoutParams param = viewHolder.imageView.getLayoutParams();
+        param.height = mImageWidth;
+        param.width = mImageWidth;
+        viewHolder.imageView.setLayoutParams(param);
         Glide.with( mContext).load( mArrayList.get(i).path).into( viewHolder.imageView);
         return view;
     }

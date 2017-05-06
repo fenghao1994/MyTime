@@ -13,14 +13,11 @@
         android:layout_height="?attr/actionBarSize"
         android:navigationIcon="@drawable/back"
         app:navigationIcon="@drawable/back"
+        android:visibility="gone"
         ></android.support.v7.widget.Toolbar>
-    <uk.co.senab.photoview.PhotoView
-        android:layout_marginTop="?attr/actionBarSize"
+
+    <com.example.mytime.mvp.ui.custom.photoview.PhotoView
         android:id="@+id/photo_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scaleType="centerInside"
-        android:layout_centerInParent="true"
-        />
-
+        android:layout_height="match_parent"/>
 </android.support.design.widget.CoordinatorLayout>

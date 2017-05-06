@@ -133,7 +133,10 @@ public class CreatePlanItemActivity extends AppCompatActivity implements ICreate
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
         createPlanItemPresenter = new CreatePlanItemPresenterImpl(this);
+        getWidth();
 
+        easyGridviewAdapter = new EasyGridviewAdapter(this, mWidth);
+        gridview.setAdapter(easyGridviewAdapter);
 
         dateDialog = new DateDialog(this);
         timeDialog = new TimeDialog(this);
@@ -146,6 +149,7 @@ public class CreatePlanItemActivity extends AppCompatActivity implements ICreate
             initView();
             createPlanItemPresenter.showData(planItem);
         }
+        getWidth();
     }
 
     public void initView(){
@@ -166,8 +170,6 @@ public class CreatePlanItemActivity extends AppCompatActivity implements ICreate
 
     @Override
     public void showData(PlanItem planItem, List<Photo> photos) {
-        getWidth();
-
         toolbarTitle.setText("编辑");
         contentTitle.setText(planItem.getTitle());
 
@@ -176,8 +178,7 @@ public class CreatePlanItemActivity extends AppCompatActivity implements ICreate
 
         content.setText(planItem.getContent());
         planItemAddress = (ArrayList<Photo>) photos;
-        easyGridviewAdapter = new EasyGridviewAdapter(this, planItemAddress, mWidth);
-        gridview.setAdapter(easyGridviewAdapter);
+        easyGridviewAdapter.setData(planItemAddress);
         planItemLocation = planItem.getLocation();
         planItemYear = planItem.getYear();
         planItemMonth = planItem.getMonth();
@@ -422,14 +423,15 @@ public class CreatePlanItemActivity extends AppCompatActivity implements ICreate
         if (resultCode == ImagePicker.RESULT_CODE_ITEMS) {
             if (data != null && requestCode == IMAGE_PICKER) {
                 images = (ArrayList<ImageItem>) data.getSerializableExtra(ImagePicker.EXTRA_RESULT_ITEMS);
-                ImageItemAdapter imageItemAdapter = new ImageItemAdapter(images, this);
-                gridview.setAdapter(imageItemAdapter);
+               /* ImageItemAdapter imageItemAdapter = new ImageItemAdapter(images, this, mWidth);
+                gridview.setAdapter(imageItemAdapter);*/
                 planItemAddress = new ArrayList<>();
                 for (int i = 0; i < images.size(); i++) {
                     Photo photo = new Photo();
                     photo.setAddress(images.get(i).path);
                     planItemAddress.add(photo);
                 }
+                easyGridviewAdapter.setData(planItemAddress);
                 if ( planItemAddress != null && planItemAddress.size() > 0){
                     mPhotoGou.setVisibility(View.VISIBLE);
                 }else {

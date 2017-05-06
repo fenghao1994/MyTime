@@ -9,6 +9,7 @@ import android.view.Display;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -75,11 +76,27 @@ public class CreateNoteActivity extends AppCompatActivity implements ICreateNote
         setContentView(R.layout.activity_create_note);
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
+
+        getWidth();
+        easyGridviewAdapter = new EasyGridviewAdapter(this, mWidth);
+        gridview.setAdapter(easyGridviewAdapter);
+
         createNotePresenter = new CreateNotePresenterImpl(this);
         note = (Note) getIntent().getSerializableExtra("NOTE");
         if (note != null) {
             createNotePresenter.showData(note);
         }
+
+        gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(CreateNoteActivity.this, ImageZoomActivity.class);
+                intent.putExtra("image_path", noteAddress.get(position).getAddress());
+                startActivity(intent);
+            }
+        });
+
+
     }
 
     /**
@@ -93,15 +110,13 @@ public class CreateNoteActivity extends AppCompatActivity implements ICreateNote
 
     @Override
     public void showData(Note note, List<Photo> list) {
-        getWidth();
         content.setText(note.getContent());
 
         //光标置于文末处
         content.setSelection(note.getContent().length());
-
+        easyGridviewAdapter.setData(list);
         toolbarTitle.setText("编辑");
-        easyGridviewAdapter = new EasyGridviewAdapter(this, list, mWidth);
-        gridview.setAdapter(easyGridviewAdapter);
+
         noteAddress = (ArrayList<Photo>) list;
         note.setAddress( noteAddress);
 
@@ -121,15 +136,16 @@ public class CreateNoteActivity extends AppCompatActivity implements ICreateNote
         if (resultCode == ImagePicker.RESULT_CODE_ITEMS) {
             if (data != null && requestCode == IMAGE_PICKER) {
                 images = (ArrayList<ImageItem>) data.getSerializableExtra(ImagePicker.EXTRA_RESULT_ITEMS);
-                ImageItemAdapter imageItemAdapter = new ImageItemAdapter(images, this);
+                /*ImageItemAdapter imageItemAdapter = new ImageItemAdapter(images, this, mWidth);
                 gridview.setAdapter(imageItemAdapter);
-                imageItemAdapter.notifyDataSetChanged();
+                imageItemAdapter.notifyDataSetChanged();*/
                 noteAddress = new ArrayList<>();
                 for (int i = 0; i < images.size(); i++) {
                     Photo photo = new Photo();
                     photo.setAddress(images.get(i).path);
                     noteAddress.add(photo);
                 }
+                easyGridviewAdapter.setData(noteAddress);
                 if (images != null && images.size() > 0){
                     photoGou.setVisibility(View.VISIBLE);
                 }
@@ -212,7 +228,7 @@ public class CreateNoteActivity extends AppCompatActivity implements ICreateNote
         super.onBackPressed();
         this.finish();
     }
-
+/*
     @OnItemClick(R.id.gridview)
     public void onItemClick(int position) {
         if (noteAddress != null) {
@@ -221,5 +237,5 @@ public class CreateNoteActivity extends AppCompatActivity implements ICreateNote
             startActivity(intent);
         }
 
-    }
+    }*/
 }
