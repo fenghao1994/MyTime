@@ -142,7 +142,7 @@ public class LocalService extends Service {
             if ( result[0] > 0.000001 && result[0] < 50){
                 Intent intent = new Intent(this, AlarmReceiver.class);
                 intent.setAction(Extra.ALARM_LOCATION);
-                intent.putExtra("PLANITEM", mPlanItem.get( i));
+                intent.putExtra("PLAN_ITEM", mPlanItem.get( i));
                 sendBroadcast( intent);
             }
             Log.i("LocalService", "distance is jin ");

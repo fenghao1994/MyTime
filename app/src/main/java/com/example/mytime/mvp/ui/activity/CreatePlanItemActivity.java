@@ -334,6 +334,7 @@ public class CreatePlanItemActivity extends AppCompatActivity implements ICreate
     @Override
     public void setAlarm(Calendar calendar) {
         Intent intent = new Intent(this, AlarmReceiver.class);
+        intent.putExtra("PLAN_ITEM", planItem);
         intent.setAction(Extra.ALARM_CLOCK);
         PendingIntent pi = PendingIntent.getBroadcast(this, planItem.getId(), intent, 0);
         AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
@@ -352,7 +353,6 @@ public class CreatePlanItemActivity extends AppCompatActivity implements ICreate
 
         }*/
     }
-
     /**
      * 展示dialog
      */
