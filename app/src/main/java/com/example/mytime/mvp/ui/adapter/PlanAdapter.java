@@ -16,6 +16,7 @@ import com.example.mytime.mvp.model.entity.Plan;
 import com.example.mytime.mvp.ui.activity.CreatePlanActivity;
 import com.example.mytime.util.MyUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -26,15 +27,21 @@ import butterknife.ButterKnife;
  */
 
 public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.ViewHolder> {
-    private List<Plan> mList;
+    private List<Plan> mList = new ArrayList<>();
     private Context mContext;
-    private List<String> mCount;
+    private List<String> mCount = new ArrayList<>();
 
 
     public PlanAdapter(Context context, List<Plan> list, List<String> count){
         this.mContext = context;
-        this.mList = list;
-        this.mCount = count;
+        for (int i = 0; i < count.size(); i++){
+            if (!count.get(i).equals("0")){
+                this.mCount.add(count.get(i));
+                this.mList.add(list.get(i));
+            }
+        }
+//        this.mList = list;
+//        this.mCount = count;
     }
 
     @Override

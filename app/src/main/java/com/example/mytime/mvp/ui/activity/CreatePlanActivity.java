@@ -156,8 +156,8 @@ public class CreatePlanActivity extends AppCompatActivity implements ICreatePlan
         Display display = windowManager.getDefaultDisplay();
         WindowManager.LayoutParams layoutParams = window.getAttributes();
 //        layoutParams.height = (int)(display.getHeight() * 0.2);
-        layoutParams.width = (int)(display.getWidth() * 0.9);
-        window.setAttributes( layoutParams);
+        layoutParams.width = (int) (display.getWidth() * 0.9);
+        window.setAttributes(layoutParams);
 
         titleDialog.setResultListener(new TitleDialog.ResultListener() {
             @Override
@@ -259,6 +259,10 @@ public class CreatePlanActivity extends AppCompatActivity implements ICreatePlan
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+        if (isCompletePlanItem && plan != null && isFromFab) {
+            plan.setTitle("");
+            createPlanPresenter.savePlan(plan);
+        }
         this.finish();
     }
 }

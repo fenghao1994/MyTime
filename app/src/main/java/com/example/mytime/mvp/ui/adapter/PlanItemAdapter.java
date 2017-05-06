@@ -22,12 +22,14 @@ import com.example.mytime.mvp.model.entity.PlanItem;
 import com.example.mytime.mvp.ui.activity.CreatePlanActivity;
 import com.example.mytime.mvp.ui.activity.CreatePlanItemActivity;
 import com.example.mytime.receiver.AlarmReceiver;
+import com.example.mytime.util.EditTimeSortFromBToS;
 import com.example.mytime.util.MyUtil;
 
 import org.litepal.crud.DataSupport;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.List;
 
 import butterknife.BindView;
@@ -45,6 +47,8 @@ public class PlanItemAdapter extends RecyclerView.Adapter<PlanItemAdapter.ViewHo
     //    private List<Time> times;
     private Context mContext;
     private AlertDialog alertDialog;
+    private ArrayList<PlanItem> completeList = new ArrayList<>();
+    private ArrayList<PlanItem> notCompleteList = new ArrayList<>();
 
     public PlanItemAdapter(Context context, List<PlanItem> list) {
         this.mContext = context;
@@ -54,9 +58,18 @@ public class PlanItemAdapter extends RecyclerView.Adapter<PlanItemAdapter.ViewHo
     private void initData(List<PlanItem> list){
         for (int i = 0 ; i < list.size() ; i++){
             if ( !list.get(i).isDelete()){
-                this.mList.add(list.get(i));
+                if (list.get(i).isComplete()){
+                    completeList.add(list.get(i));
+                }else {
+                    notCompleteList.add(list.get(i));
+                }
             }
         }
+        EditTimeSortFromBToS editTimeSortFromBToS = new EditTimeSortFromBToS();
+        Collections.sort(completeList, editTimeSortFromBToS);
+        Collections.sort(notCompleteList, editTimeSortFromBToS);
+        this.mList.addAll(notCompleteList);
+        this.mList.addAll(completeList);
     }
 
     @Override
@@ -72,13 +85,14 @@ public class PlanItemAdapter extends RecyclerView.Adapter<PlanItemAdapter.ViewHo
         //// TODO: 2017/1/4  显示的时间处理
 
         //如果只提醒一次则显示年月日，否则不显示
-        final PlanItem planItem = mList.get(position);
+        holder.setIsRecyclable(false);
+        PlanItem planItem = mList.get(position);
         if (planItem.isDelete()){
             holder.cardView.setVisibility(View.GONE);
         }
         if (planItem.isComplete()){
             holder.planItemOk.setImageDrawable(mContext.getResources().getDrawable(R.drawable.gou_gray));
-            holder.planItemOk.setClickable(false);
+            holder.planItemOk.setEnabled(false);
             holder.planItemTitle.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);
             holder.planItemContent.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);
         }

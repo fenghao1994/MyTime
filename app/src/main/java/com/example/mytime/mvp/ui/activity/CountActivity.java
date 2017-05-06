@@ -3,21 +3,18 @@ package com.example.mytime.mvp.ui.activity;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.DisplayMetrics;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.example.mytime.R;
 import com.example.mytime.mvp.model.entity.PlanItem;
-import com.example.mytime.mvp.ui.custom.ChartView;
+import com.example.mytime.util.EditTimeSortFromBToS;
+import com.example.mytime.util.EditTimeSortFromSToB;
 import com.example.mytime.util.MyUtil;
 
 import org.litepal.crud.DataSupport;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -91,6 +88,8 @@ public class CountActivity extends AppCompatActivity {
             countList.add(count);
         }
 
+        Collections.reverse(keyList);
+        Collections.reverse(countList);
         ArrayList<AxisValue> aX = new ArrayList<>();
         ArrayList<AxisValue> aY = new ArrayList<>();
         for (int i = 0 ;i < keyList.size(); i++){

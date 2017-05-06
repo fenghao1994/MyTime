@@ -1,6 +1,8 @@
 package com.example.mytime.mvp.ui.fragment;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -46,15 +48,26 @@ public class NavigationFragment extends Fragment {
     LinearLayout signOutLayout;
 
     private ArrayList<ImageItem> mImageItem;
+    private SharedPreferences sp;
+    private String headerPath;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_navigation, container, false);
         ButterKnife.bind(this, view);
+
+        sp = getActivity().getSharedPreferences("MYTIME", Context.MODE_PRIVATE);
+        headerPath = sp.getString("path", "");
+        showHeadImg();
         return view;
     }
 
+    public void showHeadImg(){
+        if ( !"".equals(headerPath)){
+            Glide.with(this).load( headerPath).into( headerImg);
+        }
+    }
 
     @OnClick({R.id.header_img, R.id.plan_layout, R.id.complete_layout, R.id.note_layout, R.id.count_layout, R.id.sign_out_layout})
     public void onClick(View view) {
@@ -91,6 +104,8 @@ public class NavigationFragment extends Fragment {
             if (data != null && requestCode == 1) {
                 mImageItem = (ArrayList<ImageItem>) data.getSerializableExtra(ImagePicker.EXTRA_RESULT_ITEMS);
                 Glide.with(this).load( mImageItem.get(0).path).into( headerImg);
+                sp.edit().putString("path", mImageItem.get(0).path).commit();
+
             } else {
                 Toast.makeText(getActivity(), "没有数据", Toast.LENGTH_SHORT).show();
             }
