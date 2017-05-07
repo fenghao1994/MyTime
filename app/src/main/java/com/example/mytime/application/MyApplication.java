@@ -6,11 +6,15 @@ import com.example.mytime.util.GlideImageLoader;
 import com.lzy.imagepicker.ImagePicker;
 import com.lzy.imagepicker.view.CropImageView;
 import com.mob.mobapi.MobAPI;
+import com.zhy.http.okhttp.OkHttpUtils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.litepal.LitePal;
 
+import java.util.concurrent.TimeUnit;
+
 import cn.smssdk.SMSSDK;
+import okhttp3.OkHttpClient;
 
 /**
  * Created by fenghao on 2017/1/3.
@@ -41,5 +45,13 @@ public class MyApplication extends Application {
 
         SMSSDK.initSDK(this, "1c65bcce52490", "1b30899dd5a451437bf17a4b9275fd20");
 
+        OkHttpClient okHttpClient = new OkHttpClient.Builder()
+//                .addInterceptor(new LoggerInterceptor("TAG"))
+                .connectTimeout(10000L, TimeUnit.MILLISECONDS)
+                .readTimeout(10000L, TimeUnit.MILLISECONDS)
+                //其他配置
+                .build();
+
+        OkHttpUtils.initClient(okHttpClient);
     }
 }

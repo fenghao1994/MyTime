@@ -1,12 +1,15 @@
 package com.example.mytime.mvp.ui.activity;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Display;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,26 +22,36 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.mytime.R;
+import com.example.mytime.http_callback.UserCallBack;
 import com.example.mytime.mvp.model.entity.Note;
 import com.example.mytime.mvp.model.entity.Photo;
+import com.example.mytime.mvp.model.entity.User;
 import com.example.mytime.mvp.presenter.ICreateNotePresenter;
 import com.example.mytime.mvp.presenter.impl.CreateNotePresenterImpl;
 import com.example.mytime.mvp.ui.adapter.EasyGridviewAdapter;
 import com.example.mytime.mvp.ui.adapter.ImageItemAdapter;
 import com.example.mytime.mvp.ui.view.ICreateNoteView;
+import com.example.mytime.util.Extra;
+import com.example.mytime.util.HttpUrl;
 import com.lzy.imagepicker.ImagePicker;
 import com.lzy.imagepicker.bean.ImageItem;
 import com.lzy.imagepicker.ui.ImageGridActivity;
+import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.callback.StringCallback;
 
 import org.litepal.crud.DataSupport;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnItemClick;
+import okhttp3.Call;
 
 public class CreateNoteActivity extends AppCompatActivity implements ICreateNoteView , EasyGridviewAdapter.onDeleteImage {
 
@@ -72,6 +85,7 @@ public class CreateNoteActivity extends AppCompatActivity implements ICreateNote
     private AlertDialog alertDialog;
 
     private int mWidth;
+    private SharedPreferences sp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,6 +122,8 @@ public class CreateNoteActivity extends AppCompatActivity implements ICreateNote
         });
 
         easyGridviewAdapter.setOnDeleteImage(this);
+
+        sp = getSharedPreferences("MYTIME", Context.MODE_PRIVATE);
 
 
     }
@@ -205,6 +221,11 @@ public class CreateNoteActivity extends AppCompatActivity implements ICreateNote
             note.setContent(noteContent);
             note.setAddress(noteAddress);
 
+            //需要上传到服务器
+            if (Extra.NET_WORK == 2){
+                saveObjectWithNetWork();
+            }
+
             createNotePresenter.saveNote(note, noteAddress);
 
         } else {
@@ -214,6 +235,11 @@ public class CreateNoteActivity extends AppCompatActivity implements ICreateNote
             note.setEdit(noteIsEdit);
             note.setAddress(noteAddress);
             note.setContent(noteContent);
+
+            //需要上传到服务器
+            if (Extra.NET_WORK == 2){
+                updateObjectWithNetWork();
+            }
 
             createNotePresenter.update(note, noteAddress);
         }
@@ -268,16 +294,44 @@ public class CreateNoteActivity extends AppCompatActivity implements ICreateNote
                     }
                 })
                 .show();
-
     }
-/*
-    @OnItemClick(R.id.gridview)
-    public void onItemClick(int position) {
-        if (noteAddress != null) {
-            Intent intent = new Intent(this, ImageZoomActivity.class);
-            intent.putExtra("image_path", noteAddress.get(position).getAddress());
-            startActivity(intent);
+    
+    public void saveObjectWithNetWork(){
+        postUrl(HttpUrl.POST_SAVE_NOTE);
+    }
+    public void updateObjectWithNetWork(){
+        postUrl(HttpUrl.POST_UPDATA_NOTE);
+    }
+    public void postUrl(String url){
+        Map<String, File> map = new HashMap<>();
+        for (int i = 0 ; i < noteAddress.size(); i++){
+            File file = new File(noteAddress.get(i).getAddress());
+            map.put("file" + i, file);
         }
 
-    }*/
+        OkHttpUtils
+                .post()
+                .url(url)
+                .addParams("phoneNumber", sp.getString("phoneNumber", ""))
+                .addParams("id", note.getId() + "")
+                .addParams("title", note.getTitle())
+                .addParams("content", note.getContent())
+                .addParams("createTime", note.getCreateTime() + "")
+                .addParams("editTime", note.getEditTime() + "")
+                .addParams("isEdit", note.isEdit() + "")
+                .addParams("isDelete", note.isDelete() + "")
+                .files("address", map)
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        Log.e("MYTIME_OKHTTP", e.toString());
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+
+                    }
+                });
+    }
 }

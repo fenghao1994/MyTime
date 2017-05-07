@@ -15,7 +15,7 @@ public class GuideActivity extends AppCompatActivity {
     private Handler handler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
-            Intent intent = new Intent(GuideActivity.this, LoginActivity.class);
+            Intent intent = new Intent(GuideActivity.this, RegisterActivity.class);
             startActivity( intent);
             finish();
         }

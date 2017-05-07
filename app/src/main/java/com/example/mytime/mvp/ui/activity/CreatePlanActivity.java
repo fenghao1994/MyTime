@@ -1,6 +1,8 @@
 package com.example.mytime.mvp.ui.activity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -9,6 +11,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Display;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,14 +30,22 @@ import com.example.mytime.mvp.presenter.impl.CreatePlanPresenterImpl;
 import com.example.mytime.mvp.ui.adapter.PlanItemAdapter;
 import com.example.mytime.mvp.ui.custom.TitleDialog;
 import com.example.mytime.mvp.ui.view.ICreatePlanView;
+import com.example.mytime.util.Extra;
+import com.example.mytime.util.HttpUrl;
+import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.callback.StringCallback;
 
 import org.litepal.crud.DataSupport;
 
+import java.io.File;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import okhttp3.Call;
 
 public class CreatePlanActivity extends AppCompatActivity implements ICreatePlanView {
 
@@ -65,7 +76,7 @@ public class CreatePlanActivity extends AppCompatActivity implements ICreatePlan
     PlanItemAdapter adapter;
 
     private boolean isFromFab;
-
+    private SharedPreferences sp;
 
     private ICreatePlanPresenter createPlanPresenter;
 
@@ -88,6 +99,7 @@ public class CreatePlanActivity extends AppCompatActivity implements ICreatePlan
         } else {
             createPlanInData();
         }
+        sp = getSharedPreferences("MYTIME", Context.MODE_PRIVATE);
     }
 
     @Override
@@ -167,10 +179,19 @@ public class CreatePlanActivity extends AppCompatActivity implements ICreatePlan
                         if (isFromFab) {
                             plan.setTitle(str);
                             createPlanPresenter.savePlan(plan);
+                            //等于2 上传到服务器
+                            if (Extra.NET_WORK == 2){
+                                saveObjectWithNetWork();
+                            }
+
                         } else {
                             plan.setTitle(str);
                             editPlanData();
                             createPlanPresenter.updatePlan(plan);
+                            //等于2 上传到服务器
+                            if (Extra.NET_WORK == 2){
+                                updateObjectWithNetWork();
+                            }
                         }
                         titleDialog.dismiss();
                         Toast.makeText(CreatePlanActivity.this, "设置成功", Toast.LENGTH_SHORT).show();
@@ -181,6 +202,11 @@ public class CreatePlanActivity extends AppCompatActivity implements ICreatePlan
                                 plan.setTitle(str);
                                 editPlanData();
                                 createPlanPresenter.savePlan(plan);
+
+                                //等于2 上传到服务器
+                                if (Extra.NET_WORK == 2){
+                                    saveObjectWithNetWork();
+                                }
                             }
                             Toast.makeText(CreatePlanActivity.this, "设置成功", Toast.LENGTH_SHORT).show();
                             titleDialog.dismiss();
@@ -262,7 +288,46 @@ public class CreatePlanActivity extends AppCompatActivity implements ICreatePlan
         if (isCompletePlanItem && plan != null && isFromFab) {
             plan.setTitle("");
             createPlanPresenter.savePlan(plan);
+            //等于2 上传到服务器
+            if (Extra.NET_WORK == 2){
+                saveObjectWithNetWork();
+            }
         }
         this.finish();
+    }
+
+    public void saveObjectWithNetWork(){
+        postUrl(HttpUrl.POST_SAVE_PLAN);
+    }
+
+    public void updateObjectWithNetWork(){
+        postUrl(HttpUrl.POST_UPDATA_PLAN);
+    }
+
+    public void postUrl(String url){
+        OkHttpUtils
+                .post()
+                .url(url)
+                .addParams("phoneNumber", sp.getString("phoneNumber", ""))
+                .addParams("id", plan.getId() + "")
+                .addParams("planId", plan.getPlanId() + "")
+                .addParams("title", plan.getTitle())
+                .addParams("isExpired", plan.isExpired() + "")
+                .addParams("isComplete", plan.isComplete() + "")
+                .addParams("createTime", plan.getCreateTime() + "")
+                .addParams("editTime", plan.getEditTime() + "")
+                .addParams("isEdit", plan.isEdit() + "")
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        Log.e("MYTIME_OKHTTP", e.toString());
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+
+                    }
+                });
     }
 }

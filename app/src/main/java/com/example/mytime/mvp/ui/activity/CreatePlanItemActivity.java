@@ -2,13 +2,16 @@ package com.example.mytime.mvp.ui.activity;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Display;
 import android.view.MenuItem;
 import android.view.View;
@@ -35,20 +38,27 @@ import com.example.mytime.mvp.ui.custom.TimeDialog;
 import com.example.mytime.mvp.ui.view.ICreatePlanItemView;
 import com.example.mytime.receiver.AlarmReceiver;
 import com.example.mytime.util.Extra;
+import com.example.mytime.util.HttpUrl;
 import com.lzy.imagepicker.ImagePicker;
 import com.lzy.imagepicker.bean.ImageItem;
 import com.lzy.imagepicker.ui.ImageGridActivity;
+import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.callback.StringCallback;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnItemClick;
+import okhttp3.Call;
 
 import static com.example.mytime.R.drawable.note;
 
@@ -107,7 +117,7 @@ public class CreatePlanItemActivity extends AppCompatActivity implements ICreate
     boolean planItemIsExpired;
     boolean planItemIsComplete;
     ArrayList<Photo> planItemAddress;
-
+    private SharedPreferences sp;
     //设置一个-1来判断是否真的点击设定按钮
     int planItemYear = -1, planItemMonth, planItemDay, planItemHour = -1, planItemMinute, planItemAlarmWay;
     /**
@@ -166,6 +176,7 @@ public class CreatePlanItemActivity extends AppCompatActivity implements ICreate
                 return true;
             }
         });
+        sp = getSharedPreferences("MYTIME", Context.MODE_PRIVATE);
     }
 
     public void initView(){
@@ -306,6 +317,11 @@ public class CreatePlanItemActivity extends AppCompatActivity implements ICreate
             planItem.setExpired(planItemIsExpired);
             planItem.setComplete(planItemIsComplete);
 
+            //如果等于2 需要上传到服务器
+            if (Extra.NET_WORK == 2){
+                saveObjectWithNetWork();
+            }
+
             createPlanItemPresenter.savePlanItem(planItem, planItemAddress);
         } else {
             planItemEditTime = System.currentTimeMillis();
@@ -329,6 +345,11 @@ public class CreatePlanItemActivity extends AppCompatActivity implements ICreate
             planItem.setManyDays(planItemIsManyDays);
             planItem.setExpired(planItemIsExpired);
             planItem.setComplete(planItemIsComplete);
+
+            if (Extra.NET_WORK == 2){
+                updateObjectWithNetWork();
+            }
+
             createPlanItemPresenter.updatePlanItem(planItem, planItemAddress);
         }
 
@@ -536,5 +557,63 @@ public class CreatePlanItemActivity extends AppCompatActivity implements ICreate
                     }
                 })
                 .show();
+    }
+
+
+    public void saveObjectWithNetWork(){
+        postUrl(HttpUrl.POST_SAVE_PLAN_ITEM);
+    }
+
+    public void updateObjectWithNetWork(){
+        postUrl(HttpUrl.POST_UPDATA_PLAN_ITEM);
+    }
+
+    public void postUrl(String url){
+        Map<String, File> map = new HashMap<>();
+        for (int i = 0 ; i < planItemAddress.size(); i++){
+            File file = new File(planItemAddress.get(i).getAddress());
+            map.put("file" + i, file);
+        }
+
+        OkHttpUtils
+                .post()
+                .url(url)
+                .addParams("phoneNumber", sp.getString("phoneNumber", ""))
+                .addParams("id", planItem.getId() + "")
+                .addParams("planId", planItem.getPlanId() + "")
+                .addParams("title", planItem.getTitle())
+                .addParams("content", planItem.getContent() + "")
+                .addParams("createTime", planItem.getCreateTime() + "")
+                .addParams("editTime", planItem.getEditTime() + "")
+                .addParams("isEdit", planItem.isEdit() + "")
+                .addParams("phoneNumberLianXi", planItem.getPhoneNumber() + "")
+                .addParams("messageContent", planItem.getMessageContent() + "")
+                .addParams("messagePhoneNumber", planItem.getMessagePhoneNumber() + "")
+                .addParams("location", planItem.getLocation() + "")
+                .addParams("isEveryDay", planItem.isEveryDay() + "")
+                .addParams("isManyDays", planItem.isManyDays() + "")
+                .addParams("isExpired", planItem.isExpired() + "")
+                .addParams("isComplete", planItem.isComplete() + "")
+                .addParams("isDelete", planItem.isDelete() + "")
+                .addParams("year", planItem.getYear() + "")
+                .addParams("month", planItem.getMonth() + "")
+                .addParams("day", planItem.getDay() + "")
+                .addParams("hour", planItem.getHour() + "")
+                .addParams("minute", planItem.getMinute() + "")
+                .addParams("alarmWay", planItem.getAlarmWay() + "")
+                .addParams("describe", planItem.getDescribe() + "")
+                .files("address", map)
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        Log.e("MYTIME_OKHTTP", e.toString());
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+
+                    }
+                });
     }
 }

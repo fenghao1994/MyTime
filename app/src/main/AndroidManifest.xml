@@ -54,7 +54,7 @@
         </activity>
         <activity android:name=".mvp.ui.activity.GuideActivity" />
         <activity
-            android:name=".mvp.ui.activity.LoginActivity"
+            android:name=".mvp.ui.activity.RegisterActivity"
             android:label="My Time">
 
             <!--
@@ -96,11 +96,11 @@
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:theme="@android:style/Theme.Translucent.NoTitleBar"
             android:windowSoftInputMode="stateHidden|adjustResize" />
-        <activity android:name=".mvp.ui.activity.CountActivity"></activity>
-        <activity android:name=".mvp.ui.activity.PhoneAndMessageActivity"></activity>
+        <activity android:name=".mvp.ui.activity.CountActivity" />
+        <activity android:name=".mvp.ui.activity.PhoneAndMessageActivity" />
         <activity android:name=".mvp.ui.activity.ImageOneActivity" />
-        <activity android:name=".mvp.ui.activity.TransActivity"
-            ></activity>
+        <activity android:name=".mvp.ui.activity.TransActivity" />
+        <activity android:name=".mvp.ui.activity.LoginActivity"></activity>
     </application>
 
 </manifest>

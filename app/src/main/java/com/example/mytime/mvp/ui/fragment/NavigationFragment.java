@@ -17,6 +17,7 @@ import com.example.mytime.mvp.ui.activity.AllNoteActivity;
 import com.example.mytime.mvp.ui.activity.AllPlanActivity;
 import com.example.mytime.mvp.ui.activity.CountActivity;
 import com.example.mytime.mvp.ui.activity.ImageOneActivity;
+import com.example.mytime.util.Extra;
 import com.lzy.imagepicker.ImagePicker;
 import com.lzy.imagepicker.bean.ImageItem;
 import com.lzy.imagepicker.ui.ImageGridActivity;
@@ -105,11 +106,19 @@ public class NavigationFragment extends Fragment {
                 mImageItem = (ArrayList<ImageItem>) data.getSerializableExtra(ImagePicker.EXTRA_RESULT_ITEMS);
                 Glide.with(this).load( mImageItem.get(0).path).into( headerImg);
                 sp.edit().putString("path", mImageItem.get(0).path).commit();
+                //如果等于2  需要上传到服务器
+                if (Extra.NET_WORK == 2){
+                    submitHeadImg(mImageItem.get(0).path);
+                }
 
             } else {
                 Toast.makeText(getActivity(), "没有数据", Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    public void submitHeadImg(String path){
+        //// TODO: 2017/5/7 上传头像
     }
 
     private void showCountPlan() {

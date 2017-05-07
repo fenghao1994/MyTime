@@ -58,5 +58,7 @@ dependencies {
 
     //hello -- chart
     compile 'com.github.lecho:hellocharts-library:1.5.8@aar'
+    //okhttp
+    compile 'com.zhy:okhttputils:2.6.2'
 
 }
