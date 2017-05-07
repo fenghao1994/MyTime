@@ -2,8 +2,10 @@ package com.example.mytime.mvp.ui.activity;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -11,6 +13,7 @@ import android.view.Display;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -47,7 +50,9 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnItemClick;
 
-public class CreatePlanItemActivity extends AppCompatActivity implements ICreatePlanItemView {
+import static com.example.mytime.R.drawable.note;
+
+public class CreatePlanItemActivity extends AppCompatActivity implements ICreatePlanItemView, EasyGridviewAdapter.onDeleteImage{
 
     private static final int IMAGE_PICKER = 1;
     private static final int REQUEST_LOCATION = 2;
@@ -125,6 +130,7 @@ public class CreatePlanItemActivity extends AppCompatActivity implements ICreate
     @BindView(R.id.time_gou)
     ImageView mTimeGou;
     private int mWidth;
+    private AlertDialog alertDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -150,6 +156,16 @@ public class CreatePlanItemActivity extends AppCompatActivity implements ICreate
             createPlanItemPresenter.showData(planItem);
         }
         getWidth();
+        easyGridviewAdapter.setOnDeleteImage(this);
+
+        gridview.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                easyGridviewAdapter.setFlag(true);
+                easyGridviewAdapter.notifyDataSetChanged();
+                return true;
+            }
+        });
     }
 
     public void initView(){
@@ -173,6 +189,9 @@ public class CreatePlanItemActivity extends AppCompatActivity implements ICreate
         toolbarTitle.setText("编辑");
         contentTitle.setText(planItem.getTitle());
 
+        if (photos.size() > 0){
+            mPhotoGou.setVisibility(View.VISIBLE);
+        }
         //光标置于文末处
         contentTitle.setSelection(planItem.getTitle().length());
 
@@ -488,5 +507,34 @@ public class CreatePlanItemActivity extends AppCompatActivity implements ICreate
     public void onBackPressed() {
         this.finish();
         super.onBackPressed();
+    }
+
+    @Override
+    public void onDelete(final int position) {
+        alertDialog = new AlertDialog.Builder(this)
+                .setMessage("确定要删除吗?")
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        planItemAddress.remove(position);
+                        easyGridviewAdapter.setFlag(false);
+                        easyGridviewAdapter.setData(planItemAddress);
+
+//                        planItem.setAddress(planItemAddress);
+//                        planItem.update(planItem.getId());
+                        alertDialog.dismiss();
+                        if (planItemAddress.size() == 0){
+                            mPhotoGou.setVisibility(View.GONE);
+                        }
+                    }
+                })
+                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        alertDialog.dismiss();
+                        return;
+                    }
+                })
+                .show();
     }
 }

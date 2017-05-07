@@ -1,7 +1,9 @@
 package com.example.mytime.mvp.ui.activity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -38,7 +40,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnItemClick;
 
-public class CreateNoteActivity extends AppCompatActivity implements ICreateNoteView {
+public class CreateNoteActivity extends AppCompatActivity implements ICreateNoteView , EasyGridviewAdapter.onDeleteImage {
 
     private static final int IMAGE_PICKER = 1;
 
@@ -67,6 +69,7 @@ public class CreateNoteActivity extends AppCompatActivity implements ICreateNote
     Note note;
     EasyGridviewAdapter easyGridviewAdapter;
     ICreateNotePresenter createNotePresenter;
+    private AlertDialog alertDialog;
 
     private int mWidth;
 
@@ -95,6 +98,16 @@ public class CreateNoteActivity extends AppCompatActivity implements ICreateNote
                 startActivity(intent);
             }
         });
+        gridview.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                easyGridviewAdapter.setFlag(true);
+                easyGridviewAdapter.notifyDataSetChanged();
+                return true;
+            }
+        });
+
+        easyGridviewAdapter.setOnDeleteImage(this);
 
 
     }
@@ -227,6 +240,35 @@ public class CreateNoteActivity extends AppCompatActivity implements ICreateNote
     public void onBackPressed() {
         super.onBackPressed();
         this.finish();
+    }
+
+    @Override
+    public void onDelete(final int position) {
+        alertDialog = new AlertDialog.Builder(this)
+                .setMessage("确定要删除吗?")
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        noteAddress.remove(position);
+                        easyGridviewAdapter.setFlag(false);
+                        easyGridviewAdapter.setData(noteAddress);
+
+//                        su
+                        alertDialog.dismiss();
+                        if (noteAddress.size() == 0){
+                            photoGou.setVisibility(View.GONE);
+                        }
+                    }
+                })
+                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        alertDialog.dismiss();
+                        return;
+                    }
+                })
+                .show();
+
     }
 /*
     @OnItemClick(R.id.gridview)

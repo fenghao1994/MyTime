@@ -40,9 +40,11 @@ public class CreateNoteEntityImpl implements ICreateNoteEntity {
         if ( list != null){
             DataSupport.deleteAll(Photo.class, "objectType = ? and objectId = ?", 2 + "", note.getId() + "");
             for (int i = 0 ; i < list.size(); i++){
-                list.get(i).setObjectType(2);
-                list.get(i).setObjectId( note.getId());
-                list.get(i).save();
+                Photo photo = new Photo();
+                photo.setObjectId(note.getId());
+                photo.setObjectType(2);
+                photo.setAddress(list.get(i).getAddress());
+                photo.save();
             }
         }
 

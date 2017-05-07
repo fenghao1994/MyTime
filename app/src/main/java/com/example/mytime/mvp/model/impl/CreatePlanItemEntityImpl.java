@@ -32,9 +32,11 @@ public class CreatePlanItemEntityImpl implements ICreatePlanItemEntity {
         if (photos != null) {
             DataSupport.deleteAll(Photo.class, "objectType = ? and objectId = ?", 1 + "", planItem.getId() + "");
             for (int i = 0; i < photos.size(); i++) {
-                photos.get(i).setObjectType(1);
-                photos.get(i).setObjectId(planItem.getId());
-                photos.get(i).save();
+                Photo photo = new Photo();
+                photo.setObjectId(planItem.getId());
+                photo.setAddress(photos.get(i).getAddress());
+                photo.setObjectType(1);
+                photo.save();
             }
         }
     }
