@@ -201,7 +201,12 @@ public class CreatePlanActivity extends AppCompatActivity implements ICreatePlan
                             if (!plan.getTitle().equals(str)) {
                                 plan.setTitle(str);
                                 editPlanData();
-                                createPlanPresenter.savePlan(plan);
+                                if (isFromFab){
+                                    createPlanPresenter.savePlan(plan);
+                                }else {
+                                    createPlanPresenter.updatePlan(plan);
+                                }
+
 
                                 //等于2 上传到服务器
                                 if (Extra.NET_WORK == 2){
