@@ -46,22 +46,24 @@
             android:value="619daa349b76d86765f84e2babd1f909" />
 
         <activity android:name=".mvp.ui.activity.MainActivity">
-           <!-- <intent-filter>
+            <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>-->
+            </intent-filter>
         </activity>
         <activity android:name=".mvp.ui.activity.GuideActivity" />
         <activity
             android:name=".mvp.ui.activity.RegisterActivity"
             android:label="My Time">
 
-            <!--<intent-filter>
+            <!--
+            <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>-->
+            </intent-filter>
+            -->
         </activity>
         <activity android:name=".mvp.ui.activity.CreatePlanActivity" />
         <activity android:name=".mvp.ui.activity.CreatePlanItemActivity" />
@@ -98,13 +100,7 @@
         <activity android:name=".mvp.ui.activity.PhoneAndMessageActivity" />
         <activity android:name=".mvp.ui.activity.ImageOneActivity" />
         <activity android:name=".mvp.ui.activity.TransActivity" />
-        <activity android:name=".mvp.ui.activity.LoginActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+        <activity android:name=".mvp.ui.activity.LoginActivity"></activity>
     </application>
 
 </manifest>
