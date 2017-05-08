@@ -7,7 +7,9 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -60,6 +62,10 @@ public class LoginActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setHomeAsUpIndicator(R.drawable.back);
         }
+
+        layoutLogin.setEnabled(false);
+        layoutLogin.setBackgroundColor(getResources().getColor(R.color.darkGray));
+
         layoutLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -74,6 +80,35 @@ public class LoginActivity extends AppCompatActivity {
         if ( !"".equals(sp.getString("phoneNumber", ""))){
             goMainActivity();
         }
+        goRegister.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goRegister();
+            }
+        });
+
+        password.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.length() > 0){
+                    layoutLogin.setEnabled(true);
+                    layoutLogin.setBackgroundColor(getResources().getColor(R.color.logoGreen));
+                }else {
+                    layoutLogin.setEnabled(false);
+                    layoutLogin.setBackgroundColor(getResources().getColor(R.color.darkGray));
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
     }
 
     public boolean checkInfo(){
@@ -124,6 +159,11 @@ public class LoginActivity extends AppCompatActivity {
 
     public void goMainActivity(){
         Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+    }
+
+    public void goRegister(){
+        Intent intent = new Intent(this, RegisterActivity.class);
         startActivity(intent);
     }
 }

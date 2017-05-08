@@ -41,7 +41,7 @@ public class MyApplication extends Application {
         imagePicker.setOutPutX(1000);//保存文件的宽度。单位像素
         imagePicker.setOutPutY(1000);//保存文件的高度。单位像素
 
-        MobAPI.initSDK(this, "1b7fe4470b808");
+        MobAPI.initSDK(this, "1dab04b93a4f0");
 
         SMSSDK.initSDK(this, "1c65bcce52490", "1b30899dd5a451437bf17a4b9275fd20");
 

@@ -208,7 +208,7 @@ public class RegisterActivity extends AppCompatActivity implements ILoginView {
 
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
-            actionBar.setHomeAsUpIndicator(R.drawable.logo);
+            actionBar.setHomeAsUpIndicator(R.drawable.back);
         }
         mLayoutLogin.setEnabled(false);
         mLayoutLogin.setBackgroundColor(getResources().getColor(R.color.darkGray));

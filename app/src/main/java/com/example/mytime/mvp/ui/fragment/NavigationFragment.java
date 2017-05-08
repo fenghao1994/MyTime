@@ -61,6 +61,11 @@ public class NavigationFragment extends Fragment {
         sp = getActivity().getSharedPreferences("MYTIME", Context.MODE_PRIVATE);
         headerPath = sp.getString("path", "");
         showHeadImg();
+        if (Extra.NET_WORK == 1){
+            signOutLayout.setVisibility(View.GONE);
+        }else {
+            signOutLayout.setVisibility(View.VISIBLE);
+        }
         return view;
     }
 
