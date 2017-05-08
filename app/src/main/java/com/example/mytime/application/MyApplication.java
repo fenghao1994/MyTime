@@ -6,6 +6,7 @@ import com.example.mytime.util.GlideImageLoader;
 import com.lzy.imagepicker.ImagePicker;
 import com.lzy.imagepicker.view.CropImageView;
 import com.mob.mobapi.MobAPI;
+import com.tencent.bugly.crashreport.CrashReport;
 import com.zhy.http.okhttp.OkHttpUtils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -53,5 +54,7 @@ public class MyApplication extends Application {
                 .build();
 
         OkHttpUtils.initClient(okHttpClient);
+
+        CrashReport.initCrashReport(getApplicationContext(), "0f640935c9", true);
     }
 }
