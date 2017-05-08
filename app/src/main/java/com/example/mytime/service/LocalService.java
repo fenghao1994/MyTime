@@ -139,7 +139,7 @@ public class LocalService extends Service {
 
             float[] result = new float[1];
             Location.distanceBetween(startLatitude, startLongitude, endLatitude, endLongitude, result);
-            if ( result[0] > 0.000001 && result[0] < 50){
+            if ( result[0] >= 0 && result[0] < 50){
                 Intent intent = new Intent(this, AlarmReceiver.class);
                 intent.setAction(Extra.ALARM_LOCATION);
                 intent.putExtra("PLAN_ITEM", mPlanItem.get( i));
