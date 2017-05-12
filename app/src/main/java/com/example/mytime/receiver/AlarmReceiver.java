@@ -50,6 +50,8 @@ public class AlarmReceiver extends BroadcastReceiver {
                 Log.i("AlarmReceiver", "闹钟响了" + flag);
             } else if (intent.getAction().equals(Extra.ALARM_LOCATION)) {
                 planItem = (PlanItem) intent.getSerializableExtra("PLAN_ITEM");
+                planItem.setDescribe("LOCATED");
+                planItem.update(planItem.getId());
                 flag = true;
                 gotoAlarm();
                 Log.i("AlarmReceiver", "到达目的地附近" + flag);

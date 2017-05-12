@@ -65,5 +65,14 @@ public class CreateNoteEntityImpl implements ICreateNoteEntity {
         return DataSupport.findAll(Note.class);
     }
 
+    @Override
+    public Note getNote(long createTime) {
+        List<Note> notes = DataSupport.where("createTime = ?", createTime + "").find(Note.class);
+        if (notes != null){
+            return notes.get(0);
+        }
+        return null;
+    }
+
 
 }

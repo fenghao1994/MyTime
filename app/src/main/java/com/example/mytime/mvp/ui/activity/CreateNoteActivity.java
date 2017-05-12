@@ -33,6 +33,7 @@ import com.example.mytime.mvp.ui.adapter.ImageItemAdapter;
 import com.example.mytime.mvp.ui.view.ICreateNoteView;
 import com.example.mytime.util.Extra;
 import com.example.mytime.util.HttpUrl;
+import com.google.gson.Gson;
 import com.lzy.imagepicker.ImagePicker;
 import com.lzy.imagepicker.bean.ImageItem;
 import com.lzy.imagepicker.ui.ImageGridActivity;
@@ -220,14 +221,14 @@ public class CreateNoteActivity extends AppCompatActivity implements ICreateNote
             note.setEdit(noteIsEdit);
             note.setContent(noteContent);
             note.setAddress(noteAddress);
-
+            createNotePresenter.saveNote(note, noteAddress);
             //需要上传到服务器
             if (Extra.NET_WORK == 2){
+                note = createNotePresenter.getNote(note.getCreateTime());
+                note.setAddress(noteAddress);
                 saveObjectWithNetWork();
+
             }
-
-            createNotePresenter.saveNote(note, noteAddress);
-
         } else {
             noteEditTime = System.currentTimeMillis();
             noteIsEdit = true;
@@ -235,13 +236,15 @@ public class CreateNoteActivity extends AppCompatActivity implements ICreateNote
             note.setEdit(noteIsEdit);
             note.setAddress(noteAddress);
             note.setContent(noteContent);
-
+            createNotePresenter.update(note, noteAddress);
             //需要上传到服务器
             if (Extra.NET_WORK == 2){
+                noteAddress = (ArrayList<Photo>) createNotePresenter.getPhoto(note);
+                note.setAddress(noteAddress);
                 updateObjectWithNetWork();
             }
 
-            createNotePresenter.update(note, noteAddress);
+
         }
     }
 
@@ -304,10 +307,13 @@ public class CreateNoteActivity extends AppCompatActivity implements ICreateNote
     }
     public void postUrl(String url){
         Map<String, File> map = new HashMap<>();
-        for (int i = 0 ; i < noteAddress.size(); i++){
-            File file = new File(noteAddress.get(i).getAddress());
-            map.put("file" + i, file);
+        if(noteAddress != null  && noteAddress.size() > 0){
+            for (int i = 0 ; i < noteAddress.size(); i++){
+                File file = new File(noteAddress.get(i).getAddress());
+                map.put("file" + i, file);
+            }
         }
+
 
         OkHttpUtils
                 .post()
@@ -320,7 +326,8 @@ public class CreateNoteActivity extends AppCompatActivity implements ICreateNote
                 .addParams("editTime", note.getEditTime() + "")
                 .addParams("isEdit", note.isEdit() + "")
                 .addParams("isDelete", note.isDelete() + "")
-                .files("address", map)
+                .addParams("address", new Gson().toJson(note.getAddress()))
+                .files("addressFiles", map)
                 .build()
                 .execute(new StringCallback() {
                     @Override
@@ -330,7 +337,7 @@ public class CreateNoteActivity extends AppCompatActivity implements ICreateNote
 
                     @Override
                     public void onResponse(String response, int id) {
-
+                        String s = "";
                     }
                 });
     }

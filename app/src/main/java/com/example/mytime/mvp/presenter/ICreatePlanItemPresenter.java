@@ -1,6 +1,7 @@
 package com.example.mytime.mvp.presenter;
 
 import com.example.mytime.mvp.model.entity.Photo;
+import com.example.mytime.mvp.model.entity.Plan;
 import com.example.mytime.mvp.model.entity.PlanItem;
 
 import java.util.List;
@@ -24,4 +25,13 @@ public interface ICreatePlanItemPresenter {
     void updatePlanItem(PlanItem planItem, List<Photo> photos/*, List<Time> times*/);
 
     void showData( PlanItem planItem);
+    /**
+     * 网络情况下
+     * 本地获得存储后的note
+     * @param createTime
+     * @return
+     */
+    PlanItem getPlanItem(long createTime);
+
+    List<Photo> getPhoto(PlanItem planItem);
 }

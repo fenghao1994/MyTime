@@ -12,8 +12,11 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.mytime.R;
 import com.example.mytime.mvp.model.entity.Photo;
+import com.example.mytime.util.Extra;
+import com.example.mytime.util.HttpUrl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -97,7 +100,15 @@ public class EasyGridviewAdapter extends BaseAdapter{
         param.width = mImageWidth;
 
         viewHolder.imageView.setLayoutParams(param);
-        Glide.with(mContext).load(mList.get(i).getAddress()).into( viewHolder.imageView);
+        if (Extra.NET_WORK == 2 && mList.get(i).getAddress().contains("D:\\")){
+            String s = mList.get(i).getAddress();
+            s = s.substring(3, s.length());
+            s = s.replace("\\", "/");
+            Glide.with(mContext).load(HttpUrl.ROOT + "/" + s).diskCacheStrategy(DiskCacheStrategy.ALL).into( viewHolder.imageView);
+        }else {
+            Glide.with(mContext).load(mList.get(i).getAddress()).diskCacheStrategy(DiskCacheStrategy.ALL).into( viewHolder.imageView);
+        }
+
         return view;
     }
 

@@ -59,4 +59,14 @@ public class CreatePlanItemPresenterImpl implements ICreatePlanItemPresenter {
         List<Photo> photos = createPlanItemEntity.getPhotoAddress( planItem);
         createPlanItemView.showData( planItem, photos);
     }
+
+    @Override
+    public PlanItem getPlanItem(long createTime) {
+        return createPlanItemEntity.getPlanItem(createTime);
+    }
+
+    @Override
+    public List<Photo> getPhoto(PlanItem planItem) {
+        return createPlanItemEntity.getPhotoAddress(planItem);
+    }
 }

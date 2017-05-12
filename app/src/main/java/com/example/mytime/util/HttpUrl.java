@@ -5,30 +5,45 @@ package com.example.mytime.util;
  */
 
 public class HttpUrl {
-    public static final String ROOT = "";
-    //上传头像
-    public static final String POST_HEADER_IMG = ROOT + "";
+    public static final String ROOT = "http://192.168.191.1:8080";
 
     //上传save Note
-    public static final String POST_SAVE_NOTE = ROOT + "";
+    public static final String POST_SAVE_NOTE = ROOT + "/note/saveNote";
     //上传updata Note
-    public static final String POST_UPDATA_NOTE = ROOT + "";
+    public static final String POST_UPDATA_NOTE = ROOT + "/note/updateNote";
+    //获取note
+    public static final String POST_GET_NOTE = ROOT + "/note/getNote";
 
     //上传 save planitem
-    public static final String POST_SAVE_PLAN_ITEM = ROOT + "";
+    public static final String POST_SAVE_PLAN_ITEM = ROOT + "/planItem/savePlanItem";
 
     //上传 updata planitem
-    public static final String POST_UPDATA_PLAN_ITEM = ROOT + "";
+    public static final String POST_UPDATA_PLAN_ITEM = ROOT + "/planItem/updatePlanItem";
+
+    //获取plan item
+    public static final String POST_GET_PLAN_ITEM = ROOT + "/planItem/getPlanItem";
 
     //上传save plan
-    public static final String POST_SAVE_PLAN = ROOT + "";
+    public static final String POST_SAVE_PLAN = ROOT + "/plan/savePlan";
 
     //上传updata plan
-    public static final String POST_UPDATA_PLAN = ROOT + "";
+    public static final String POST_UPDATA_PLAN = ROOT + "/plan/updatePlan";
+
+    //获取plan
+    public static final String POST_GET_PLAN = ROOT + "/plan/getPlan";
+
+    //重置密码
+    public static final String RESET_PASSWORD = ROOT + "/user/reset/password";
 
     //注册
-    public static final String POST_REGISTER = ROOT + "";
+    public static final String POST_REGISTER = ROOT + "/user/register";
 
     //登陆
-    public static final String POST_LOGIN = ROOT + "";
+    public static final String POST_LOGIN = ROOT + "/user/login";
+
+    //获取头像
+    public static final String POST_GET_HEADIMG = ROOT + "/user/get/headimg";
+    //上传头像
+    public static final String POST_HEADER_IMG = ROOT + "/user/upload/headimg";
+
 }

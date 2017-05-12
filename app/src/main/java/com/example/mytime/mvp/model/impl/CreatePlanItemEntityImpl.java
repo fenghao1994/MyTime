@@ -46,4 +46,13 @@ public class CreatePlanItemEntityImpl implements ICreatePlanItemEntity {
         return DataSupport.where("objectType = ? and objectId = ?", "1", planItem.getId() + "").find(Photo.class);
 
     }
+
+    @Override
+    public PlanItem getPlanItem(long createTime) {
+        List<PlanItem> planItems = DataSupport.where("createTime = ?", createTime + "").find(PlanItem.class);
+        if (planItems != null){
+            return planItems.get(0);
+        }
+        return null;
+    }
 }

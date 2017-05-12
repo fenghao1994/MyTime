@@ -266,20 +266,24 @@ public class RegisterActivity extends AppCompatActivity implements ILoginView {
                 .addParams("phoneNumber", phoneNumber.getText().toString().trim())
                 .addParams("password", password.getText().toString().trim())
                 .build()
-                .execute(new UserCallBack() {
+                .execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
-                        Log.i("MYTIME_OKHTTP", e.toString());
+                        Toast.makeText(RegisterActivity.this, "注册失败", Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
-                    public void onResponse(User response, int id) {
-                        sp.edit().putString("phoneNumber", response.getPhoneNumber())
-                                .putString("password", response.getPassword())
+                    public void onResponse(String response, int id) {
+                        sp.edit().putString("phoneNumber", phoneNumber.getText().toString().trim())
+                                .putString("password", password.getText().toString())
                                 .commit();
-
+                        Gson gson = new Gson();
+                        Map<String, String> map = gson.fromJson(response, Map.class);
+                        Toast.makeText(RegisterActivity.this, map.get("msg"), Toast.LENGTH_SHORT).show();
+                        finish();
                     }
                 });
+
     }
 
     public void detileMessage(Object data) {

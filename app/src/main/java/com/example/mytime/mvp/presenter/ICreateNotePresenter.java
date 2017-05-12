@@ -24,4 +24,14 @@ public interface ICreateNotePresenter {
      * 更新数据
      */
     void update(Note note, List<Photo> photos);
+
+    /**
+     * 网络情况下
+     * 本地获得存储后的note
+     * @param createTime
+     * @return
+     */
+    Note getNote(long createTime);
+
+    List<Photo> getPhoto(Note note);
 }

@@ -9,8 +9,11 @@ import android.view.MenuItem;
 import android.view.WindowManager;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.mytime.R;
 import com.example.mytime.mvp.ui.custom.photoview.PhotoView;
+import com.example.mytime.util.Extra;
+import com.example.mytime.util.HttpUrl;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -40,7 +43,13 @@ public class ImageZoomActivity extends AppCompatActivity {
         Intent intent = getIntent();
         path = intent.getStringExtra("image_path");
 
-        Glide.with(this).load(path).into(photoView);
+        if (Extra.NET_WORK == 2 && path.contains("D:\\")){
+            path = path.substring(3, path.length());
+            path = path.replace("\\", "/");
+            Glide.with(this).load(HttpUrl.ROOT + "/" + path).diskCacheStrategy(DiskCacheStrategy.ALL).into( photoView);
+        }else {
+            Glide.with(this).load(path).diskCacheStrategy(DiskCacheStrategy.ALL).into(photoView);
+        }
 
     }
 

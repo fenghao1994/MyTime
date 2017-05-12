@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.example.mytime.R;
 import com.example.mytime.mvp.model.entity.Note;
 import com.example.mytime.mvp.ui.activity.CreateNoteActivity;
+import com.example.mytime.util.Extra;
 import com.example.mytime.util.MyUtil;
 
 import java.util.ArrayList;

@@ -39,6 +39,7 @@ import com.example.mytime.mvp.ui.view.ICreatePlanItemView;
 import com.example.mytime.receiver.AlarmReceiver;
 import com.example.mytime.util.Extra;
 import com.example.mytime.util.HttpUrl;
+import com.google.gson.Gson;
 import com.lzy.imagepicker.ImagePicker;
 import com.lzy.imagepicker.bean.ImageItem;
 import com.lzy.imagepicker.ui.ImageGridActivity;
@@ -180,16 +181,16 @@ public class CreatePlanItemActivity extends AppCompatActivity implements ICreate
     }
 
     public void initView(){
-        if ( !TextUtils.isEmpty(planItem.getPhoneNumber())){
+        if ( !TextUtils.isEmpty(planItem.getPhoneNumber()) && !planItem.getPhoneNumber().equals("null")){
             mCallPhoneGou.setVisibility(View.VISIBLE);
         }
-        if (!TextUtils.isEmpty(planItem.getMessageContent())){
+        if (!TextUtils.isEmpty(planItem.getMessageContent()) && !planItem.getMessageContent().equals("null")){
             mSendMessageGou.setVisibility(View.VISIBLE);
         }
         if (planItem.getAddress() != null && planItem.getAddress().size() > 0){
             mPhotoGou.setVisibility(View.VISIBLE);
         }
-        if (!TextUtils.isEmpty(planItem.getLocation())){
+        if (!TextUtils.isEmpty(planItem.getLocation()) && !planItem.getLocation().equals("null")){
             mLocationGou.setVisibility(View.VISIBLE);
         }
         mTimeGou.setVisibility(View.VISIBLE);
@@ -316,13 +317,15 @@ public class CreatePlanItemActivity extends AppCompatActivity implements ICreate
             planItem.setManyDays(planItemIsManyDays);
             planItem.setExpired(planItemIsExpired);
             planItem.setComplete(planItemIsComplete);
-
+            createPlanItemPresenter.savePlanItem(planItem, planItemAddress);
             //如果等于2 需要上传到服务器
             if (Extra.NET_WORK == 2){
+                planItem = createPlanItemPresenter.getPlanItem(planItem.getCreateTime());
+                planItem.setAddress(planItemAddress);
                 saveObjectWithNetWork();
             }
 
-            createPlanItemPresenter.savePlanItem(planItem, planItemAddress);
+
         } else {
             planItemEditTime = System.currentTimeMillis();
             planItemIsEdit = true;
@@ -345,12 +348,12 @@ public class CreatePlanItemActivity extends AppCompatActivity implements ICreate
             planItem.setManyDays(planItemIsManyDays);
             planItem.setExpired(planItemIsExpired);
             planItem.setComplete(planItemIsComplete);
-
+            createPlanItemPresenter.updatePlanItem(planItem, planItemAddress);
             if (Extra.NET_WORK == 2){
+                planItemAddress = (ArrayList<Photo>) createPlanItemPresenter.getPhoto(planItem);
+                planItem.setAddress(planItemAddress);
                 updateObjectWithNetWork();
             }
-
-            createPlanItemPresenter.updatePlanItem(planItem, planItemAddress);
         }
 
         /**
@@ -570,9 +573,11 @@ public class CreatePlanItemActivity extends AppCompatActivity implements ICreate
 
     public void postUrl(String url){
         Map<String, File> map = new HashMap<>();
-        for (int i = 0 ; i < planItemAddress.size(); i++){
-            File file = new File(planItemAddress.get(i).getAddress());
-            map.put("file" + i, file);
+        if (planItemAddress != null && planItemAddress.size()> 0){
+            for (int i = 0 ; i < planItemAddress.size(); i++){
+                File file = new File(planItemAddress.get(i).getAddress());
+                map.put("file" + i, file);
+            }
         }
 
         OkHttpUtils
@@ -602,7 +607,8 @@ public class CreatePlanItemActivity extends AppCompatActivity implements ICreate
                 .addParams("minute", planItem.getMinute() + "")
                 .addParams("alarmWay", planItem.getAlarmWay() + "")
                 .addParams("describe", planItem.getDescribe() + "")
-                .files("address", map)
+                .addParams("address", new Gson().toJson(planItem.getAddress()))
+                .files("addressFiles", map)
                 .build()
                 .execute(new StringCallback() {
                     @Override
@@ -612,7 +618,7 @@ public class CreatePlanItemActivity extends AppCompatActivity implements ICreate
 
                     @Override
                     public void onResponse(String response, int id) {
-
+                        String a = "a";
                     }
                 });
     }

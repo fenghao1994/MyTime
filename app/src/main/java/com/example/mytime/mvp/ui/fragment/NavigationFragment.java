@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,22 +13,30 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.mytime.R;
 import com.example.mytime.mvp.ui.activity.AllNoteActivity;
 import com.example.mytime.mvp.ui.activity.AllPlanActivity;
 import com.example.mytime.mvp.ui.activity.CountActivity;
 import com.example.mytime.mvp.ui.activity.ImageOneActivity;
 import com.example.mytime.util.Extra;
+import com.example.mytime.util.HttpUrl;
+import com.google.gson.Gson;
 import com.lzy.imagepicker.ImagePicker;
 import com.lzy.imagepicker.bean.ImageItem;
 import com.lzy.imagepicker.ui.ImageGridActivity;
+import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.callback.StringCallback;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import de.hdodenhof.circleimageview.CircleImageView;
+import okhttp3.Call;
 
 /**
  * 侧栏fragment
@@ -70,9 +79,37 @@ public class NavigationFragment extends Fragment {
     }
 
     public void showHeadImg(){
-        if ( !"".equals(headerPath)){
-            Glide.with(this).load( headerPath).into( headerImg);
+        if (Extra.NET_WORK == 1){
+            if ( !"".equals(headerPath)){
+                Glide.with(this).load( headerPath).into( headerImg);
+            }
+        }else {
+            getHeadImg();
+
         }
+
+    }
+
+    public void getHeadImg(){
+        OkHttpUtils
+                .post()
+                .url(HttpUrl.POST_GET_HEADIMG)
+                .addParams("phoneNumber", sp.getString("phoneNumber", ""))
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        Log.i("MYTIME_OKHTTP", e.toString());
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        headerPath = response;
+                        headerPath = headerPath.substring(3, headerPath.length());
+                        headerPath = headerPath.replace("\\", "/");
+                        Glide.with(getActivity()).load(HttpUrl.ROOT + "/" + headerPath).diskCacheStrategy(DiskCacheStrategy.ALL).into( headerImg);
+                    }
+                });
     }
 
     @OnClick({R.id.header_img, R.id.plan_layout, R.id.complete_layout, R.id.note_layout, R.id.count_layout, R.id.sign_out_layout})
@@ -94,8 +131,15 @@ public class NavigationFragment extends Fragment {
                 showCountPlan();
                 break;
             case R.id.sign_out_layout:
+                signout();
                 break;
         }
+    }
+
+    private void signout() {
+        sp.edit().clear().commit();
+        getActivity().finish();
+        System.exit(0);
     }
 
     private void choosePhoto() {
@@ -123,7 +167,27 @@ public class NavigationFragment extends Fragment {
     }
 
     public void submitHeadImg(String path){
-        //// TODO: 2017/5/7 上传头像
+        File file = new File(path);
+        OkHttpUtils
+                .post()
+                .url(HttpUrl.POST_HEADER_IMG)
+                .addParams("phoneNumber", sp.getString("phoneNumber", ""))
+                .addFile("file","file1", file)
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        Log.i("MYTIME_OKHTTP", e.toString());
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        Gson gson = new Gson();
+                        Map<String, String> map = gson.fromJson(response, Map.class);
+                        Toast.makeText(getActivity(), map.get("msg"), Toast.LENGTH_SHORT).show();
+                    }
+                });
+
     }
 
     private void showCountPlan() {

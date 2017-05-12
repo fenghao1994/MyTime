@@ -21,15 +21,26 @@ import android.widget.Toast;
 
 import com.example.mytime.R;
 import com.example.mytime.http_callback.UserCallBack;
+import com.example.mytime.mvp.model.entity.Note;
+import com.example.mytime.mvp.model.entity.Plan;
+import com.example.mytime.mvp.model.entity.PlanItem;
 import com.example.mytime.mvp.model.entity.User;
 import com.example.mytime.util.Extra;
 import com.example.mytime.util.HttpUrl;
 import com.example.mytime.util.MyUtil;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.callback.StringCallback;
+
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import okhttp3.Call;
+import okhttp3.OkHttpClient;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -50,6 +61,8 @@ public class LoginActivity extends AppCompatActivity {
     @BindView(R.id.goRegister)
     TextView goRegister;
     private SharedPreferences sp;
+
+    boolean b1, b2, b3;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -103,7 +116,6 @@ public class LoginActivity extends AppCompatActivity {
                     layoutLogin.setBackgroundColor(getResources().getColor(R.color.darkGray));
                 }
             }
-
             @Override
             public void afterTextChanged(Editable s) {
 
@@ -140,19 +152,23 @@ public class LoginActivity extends AppCompatActivity {
                 .addParams("phoneNumber", phoneNumber.getText().toString().trim())
                 .addParams("password", password.getText().toString().trim())
                 .build()
-                .execute(new UserCallBack() {
+                .execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
-                        Log.i("MYTIME_OKHTTP", e.toString());
+                        Toast.makeText(LoginActivity.this, "登陆失败", Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
-                    public void onResponse(User response, int id) {
-                        sp.edit().putString("phoneNumber", response.getPhoneNumber())
-                                .putString("password", response.getPassword())
+                    public void onResponse(String response, int id) {
+                        sp.edit().putString("phoneNumber", phoneNumber.getText().toString().trim())
+                                .putString("password", password.getText().toString())
                                 .commit();
-                        Toast.makeText(LoginActivity.this, "登陆成功", Toast.LENGTH_SHORT).show();
-
+                        Gson gson = new Gson();
+                        Map<String, String> map = gson.fromJson(response, Map.class);
+                        Toast.makeText(LoginActivity.this, map.get("msg"), Toast.LENGTH_SHORT).show();
+                        getNotesFromNet();
+                        getPlanItemFromNet();
+                        getPlanFromNet();
                     }
                 });
     }
@@ -160,10 +176,107 @@ public class LoginActivity extends AppCompatActivity {
     public void goMainActivity(){
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
+        finish();
     }
 
     public void goRegister(){
         Intent intent = new Intent(this, RegisterActivity.class);
         startActivity(intent);
+    }
+
+    public void getPlanItemFromNet(){
+        OkHttpUtils
+                .post()
+                .url(HttpUrl.POST_GET_PLAN_ITEM)
+                .addParams("phoneNumber", phoneNumber.getText().toString().trim())
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        Log.i("MYTIME_OKHTTP", e.toString());
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        Gson gson = new Gson();
+                        Type type = new TypeToken<ArrayList<PlanItem>>() {}.getType();
+                        ArrayList<PlanItem> list = gson.fromJson(response, type);
+                        if (list != null && list.size() > 0){
+                            for (int i = 0 ; i < list.size(); i++){
+                                list.get(i).save();
+                                for (int j = 0 ; j< list.get(i).getAddress().size(); j++){
+                                    list.get(i).getAddress().get(j).save();
+                                }
+                            }
+                        }
+                        b1 = true;
+                        goMainFromNet();
+                    }
+                });
+
+    }
+
+    public void getNotesFromNet(){
+        OkHttpUtils
+                .post()
+                .url(HttpUrl.POST_GET_NOTE)
+                .addParams("phoneNumber", phoneNumber.getText().toString().trim())
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        Log.i("MYTIME_OKHTTP", e.toString());
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        Gson gson = new Gson();
+                        Type type = new TypeToken<ArrayList<Note>>() {}.getType();
+                        ArrayList<Note> list = gson.fromJson(response, type);
+                        if (list != null && list.size() > 0){
+                            for (int i = 0 ; i < list.size(); i++){
+                                list.get(i).save();
+                                for (int j = 0 ; j< list.get(i).getAddress().size(); j++){
+                                    list.get(i).getAddress().get(j).save();
+                                }
+                            }
+                        }
+                        b2 = true;
+                        goMainFromNet();
+                    }
+                });
+    }
+
+    public void getPlanFromNet(){
+        OkHttpUtils
+                .post()
+                .url(HttpUrl.POST_GET_PLAN)
+                .addParams("phoneNumber", phoneNumber.getText().toString().trim())
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        Log.i("MYTIME_OKHTTP", e.toString());
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        Gson gson = new Gson();
+                        Type type = new TypeToken<ArrayList<Plan>>() {}.getType();
+                        ArrayList<Plan> list = gson.fromJson(response, type);
+                        if (list != null && list.size() > 0){
+                            for (int i = 0 ; i < list.size(); i++){
+                                list.get(i).save();
+                            }
+                        }
+                        b3 =true;
+                        goMainFromNet();
+                    }
+                });
+    }
+    public void goMainFromNet(){
+        if (b1 && b2 && b3){
+            goMainActivity();
+        }
     }
 }

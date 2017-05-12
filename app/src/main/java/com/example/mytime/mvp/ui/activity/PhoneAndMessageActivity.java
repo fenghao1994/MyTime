@@ -64,10 +64,10 @@ public class PhoneAndMessageActivity extends AppCompatActivity {
         isOnlyPhone = intent.getBooleanExtra("ONLYPHONE", false);
         phone = intent.getStringExtra("PHONE");
         message = intent.getStringExtra("MESSAGE");
-        if (phone != null){
+        if (phone != null && !phone.equals("null")){
             mPhoneNumber.setText( phone);
         }
-        if (message != null){
+        if ( message != null && !message.equals("null")){
             mMessageContent.setText( message);
         }
         if ( isOnlyPhone){

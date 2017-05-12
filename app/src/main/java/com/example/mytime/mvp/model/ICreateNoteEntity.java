@@ -36,4 +36,12 @@ public interface ICreateNoteEntity {
      */
     List<Note> getNotes(boolean desc);
 
+    /**
+     * 网络情况下
+     * 获取存储后的note
+     * @param createTime
+     * @return
+     */
+    Note getNote(long createTime);
+
 }

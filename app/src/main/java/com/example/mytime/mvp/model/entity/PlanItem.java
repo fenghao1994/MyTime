@@ -1,5 +1,7 @@
 package com.example.mytime.mvp.model.entity;
 
+import com.google.gson.annotations.SerializedName;
+
 import org.litepal.crud.DataSupport;
 
 import java.io.Serializable;
@@ -21,6 +23,7 @@ public class PlanItem extends DataSupport implements Serializable{
     long createTime;
     long editTime;
     boolean isEdit;
+    @SerializedName("phoneNumberLianXi")
     String phoneNumber;
     String messageContent;
     String messagePhoneNumber;
@@ -32,10 +35,15 @@ public class PlanItem extends DataSupport implements Serializable{
     boolean isDelete;
 
     ArrayList<Photo> address;
+    @SerializedName("years")
     int year;
+    @SerializedName("months")
     int month;
+    @SerializedName("days")
     int day;
+    @SerializedName("hours")
     int hour;
+    @SerializedName("minutes")
     int minute;
     int alarmWay;//0为默认 只提醒一次，1为每日，2为每周，3为每月
 

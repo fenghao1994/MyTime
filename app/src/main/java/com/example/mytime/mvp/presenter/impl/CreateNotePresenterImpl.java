@@ -42,4 +42,15 @@ public class CreateNotePresenterImpl implements ICreateNotePresenter {
         createNoteEntity.updateNote(note, photos);
         createNoteView.complete();
     }
+
+    @Override
+    public Note getNote(long createTime) {
+        return createNoteEntity.getNote(createTime);
+    }
+
+    @Override
+    public List<Photo> getPhoto(Note note) {
+        ArrayList<Photo> arrayList = (ArrayList<Photo>) createNoteEntity.getPhotoAddress( note);
+        return arrayList;
+    }
 }

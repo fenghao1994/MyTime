@@ -25,4 +25,12 @@ public interface ICreatePlanItemEntity {
 
     List<Photo> getPhotoAddress(PlanItem planItem);
 
+    /**
+     * 网络情况下
+     * 获取存储后的planItem
+     * @param createTime
+     * @return
+     */
+    PlanItem getPlanItem(long createTime);
+
 }
