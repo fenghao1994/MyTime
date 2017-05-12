@@ -347,6 +347,7 @@ public class CreatePlanItemActivity extends AppCompatActivity implements ICreate
             planItem.setEveryDay(planItemIsEveryDay);
             planItem.setManyDays(planItemIsManyDays);
             planItem.setExpired(planItemIsExpired);
+            planItemIsComplete = false;
             planItem.setComplete(planItemIsComplete);
             createPlanItemPresenter.updatePlanItem(planItem, planItemAddress);
             if (Extra.NET_WORK == 2){

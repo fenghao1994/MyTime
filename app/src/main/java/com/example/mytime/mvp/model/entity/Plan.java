@@ -1,5 +1,7 @@
 package com.example.mytime.mvp.model.entity;
 
+import com.google.gson.annotations.SerializedName;
+
 import org.litepal.crud.DataSupport;
 
 import java.io.Serializable;
@@ -13,10 +15,13 @@ public class Plan extends DataSupport implements Serializable{
     int id;
     long planId;
     String title;
+    @SerializedName("expired")
     boolean isExpired;
+    @SerializedName("complete")
     boolean isComplete;
     long createTime;
     long editTime;
+    @SerializedName("edit")
     boolean isEdit;
 
     public int getId() {

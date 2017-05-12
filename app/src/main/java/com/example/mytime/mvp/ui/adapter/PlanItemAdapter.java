@@ -21,6 +21,7 @@ import com.example.mytime.R;
 import com.example.mytime.mvp.model.entity.PlanItem;
 import com.example.mytime.mvp.ui.activity.CreatePlanActivity;
 import com.example.mytime.mvp.ui.activity.CreatePlanItemActivity;
+import com.example.mytime.mvp.ui.activity.MainActivity;
 import com.example.mytime.receiver.AlarmReceiver;
 import com.example.mytime.util.EditTimeSortFromBToS;
 import com.example.mytime.util.MyUtil;
@@ -135,8 +136,9 @@ public class PlanItemAdapter extends RecyclerView.Adapter<PlanItemAdapter.ViewHo
                                 Toast.makeText(mContext, "删除任务成功!", Toast.LENGTH_SHORT).show();
                                 cancelAlarmClock(mList.get(position));
                                 mList.get(position).setDelete(true);
-                                mList.get(position).setEditTime(System.currentTimeMillis());
+//                                mList.get(position).setEditTime(System.currentTimeMillis());
                                 mList.get(position).update(mList.get(position).getId());
+                                ((CreatePlanActivity)mContext).deletePlanItem(mList.get(position));
                                 mList.remove(position);
                                 PlanItemAdapter.this.notifyDataSetChanged();
                                 alertDialog.dismiss();
@@ -165,6 +167,7 @@ public class PlanItemAdapter extends RecyclerView.Adapter<PlanItemAdapter.ViewHo
                                 planItem1.setComplete(true);
                                 planItem1.setEditTime(System.currentTimeMillis());
                                 planItem1.update(planItem1.getId());
+                                ((CreatePlanActivity)mContext).completePlanItem(mList.get(position));
                                 Toast.makeText(mContext, "恭喜完成该任务", Toast.LENGTH_SHORT).show();
                                 PlanItemAdapter.this.notifyDataSetChanged();
                                 alertDialog.dismiss();

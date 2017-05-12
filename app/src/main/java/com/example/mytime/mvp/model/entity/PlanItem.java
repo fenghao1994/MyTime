@@ -22,16 +22,22 @@ public class PlanItem extends DataSupport implements Serializable{
     String content;
     long createTime;
     long editTime;
+    @SerializedName("edit")
     boolean isEdit;
     @SerializedName("phoneNumberLianXi")
     String phoneNumber;
     String messageContent;
     String messagePhoneNumber;
     String location;
+    @SerializedName("everyDay")
     boolean isEveryDay;
+    @SerializedName("manyDays")
     boolean isManyDays;
+    @SerializedName("expired")
     boolean isExpired;
+    @SerializedName("complete")
     boolean isComplete;
+    @SerializedName("delete")
     boolean isDelete;
 
     ArrayList<Photo> address;

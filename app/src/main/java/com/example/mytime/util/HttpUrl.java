@@ -13,6 +13,8 @@ public class HttpUrl {
     public static final String POST_UPDATA_NOTE = ROOT + "/note/updateNote";
     //获取note
     public static final String POST_GET_NOTE = ROOT + "/note/getNote";
+    //删除note
+    public static final String POST_DELETE_NOTE = ROOT + "/note/deleteNote";
 
     //上传 save planitem
     public static final String POST_SAVE_PLAN_ITEM = ROOT + "/planItem/savePlanItem";
@@ -22,6 +24,12 @@ public class HttpUrl {
 
     //获取plan item
     public static final String POST_GET_PLAN_ITEM = ROOT + "/planItem/getPlanItem";
+
+    //删除planitem
+    public static final String POST_DELETE_PLAN_ITEM = ROOT + "/planItem/deletePlanItem";
+
+    //完成planitem
+    public static final String POST_COMPLETE_PLAN_ITEM = ROOT + "/planItem/completePlanItem";
 
     //上传save plan
     public static final String POST_SAVE_PLAN = ROOT + "/plan/savePlan";

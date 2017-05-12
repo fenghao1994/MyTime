@@ -1,6 +1,8 @@
 package com.example.mytime.mvp.ui.activity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -25,6 +27,8 @@ import android.widget.Toast;
 import com.example.mytime.R;
 import com.example.mytime.event.LocalEvent;
 import com.example.mytime.event.WeatherEvent;
+import com.example.mytime.mvp.model.entity.Note;
+import com.example.mytime.mvp.model.entity.PlanItem;
 import com.example.mytime.mvp.model.entity.WeatherEntity;
 import com.example.mytime.mvp.presenter.IMainPresenter;
 import com.example.mytime.mvp.presenter.impl.MainPresenterImpl;
@@ -32,8 +36,11 @@ import com.example.mytime.mvp.ui.fragment.NoteFragment;
 import com.example.mytime.mvp.ui.fragment.PlanFragment;
 import com.example.mytime.mvp.ui.view.IMainView;
 import com.example.mytime.service.LocalService;
+import com.example.mytime.util.HttpUrl;
 import com.example.mytime.util.MyUtil;
 import com.example.mytime.util.WeatherUtil;
+import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.callback.StringCallback;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -41,6 +48,7 @@ import org.greenrobot.eventbus.Subscribe;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import okhttp3.Call;
 
 public class MainActivity extends AppCompatActivity implements IMainView ,SwipeRefreshLayout.OnRefreshListener{
 
@@ -81,6 +89,8 @@ public class MainActivity extends AppCompatActivity implements IMainView ,SwipeR
     private LocalEvent mLocalEvent;
     private WeatherEvent mWeatherEvent;
 
+    private SharedPreferences sp;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -108,6 +118,8 @@ public class MainActivity extends AppCompatActivity implements IMainView ,SwipeR
 
         mSwipeLayout.setRefreshing(true);
         mSwipeLayout.setOnRefreshListener(this);
+
+        sp = getSharedPreferences("MYTIME", Context.MODE_PRIVATE);
     }
 
     Handler mHandler = new Handler(){
@@ -306,4 +318,25 @@ public class MainActivity extends AppCompatActivity implements IMainView ,SwipeR
             }
         }).start();
     }
+
+    public void deleteNote(Note note){
+        OkHttpUtils
+                .post()
+                .url(HttpUrl.POST_DELETE_NOTE)
+                .addParams("phoneNumber", sp.getString("phoneNumber", ""))
+                .addParams("id", note.getId() + "")
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        Log.i("MYTIME_OKHTTP", e.toString());
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        Log.i("MYTIME_OKHTTP", "删除成功");
+                    }
+                });
+    }
+
 }

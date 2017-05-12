@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.example.mytime.R;
 import com.example.mytime.mvp.model.entity.Note;
 import com.example.mytime.mvp.ui.activity.CreateNoteActivity;
+import com.example.mytime.mvp.ui.activity.MainActivity;
 import com.example.mytime.util.Extra;
 import com.example.mytime.util.MyUtil;
 
@@ -75,6 +76,7 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.ViewHolder> {
                             public void onClick(DialogInterface dialog, int which) {
                                 mList.get(position).setDelete(true);
                                 mList.get(position).update(mList.get(position).getId());
+                                ((MainActivity)mContext).deleteNote(mList.get(position));
                                 mList.remove( position);
                                 notifyDataSetChanged();
                                 alertDialog.dismiss();

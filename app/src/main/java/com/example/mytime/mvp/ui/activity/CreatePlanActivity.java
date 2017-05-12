@@ -335,4 +335,45 @@ public class CreatePlanActivity extends AppCompatActivity implements ICreatePlan
                     }
                 });
     }
+
+    public void deletePlanItem(PlanItem planItem){
+        OkHttpUtils
+                .post()
+                .url(HttpUrl.POST_DELETE_PLAN_ITEM)
+                .addParams("phoneNumber", sp.getString("phoneNumber", ""))
+                .addParams("id", planItem.getId() + "")
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        Log.i("MYTIME_OKHTTP", e.toString());
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        Log.i("MYTIME_OKHTTP", "删除成功");
+                    }
+                });
+    }
+
+    public void completePlanItem(PlanItem planItem){
+        OkHttpUtils
+                .post()
+                .url(HttpUrl.POST_COMPLETE_PLAN_ITEM)
+                .addParams("phoneNumber", sp.getString("phoneNumber", ""))
+                .addParams("id", planItem.getId() + "")
+                .addParams("editTime", planItem.getEditTime() + "")
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        Log.i("MYTIME_OKHTTP", e.toString());
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        Log.i("MYTIME_OKHTTP", "删除成功");
+                    }
+                });
+    }
 }

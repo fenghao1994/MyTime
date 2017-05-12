@@ -1,5 +1,7 @@
 package com.example.mytime.mvp.model.entity;
 
+import com.google.gson.annotations.SerializedName;
+
 import org.litepal.crud.DataSupport;
 
 import java.io.Serializable;
@@ -17,7 +19,9 @@ public class Note extends DataSupport implements Serializable{
     String content;
     long createTime;
     long editTime;
+    @SerializedName("edit")
     boolean isEdit;
+    @SerializedName("delete")
     boolean isDelete;
     ArrayList<Photo> address;
 

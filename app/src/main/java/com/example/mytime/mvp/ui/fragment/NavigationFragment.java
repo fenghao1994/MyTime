@@ -1,10 +1,12 @@
 package com.example.mytime.mvp.ui.fragment;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +17,10 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.mytime.R;
+import com.example.mytime.mvp.model.entity.Note;
+import com.example.mytime.mvp.model.entity.Photo;
+import com.example.mytime.mvp.model.entity.Plan;
+import com.example.mytime.mvp.model.entity.PlanItem;
 import com.example.mytime.mvp.ui.activity.AllNoteActivity;
 import com.example.mytime.mvp.ui.activity.AllPlanActivity;
 import com.example.mytime.mvp.ui.activity.CountActivity;
@@ -60,6 +66,7 @@ public class NavigationFragment extends Fragment {
     private ArrayList<ImageItem> mImageItem;
     private SharedPreferences sp;
     private String headerPath;
+    private AlertDialog alertDialog;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -137,9 +144,28 @@ public class NavigationFragment extends Fragment {
     }
 
     private void signout() {
-        sp.edit().clear().commit();
-        getActivity().finish();
-        System.exit(0);
+        alertDialog = new AlertDialog.Builder(getActivity())
+                .setMessage("确定退出吗?")
+                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        alertDialog.dismiss();
+                    }
+                })
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        alertDialog.dismiss();
+                        Note.deleteAll(Note.class);
+                        Photo.deleteAll(Photo.class);
+                        Plan.deleteAll(Plan.class);
+                        PlanItem.deleteAll(PlanItem.class);
+                        sp.edit().clear().commit();
+                        getActivity().finish();
+                        System.exit(0);
+                    }
+                })
+                .show();
     }
 
     private void choosePhoto() {
