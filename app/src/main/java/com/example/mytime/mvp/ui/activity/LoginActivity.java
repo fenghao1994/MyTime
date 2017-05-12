@@ -1,5 +1,6 @@
 package com.example.mytime.mvp.ui.activity;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -62,6 +63,8 @@ public class LoginActivity extends AppCompatActivity {
     TextView goRegister;
     private SharedPreferences sp;
 
+    private ProgressDialog progressDialog;
+
     boolean b1, b2, b3;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +76,7 @@ public class LoginActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setHomeAsUpIndicator(R.drawable.back);
+            actionBar.setHomeAsUpIndicator(R.drawable.back_white);
         }
 
         layoutLogin.setEnabled(false);
@@ -121,6 +124,8 @@ public class LoginActivity extends AppCompatActivity {
 
             }
         });
+
+        progressDialog = new ProgressDialog(this);
     }
 
     public boolean checkInfo(){
@@ -146,6 +151,8 @@ public class LoginActivity extends AppCompatActivity {
 
 
     public void postLoginInfo(){
+        progressDialog.setMessage("正在登陆");
+        progressDialog.show();
         OkHttpUtils
                 .post()
                 .url(HttpUrl.POST_LOGIN)
@@ -155,7 +162,12 @@ public class LoginActivity extends AppCompatActivity {
                 .execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
+                        Log.i("MYTIME_OKHTTP", e.toString());
+                        if (progressDialog != null){
+                            progressDialog.dismiss();
+                        }
                         Toast.makeText(LoginActivity.this, "登陆失败", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(LoginActivity.this, "服务器异常,请稍后在试", Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
@@ -194,6 +206,10 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         Log.i("MYTIME_OKHTTP", e.toString());
+                        if (progressDialog != null){
+                            progressDialog.dismiss();
+                        }
+                        Toast.makeText(LoginActivity.this, "服务器异常,请稍后在试", Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
@@ -226,6 +242,10 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         Log.i("MYTIME_OKHTTP", e.toString());
+                        if (progressDialog != null){
+                            progressDialog.dismiss();
+                        }
+                        Toast.makeText(LoginActivity.this, "服务器异常,请稍后在试", Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
@@ -257,6 +277,10 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         Log.i("MYTIME_OKHTTP", e.toString());
+                        if (progressDialog != null){
+                            progressDialog.dismiss();
+                        }
+                        Toast.makeText(LoginActivity.this, "服务器异常,请稍后在试", Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
@@ -276,6 +300,7 @@ public class LoginActivity extends AppCompatActivity {
     }
     public void goMainFromNet(){
         if (b1 && b2 && b3){
+            progressDialog.dismiss();
             goMainActivity();
         }
     }

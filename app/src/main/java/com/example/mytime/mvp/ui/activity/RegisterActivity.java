@@ -1,6 +1,7 @@
 package com.example.mytime.mvp.ui.activity;
 
 
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -95,6 +96,7 @@ public class RegisterActivity extends AppCompatActivity implements ILoginView {
 
     private SharedPreferences sp;
 
+    private ProgressDialog progressDialog;
 
     private Handler handler = new Handler() {
         @Override
@@ -178,12 +180,13 @@ public class RegisterActivity extends AppCompatActivity implements ILoginView {
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setHomeAsUpIndicator(R.drawable.back);
+            actionBar.setHomeAsUpIndicator(R.drawable.back_white);
         }
         isClickVerificationCode = true;
         isClickVoiceSMS = true;
         sp = getSharedPreferences("MYTIME", Context.MODE_PRIVATE);
         initView();
+        progressDialog = new ProgressDialog(this);
     }
 
     @Override
@@ -208,7 +211,7 @@ public class RegisterActivity extends AppCompatActivity implements ILoginView {
 
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
-            actionBar.setHomeAsUpIndicator(R.drawable.back);
+            actionBar.setHomeAsUpIndicator(R.drawable.back_white);
         }
         mLayoutLogin.setEnabled(false);
         mLayoutLogin.setBackgroundColor(getResources().getColor(R.color.darkGray));
@@ -260,6 +263,8 @@ public class RegisterActivity extends AppCompatActivity implements ILoginView {
     }
 
     public void sumbitInfo() {
+        progressDialog.setMessage("正在注册");
+        progressDialog.show();;
         OkHttpUtils
                 .post()
                 .url(HttpUrl.POST_REGISTER)
@@ -270,10 +275,15 @@ public class RegisterActivity extends AppCompatActivity implements ILoginView {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         Toast.makeText(RegisterActivity.this, "注册失败", Toast.LENGTH_SHORT).show();
+                        if (progressDialog != null){
+                            progressDialog.dismiss();
+                        }
+                        Toast.makeText(RegisterActivity.this, "服务器异常,请稍后在试", Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
                     public void onResponse(String response, int id) {
+                        progressDialog.dismiss();
                         sp.edit().putString("phoneNumber", phoneNumber.getText().toString().trim())
                                 .putString("password", password.getText().toString())
                                 .commit();
