@@ -318,14 +318,13 @@ public class CreatePlanItemActivity extends AppCompatActivity implements ICreate
             planItem.setExpired(planItemIsExpired);
             planItem.setComplete(planItemIsComplete);
             createPlanItemPresenter.savePlanItem(planItem, planItemAddress);
+            Toast.makeText(CreatePlanItemActivity.this, "保存成功", Toast.LENGTH_SHORT).show();
             //如果等于2 需要上传到服务器
             if (Extra.NET_WORK == 2){
                 planItem = createPlanItemPresenter.getPlanItem(planItem.getCreateTime());
                 planItem.setAddress(planItemAddress);
                 saveObjectWithNetWork();
             }
-
-
         } else {
             planItemEditTime = System.currentTimeMillis();
             planItemIsEdit = true;
@@ -350,6 +349,7 @@ public class CreatePlanItemActivity extends AppCompatActivity implements ICreate
             planItemIsComplete = false;
             planItem.setComplete(planItemIsComplete);
             createPlanItemPresenter.updatePlanItem(planItem, planItemAddress);
+            Toast.makeText(CreatePlanItemActivity.this, "更新成功", Toast.LENGTH_SHORT).show();
             if (Extra.NET_WORK == 2){
                 planItemAddress = (ArrayList<Photo>) createPlanItemPresenter.getPhoto(planItem);
                 planItem.setAddress(planItemAddress);
@@ -371,6 +371,7 @@ public class CreatePlanItemActivity extends AppCompatActivity implements ICreate
     @Override
     public void complete() {
         Intent intent = new Intent();
+        intent.putExtra("isCompletePlanItem", planItemIsComplete);
         setResult(RESULT_OK, intent);
         this.finish();
     }
@@ -619,7 +620,7 @@ public class CreatePlanItemActivity extends AppCompatActivity implements ICreate
 
                     @Override
                     public void onResponse(String response, int id) {
-                        String a = "a";
+                        Log.e("MYTIME_OKHTTP", "更新或者保存成功");
                     }
                 });
     }

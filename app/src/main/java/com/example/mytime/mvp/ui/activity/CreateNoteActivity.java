@@ -222,6 +222,7 @@ public class CreateNoteActivity extends AppCompatActivity implements ICreateNote
             note.setContent(noteContent);
             note.setAddress(noteAddress);
             createNotePresenter.saveNote(note, noteAddress);
+            Toast.makeText(CreateNoteActivity.this, "保存成功", Toast.LENGTH_SHORT).show();
             //需要上传到服务器
             if (Extra.NET_WORK == 2){
                 note = createNotePresenter.getNote(note.getCreateTime());
@@ -237,6 +238,7 @@ public class CreateNoteActivity extends AppCompatActivity implements ICreateNote
             note.setAddress(noteAddress);
             note.setContent(noteContent);
             createNotePresenter.update(note, noteAddress);
+            Toast.makeText(CreateNoteActivity.this, "更新成功", Toast.LENGTH_SHORT).show();
             //需要上传到服务器
             if (Extra.NET_WORK == 2){
                 noteAddress = (ArrayList<Photo>) createNotePresenter.getPhoto(note);
@@ -337,7 +339,7 @@ public class CreateNoteActivity extends AppCompatActivity implements ICreateNote
 
                     @Override
                     public void onResponse(String response, int id) {
-                        String s = "";
+                        Log.e("MYTIME_OKHTTP", "更新或者保存成功");
                     }
                 });
     }

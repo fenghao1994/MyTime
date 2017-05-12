@@ -133,7 +133,7 @@ public class PlanItemAdapter extends RecyclerView.Adapter<PlanItemAdapter.ViewHo
                         .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                Toast.makeText(mContext, "删除任务成功!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(mContext, "删除成功", Toast.LENGTH_SHORT).show();
                                 cancelAlarmClock(mList.get(position));
                                 mList.get(position).setDelete(true);
 //                                mList.get(position).setEditTime(System.currentTimeMillis());

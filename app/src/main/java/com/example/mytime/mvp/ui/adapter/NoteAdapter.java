@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.mytime.R;
 import com.example.mytime.mvp.model.entity.Note;
@@ -80,6 +81,7 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.ViewHolder> {
                                 mList.remove( position);
                                 notifyDataSetChanged();
                                 alertDialog.dismiss();
+                                Toast.makeText(mContext, "删除成功", Toast.LENGTH_SHORT).show();
                             }
                         })
                         .setNegativeButton("取消", new DialogInterface.OnClickListener() {

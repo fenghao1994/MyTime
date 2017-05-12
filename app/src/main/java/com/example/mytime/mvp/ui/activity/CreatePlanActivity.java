@@ -153,7 +153,7 @@ public class CreatePlanActivity extends AppCompatActivity implements ICreatePlan
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
             if (requestCode == REQUEST) {
-                isCompletePlanItem = true;
+                isCompletePlanItem = data.getBooleanExtra("isCompletePlanItem", false);
             }
         }
     }
@@ -331,7 +331,7 @@ public class CreatePlanActivity extends AppCompatActivity implements ICreatePlan
 
                     @Override
                     public void onResponse(String response, int id) {
-
+                        Log.e("MYTIME_OKHTTP", "更新或者保存成功");
                     }
                 });
     }
