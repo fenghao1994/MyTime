@@ -6,6 +6,7 @@ import com.example.mytime.util.GlideImageLoader;
 import com.lzy.imagepicker.ImagePicker;
 import com.lzy.imagepicker.view.CropImageView;
 import com.mob.mobapi.MobAPI;
+import com.tencent.bugly.Bugly;
 import com.tencent.bugly.crashreport.CrashReport;
 import com.zhy.http.okhttp.OkHttpUtils;
 
@@ -43,7 +44,6 @@ public class MyApplication extends Application {
         imagePicker.setOutPutY(1000);//保存文件的高度。单位像素
 
         MobAPI.initSDK(this, "1dab04b93a4f0");
-
         SMSSDK.initSDK(this, "1c65bcce52490", "1b30899dd5a451437bf17a4b9275fd20");
 
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
@@ -55,6 +55,7 @@ public class MyApplication extends Application {
 
         OkHttpUtils.initClient(okHttpClient);
 
-        CrashReport.initCrashReport(getApplicationContext(), "0f640935c9", true);
+//        CrashReport.initCrashReport(getApplicationContext(), "0f640935c9", true);
+        Bugly.init(getApplicationContext(), "0f640935c9", false);
     }
 }

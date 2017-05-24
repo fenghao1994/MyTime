@@ -132,7 +132,9 @@ public class CityListFragment extends Fragment implements IWeatherView , SwipeRe
     }
 
     private void showWeatherEvent() {
-        showWeatherInfo(mWeatherEvent.getWeatherEntity().getResult().get(0));
+        if(mWeatherEvent.getWeatherEntity().getResult() != null){
+            showWeatherInfo(mWeatherEvent.getWeatherEntity().getResult().get(0));
+        }
     }
 
     @Override

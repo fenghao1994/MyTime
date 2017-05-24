@@ -18,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.mytime.R;
+import com.example.mytime.mvp.model.entity.Photo;
 import com.example.mytime.mvp.model.entity.PlanItem;
 import com.example.mytime.mvp.ui.activity.CreatePlanActivity;
 import com.example.mytime.mvp.ui.activity.CreatePlanItemActivity;
@@ -125,6 +126,15 @@ public class PlanItemAdapter extends RecyclerView.Adapter<PlanItemAdapter.ViewHo
 
             }
         });
+
+        holder.planItemView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                showShare(position);
+                return true;
+            }
+        });
+
         holder.planItemCha.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -338,5 +348,51 @@ public class PlanItemAdapter extends RecyclerView.Adapter<PlanItemAdapter.ViewHo
             planItemView = view;
             ButterKnife.bind(this, view);
         }
+    }
+
+    private void showShare(int position) {
+        PlanItem planItem = mList.get(position);
+    /*    OnekeyShare oks = new OnekeyShare();
+        //关闭sso授权
+        oks.disableSSOWhenAuthorize();
+        // title标题，印象笔记、邮箱、信息、微信、人人网、QQ和QQ空间使用
+        oks.setTitle(planItem.getTitle());
+        // titleUrl是标题的网络链接，仅在Linked-in,QQ和QQ空间使用
+//        oks.setTitleUrl("http://sharesdk.cn");
+        // text是分享文本，所有平台都需要这个字段
+        oks.setText(planItem.getContent());
+        //分享网络图片，新浪微博分享网络图片需要通过审核后申请高级写入接口，否则请注释掉测试新浪微博
+//        oks.setImageUrl("http://f1.sharesdk.cn/imgs/2014/02/26/owWpLZo_638x960.jpg");
+        String[] image = images(planItem);
+        if (image != null){
+            oks.setImageArray( image);
+        }
+        // imagePath是图片的本地路径，Linked-In以外的平台都支持此参数
+        //oks.setImagePath("/sdcard/test.jpg");//确保SDcard下面存在此张图片
+        // url仅在微信（包括好友和朋友圈）中使用
+        oks.setUrl("http://sharesdk.cn");
+        // comment是我对这条分享的评论，仅在人人网和QQ空间使用
+//        oks.setComment("我是测试评论文本");
+        // site是分享此内容的网站名称，仅在QQ空间使用
+//        oks.setSite("ShareSDK");
+        // siteUrl是分享此内容的网站地址，仅在QQ空间使用
+//        oks.setSiteUrl("http://sharesdk.cn");
+
+// 启动分享GUI
+        oks.show(mContext);*/
+    }
+
+    public String[] images(PlanItem planItem){
+        String[] image;
+        List<Photo> list = DataSupport.where("objectType = ? and objectId = ?", "1", planItem.getId() + "").find(Photo.class);
+        if (list != null && list.size() > 0){
+            int count = list.size();
+            image = new String[count];
+            for (int i = 0 ;i < count; i++){
+                image[i] = list.get(i).getAddress();
+            }
+            return image;
+        }
+        return null;
     }
 }

@@ -92,6 +92,10 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
+        if (Extra.NET_WORK == 1){
+            goMainActivity();
+        }
+
         sp = getSharedPreferences("MYTIME", Context.MODE_PRIVATE);
         if ( !"".equals(sp.getString("phoneNumber", ""))){
             goMainActivity();
