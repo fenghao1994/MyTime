@@ -1,5 +1,7 @@
 package com.example.mytime.mvp.ui.adapter;
 
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -93,6 +95,7 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.ViewHolder> {
                         .show();
             }
         });
+        animater(holder.noteView, position);
     }
 
 
@@ -116,5 +119,18 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.ViewHolder> {
             noteView = view;
             ButterKnife.bind(this, view);
         }
+    }
+
+    public void animater(View view, int position){
+        ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(view, "alpha", 0.3f, 1f);
+        ObjectAnimator objectAnimator1 = ObjectAnimator.ofFloat(view, "scaleX", 0.5f, 1f);
+        ObjectAnimator objectAnimator2 = ObjectAnimator.ofFloat(view, "scaleY", 0.5f, 1f);
+
+        AnimatorSet set = new AnimatorSet();
+        //同时沿X,Y轴放大，且改变透明度，然后移动
+        set.play(objectAnimator).with(objectAnimator1).with(objectAnimator2);
+        //都设置3s，也可以为每个单独设置
+        set.setDuration((position + 1) * 1000);
+        set.start();
     }
 }
