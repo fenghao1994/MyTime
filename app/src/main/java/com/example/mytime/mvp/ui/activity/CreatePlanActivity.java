@@ -34,9 +34,14 @@ import com.example.mytime.mvp.ui.custom.TitleDialog;
 import com.example.mytime.mvp.ui.view.ICreatePlanView;
 import com.example.mytime.util.Extra;
 import com.example.mytime.util.HttpUrl;
+import com.tencent.connect.share.QQShare;
+import com.tencent.tauth.IUiListener;
+import com.tencent.tauth.Tencent;
+import com.tencent.tauth.UiError;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
+import org.json.JSONObject;
 import org.litepal.crud.DataSupport;
 
 import java.io.File;
@@ -84,6 +89,8 @@ public class CreatePlanActivity extends AppCompatActivity implements ICreatePlan
 
     private SharePopWindow sharePopWindow;
 
+    private Tencent mTencent;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -106,6 +113,7 @@ public class CreatePlanActivity extends AppCompatActivity implements ICreatePlan
         sp = getSharedPreferences("MYTIME", Context.MODE_PRIVATE);
 
         sharePopWindow = new SharePopWindow(this);
+        mTencent = Tencent.createInstance("1106152550", this.getApplicationContext());
     }
 
     @Override
@@ -163,6 +171,8 @@ public class CreatePlanActivity extends AppCompatActivity implements ICreatePlan
                 isCompletePlanItem = data.getBooleanExtra("isCompletePlanItem", false);
             }
         }
+        if (null != mTencent)
+            mTencent.onActivityResult(requestCode, resultCode, data);
     }
 
     public void clickOk() {
@@ -387,13 +397,22 @@ public class CreatePlanActivity extends AppCompatActivity implements ICreatePlan
 
 
     @Override
-    public void shareLongClick(PlanItem planItem) {
+    public void shareLongClick(final PlanItem planItem) {
         sharePopWindow.showAtLocation(this.findViewById(R.id.activity_create_plan),
                 Gravity.BOTTOM|Gravity.CENTER_HORIZONTAL, 0, 0);
         sharePopWindow.setQqShareOnClick(new SharePopWindow.QQShareOnClick() {
             @Override
             public void qqShareClick() {
-                Toast.makeText(CreatePlanActivity.this, "qq", Toast.LENGTH_SHORT).show();
+
+                final Bundle params = new Bundle();
+                params.putInt(QQShare.SHARE_TO_QQ_KEY_TYPE, QQShare.SHARE_TO_QQ_TYPE_DEFAULT);
+                params.putString(QQShare.SHARE_TO_QQ_TITLE, planItem.getTitle());
+                params.putString(QQShare.SHARE_TO_QQ_SUMMARY,  planItem.getContent());
+                params.putString(QQShare.SHARE_TO_QQ_TARGET_URL,  "http://connect.qq.com/");
+//                params.putString(QQShare.SHARE_TO_QQ_IMAGE_URL,"http://imgcache.qq.com/qzone/space_item/pre/0/66768.gif");
+                params.putString(QQShare.SHARE_TO_QQ_APP_NAME,  "MyTime");
+                params.putInt(QQShare.SHARE_TO_QQ_EXT_INT,  QQShare.SHARE_TO_QQ_FLAG_QZONE_ITEM_HIDE);
+                mTencent.shareToQQ(CreatePlanActivity.this, params, new BaseUiListener());
             }
         });
         sharePopWindow.setPyShareOnClick(new SharePopWindow.PYShareOnClick() {
@@ -408,5 +427,26 @@ public class CreatePlanActivity extends AppCompatActivity implements ICreatePlan
                 Toast.makeText(CreatePlanActivity.this, "wx", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+    private class BaseUiListener implements IUiListener {
+        @Override
+        public void onComplete(Object response) {
+            //V2.0版本，参数类型由JSONObject 改成了Object,具体类型参考api文档
+//            mBaseMessageText.setText("onComplete:");
+            doComplete((JSONObject) response);
+        }
+        protected void doComplete(JSONObject values) {
+            Toast.makeText(CreatePlanActivity.this, "分享成功", Toast.LENGTH_SHORT).show();
+        }
+        @Override
+        public void onError(UiError e) {
+//            ("onError:", "code:" + e.errorCode + ", msg:"
+//                    + e.errorMessage + ", detail:" + e.errorDetail);
+            Toast.makeText(CreatePlanActivity.this, "分享发生错误", Toast.LENGTH_SHORT).show();
+        }
+        @Override
+        public void onCancel() {
+//            showResult("onCancel", "");
+        }
     }
 }
