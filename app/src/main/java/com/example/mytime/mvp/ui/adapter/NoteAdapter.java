@@ -130,7 +130,7 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.ViewHolder> {
         //同时沿X,Y轴放大，且改变透明度，然后移动
         set.play(objectAnimator).with(objectAnimator1).with(objectAnimator2);
         //都设置3s，也可以为每个单独设置
-        set.setDuration((position + 1) * 1000);
+        set.setDuration(800);
         set.start();
     }
 }
