@@ -13,6 +13,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Display;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
@@ -28,6 +29,7 @@ import com.example.mytime.mvp.model.entity.PlanItem;
 import com.example.mytime.mvp.presenter.ICreatePlanPresenter;
 import com.example.mytime.mvp.presenter.impl.CreatePlanPresenterImpl;
 import com.example.mytime.mvp.ui.adapter.PlanItemAdapter;
+import com.example.mytime.mvp.ui.custom.SharePopWindow;
 import com.example.mytime.mvp.ui.custom.TitleDialog;
 import com.example.mytime.mvp.ui.view.ICreatePlanView;
 import com.example.mytime.util.Extra;
@@ -47,7 +49,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import okhttp3.Call;
 
-public class CreatePlanActivity extends AppCompatActivity implements ICreatePlanView {
+public class CreatePlanActivity extends AppCompatActivity implements ICreatePlanView, PlanItemAdapter.ShareLongClick {
 
     public static final int REQUEST = 1;
     @BindView(R.id.toolbar_title)
@@ -80,6 +82,8 @@ public class CreatePlanActivity extends AppCompatActivity implements ICreatePlan
 
     private ICreatePlanPresenter createPlanPresenter;
 
+    private SharePopWindow sharePopWindow;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,6 +104,8 @@ public class CreatePlanActivity extends AppCompatActivity implements ICreatePlan
             createPlanInData();
         }
         sp = getSharedPreferences("MYTIME", Context.MODE_PRIVATE);
+
+        sharePopWindow = new SharePopWindow(this);
     }
 
     @Override
@@ -108,6 +114,7 @@ public class CreatePlanActivity extends AppCompatActivity implements ICreatePlan
 
         if (planItems != null && planItems.size() > 0) {
             adapter = new PlanItemAdapter(this, planItems);
+            adapter.setShareLongClick(this);
             recyclerView.setAdapter(adapter);
         }
     }
@@ -375,5 +382,31 @@ public class CreatePlanActivity extends AppCompatActivity implements ICreatePlan
                         Log.i("MYTIME_OKHTTP", "删除成功");
                     }
                 });
+    }
+
+
+
+    @Override
+    public void shareLongClick(PlanItem planItem) {
+        sharePopWindow.showAtLocation(this.findViewById(R.id.activity_create_plan),
+                Gravity.BOTTOM|Gravity.CENTER_HORIZONTAL, 0, 0);
+        sharePopWindow.setQqShareOnClick(new SharePopWindow.QQShareOnClick() {
+            @Override
+            public void qqShareClick() {
+                Toast.makeText(CreatePlanActivity.this, "qq", Toast.LENGTH_SHORT).show();
+            }
+        });
+        sharePopWindow.setPyShareOnClick(new SharePopWindow.PYShareOnClick() {
+            @Override
+            public void pyShareClick() {
+                Toast.makeText(CreatePlanActivity.this, "py", Toast.LENGTH_SHORT).show();
+            }
+        });
+        sharePopWindow.setWxShareOnClick(new SharePopWindow.WXShareOnClick() {
+            @Override
+            public void wxShareClick() {
+                Toast.makeText(CreatePlanActivity.this, "wx", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }
