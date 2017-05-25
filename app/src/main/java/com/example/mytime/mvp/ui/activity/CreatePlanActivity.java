@@ -35,6 +35,11 @@ import com.example.mytime.mvp.ui.view.ICreatePlanView;
 import com.example.mytime.util.Extra;
 import com.example.mytime.util.HttpUrl;
 import com.tencent.connect.share.QQShare;
+import com.tencent.mm.opensdk.modelmsg.SendMessageToWX;
+import com.tencent.mm.opensdk.modelmsg.WXMediaMessage;
+import com.tencent.mm.opensdk.modelmsg.WXWebpageObject;
+import com.tencent.mm.opensdk.openapi.IWXAPI;
+import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 import com.tencent.tauth.IUiListener;
 import com.tencent.tauth.Tencent;
 import com.tencent.tauth.UiError;
@@ -90,7 +95,9 @@ public class CreatePlanActivity extends AppCompatActivity implements ICreatePlan
     private SharePopWindow sharePopWindow;
 
     private Tencent mTencent;
-
+    //微信分享
+    private static final String APP_ID = "wx6c7a491a4edb052f";
+    private IWXAPI iwxapi;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -114,8 +121,13 @@ public class CreatePlanActivity extends AppCompatActivity implements ICreatePlan
 
         sharePopWindow = new SharePopWindow(this);
         mTencent = Tencent.createInstance("1106152550", this.getApplicationContext());
+        reqToWx();
     }
-
+    //注册到微信
+    private void reqToWx(){
+        iwxapi = WXAPIFactory.createWXAPI(this, APP_ID, true);
+        iwxapi.registerApp(APP_ID);
+    }
     @Override
     public void showData(List<PlanItem> planItems) {
         toolbarTitle.setText("编辑");
@@ -418,16 +430,36 @@ public class CreatePlanActivity extends AppCompatActivity implements ICreatePlan
         sharePopWindow.setPyShareOnClick(new SharePopWindow.PYShareOnClick() {
             @Override
             public void pyShareClick() {
-                Toast.makeText(CreatePlanActivity.this, "py", Toast.LENGTH_SHORT).show();
+                choosePYOrSe(2, planItem);
             }
         });
         sharePopWindow.setWxShareOnClick(new SharePopWindow.WXShareOnClick() {
             @Override
             public void wxShareClick() {
-                Toast.makeText(CreatePlanActivity.this, "wx", Toast.LENGTH_SHORT).show();
+                choosePYOrSe(1, planItem);
             }
         });
     }
+
+    public void choosePYOrSe(int flag, PlanItem planItem){
+        //flag 1为 分享到聊天界面中  2为  朋友圈
+        WXWebpageObject wxWebpageObject = new WXWebpageObject();
+        wxWebpageObject.webpageUrl = "www.baidu.com";
+        WXMediaMessage msg = new WXMediaMessage(wxWebpageObject);
+        msg.title = planItem.getTitle();
+        msg.description = planItem.getContent();
+
+        SendMessageToWX.Req req = new SendMessageToWX.Req();
+        req.transaction = planItem.getPlanId() + "";
+        req.message = msg;
+        if (flag == 1){
+            req.scene = SendMessageToWX.Req.WXSceneSession;
+        }else {
+            req.scene = SendMessageToWX.Req.WXSceneTimeline;
+        }
+        iwxapi.sendReq(req);
+    }
+
     private class BaseUiListener implements IUiListener {
         @Override
         public void onComplete(Object response) {

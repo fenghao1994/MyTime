@@ -39,6 +39,8 @@ import com.example.mytime.service.LocalService;
 import com.example.mytime.util.HttpUrl;
 import com.example.mytime.util.MyUtil;
 import com.example.mytime.util.WeatherUtil;
+import com.tencent.mm.opensdk.openapi.IWXAPI;
+import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
@@ -91,6 +93,9 @@ public class MainActivity extends AppCompatActivity implements IMainView ,SwipeR
 
     private SharedPreferences sp;
 
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -120,7 +125,11 @@ public class MainActivity extends AppCompatActivity implements IMainView ,SwipeR
         mSwipeLayout.setOnRefreshListener(this);
 
         sp = getSharedPreferences("MYTIME", Context.MODE_PRIVATE);
+
+
     }
+
+
 
     Handler mHandler = new Handler(){
         @Override
