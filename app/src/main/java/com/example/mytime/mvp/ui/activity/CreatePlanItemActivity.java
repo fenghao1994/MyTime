@@ -355,7 +355,12 @@ public class CreatePlanItemActivity extends AppCompatActivity implements ICreate
                 planItem.setAddress(planItemAddress);
                 updateObjectWithNetWork();
             }
+
         }
+
+        //发送刷新widget广播
+        Intent intent = new Intent(Extra.WIDGET_TIME);
+        CreatePlanItemActivity.this.sendBroadcast(intent);
 
         /**
          * 如果加入了location，则加入服务中，不断查询是否到地方了

@@ -41,6 +41,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        Log.i("xxxxxxxxxxxxxxxxx", intent.getAction());
         this.mContext = context;
         if (intent != null && intent.getAction() != null) {
             if (intent.getAction().equals(Extra.ALARM_CLOCK)) {

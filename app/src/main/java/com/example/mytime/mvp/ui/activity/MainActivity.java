@@ -36,6 +36,7 @@ import com.example.mytime.mvp.ui.fragment.NoteFragment;
 import com.example.mytime.mvp.ui.fragment.PlanFragment;
 import com.example.mytime.mvp.ui.view.IMainView;
 import com.example.mytime.service.LocalService;
+import com.example.mytime.util.Extra;
 import com.example.mytime.util.HttpUrl;
 import com.example.mytime.util.MyUtil;
 import com.example.mytime.util.WeatherUtil;
@@ -127,6 +128,9 @@ public class MainActivity extends AppCompatActivity implements IMainView ,SwipeR
         sp = getSharedPreferences("MYTIME", Context.MODE_PRIVATE);
 
 
+        //发送刷新widget广播
+        Intent widget = new Intent(Extra.WIDGET_TIME);
+        this.sendBroadcast(widget);
     }
 
 

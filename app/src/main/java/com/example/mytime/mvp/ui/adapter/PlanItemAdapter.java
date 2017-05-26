@@ -28,6 +28,7 @@ import com.example.mytime.mvp.ui.activity.MainActivity;
 import com.example.mytime.mvp.ui.custom.SharePopWindow;
 import com.example.mytime.receiver.AlarmReceiver;
 import com.example.mytime.util.EditTimeSortFromBToS;
+import com.example.mytime.util.Extra;
 import com.example.mytime.util.MyUtil;
 
 import org.litepal.crud.DataSupport;
@@ -157,6 +158,10 @@ public class PlanItemAdapter extends RecyclerView.Adapter<PlanItemAdapter.ViewHo
                                 mList.remove(position);
                                 PlanItemAdapter.this.notifyDataSetChanged();
                                 alertDialog.dismiss();
+
+                                //发送刷新widget广播
+                                Intent intent = new Intent(Extra.WIDGET_TIME);
+                                mContext.sendBroadcast(intent);
                             }
                         })
                         .setNegativeButton("取消", new DialogInterface.OnClickListener() {
@@ -186,6 +191,11 @@ public class PlanItemAdapter extends RecyclerView.Adapter<PlanItemAdapter.ViewHo
                                 Toast.makeText(mContext, "恭喜完成该任务", Toast.LENGTH_SHORT).show();
                                 PlanItemAdapter.this.notifyDataSetChanged();
                                 alertDialog.dismiss();
+
+                                //发送刷新widget广播
+                                Intent intent = new Intent(Extra.WIDGET_TIME);
+                                mContext.sendBroadcast(intent);
+
                             }
                         })
                         .setNegativeButton("取消", new DialogInterface.OnClickListener() {

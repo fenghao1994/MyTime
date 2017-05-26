@@ -139,6 +139,16 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_paths"/>
         </provider>
+
+
+        <receiver android:name=".widget.TimeAppWidgetProvider">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="COM.EXAMPLE.WIDGET.TIME_APP_PROVIDER"/>
+            </intent-filter>
+            <meta-data android:name="android.appwidget.provider"
+                android:resource="@xml/appwidget_provider"/>
+        </receiver>
     </application>
 
 </manifest>
