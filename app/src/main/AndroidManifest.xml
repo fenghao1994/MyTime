@@ -35,6 +35,7 @@
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.READ_LOGS" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
     <application
         android:name=".application.MyApplication"
         android:allowBackup="true"
@@ -47,17 +48,19 @@
             android:value="619daa349b76d86765f84e2babd1f909" />
 
         <activity android:name=".mvp.ui.activity.MainActivity">
-            <!--<intent-filter>
+
+            <!--
+            <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>-->
+            </intent-filter>
+            -->
         </activity>
         <activity android:name=".mvp.ui.activity.GuideActivity" />
         <activity
             android:name=".mvp.ui.activity.RegisterActivity"
-            android:label="My Time">
-        </activity>
+            android:label="My Time"></activity>
         <activity android:name=".mvp.ui.activity.CreatePlanActivity" />
         <activity android:name=".mvp.ui.activity.CreatePlanItemActivity" />
         <activity
@@ -100,35 +103,37 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name="com.tencent.tauth.AuthActivity"
-            android:noHistory="true"
-            android:launchMode="singleTask" >
+            android:launchMode="singleTask"
+            android:noHistory="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data android:scheme="tencent1106152550" />
             </intent-filter>
         </activity>
-        <activity android:name="com.tencent.connect.common.AssistActivity"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+        <activity
+            android:name="com.tencent.connect.common.AssistActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            />
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
         <activity
             android:name="com.tencent.bugly.beta.ui.BetaActivity"
             android:configChanges="keyboardHidden|orientation|screenSize|locale"
             android:theme="@android:style/Theme.Translucent" />
 
-            <intent-filter>
-                <data android:scheme="tencent1106152550" />
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-            <!--微信分享回调 -->
+        <intent-filter>
+            <data android:scheme="tencent1106152550" />
 
+            <action android:name="android.intent.action.VIEW" />
+
+            <category android:name="android.intent.category.BROWSABLE" />
+            <category android:name="android.intent.category.DEFAULT" />
+        </intent-filter>
+        <!-- 微信分享回调 -->
 
         <provider
             android:name="android.support.v4.content.FileProvider"
@@ -137,18 +142,21 @@
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/provider_paths"/>
+                android:resource="@xml/provider_paths" />
         </provider>
-
 
         <receiver android:name=".widget.TimeAppWidgetProvider">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-                <action android:name="COM.EXAMPLE.WIDGET.TIME_APP_PROVIDER"/>
+                <action android:name="COM.EXAMPLE.WIDGET.TIME_APP_PROVIDER" />
             </intent-filter>
-            <meta-data android:name="android.appwidget.provider"
-                android:resource="@xml/appwidget_provider"/>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/appwidget_provider" />
         </receiver>
+
+        <activity android:name=".mvp.ui.activity.MyFeedBackActivity"></activity>
     </application>
 
 </manifest>

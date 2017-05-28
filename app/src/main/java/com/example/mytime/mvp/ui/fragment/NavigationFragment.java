@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -25,12 +26,12 @@ import com.example.mytime.mvp.ui.activity.AllNoteActivity;
 import com.example.mytime.mvp.ui.activity.AllPlanActivity;
 import com.example.mytime.mvp.ui.activity.CountActivity;
 import com.example.mytime.mvp.ui.activity.ImageOneActivity;
+import com.example.mytime.mvp.ui.activity.MyFeedBackActivity;
 import com.example.mytime.util.Extra;
 import com.example.mytime.util.HttpUrl;
 import com.google.gson.Gson;
 import com.lzy.imagepicker.ImagePicker;
 import com.lzy.imagepicker.bean.ImageItem;
-import com.lzy.imagepicker.ui.ImageGridActivity;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
@@ -62,6 +63,14 @@ public class NavigationFragment extends Fragment {
     LinearLayout countLayout;
     @BindView(R.id.sign_out_layout)
     LinearLayout signOutLayout;
+    @BindView(R.id.textView)
+    TextView textView;
+    @BindView(R.id.my_riji)
+    LinearLayout myRiji;
+    @BindView(R.id.my_feed_back)
+    LinearLayout myFeedBack;
+    @BindView(R.id.software_info)
+    LinearLayout softwareInfo;
 
     private ArrayList<ImageItem> mImageItem;
     private SharedPreferences sp;
@@ -77,27 +86,27 @@ public class NavigationFragment extends Fragment {
         sp = getActivity().getSharedPreferences("MYTIME", Context.MODE_PRIVATE);
         headerPath = sp.getString("path", "");
         showHeadImg();
-        if (Extra.NET_WORK == 1){
+        if (Extra.NET_WORK == 1) {
             signOutLayout.setVisibility(View.GONE);
-        }else {
+        } else {
             signOutLayout.setVisibility(View.VISIBLE);
         }
         return view;
     }
 
-    public void showHeadImg(){
-        if (Extra.NET_WORK == 1){
-            if ( !"".equals(headerPath)){
-                Glide.with(this).load( headerPath).into( headerImg);
+    public void showHeadImg() {
+        if (Extra.NET_WORK == 1) {
+            if (!"".equals(headerPath)) {
+                Glide.with(this).load(headerPath).into(headerImg);
             }
-        }else {
+        } else {
             getHeadImg();
 
         }
 
     }
 
-    public void getHeadImg(){
+    public void getHeadImg() {
         OkHttpUtils
                 .post()
                 .url(HttpUrl.POST_GET_HEADIMG)
@@ -114,7 +123,7 @@ public class NavigationFragment extends Fragment {
                         headerPath = response;
                         headerPath = headerPath.substring(3, headerPath.length());
                         headerPath = headerPath.replace("\\", "/");
-                        Glide.with(getActivity()).load(HttpUrl.ROOT + "/" + headerPath).diskCacheStrategy(DiskCacheStrategy.ALL).into( headerImg);
+                        Glide.with(getActivity()).load(HttpUrl.ROOT + "/" + headerPath).diskCacheStrategy(DiskCacheStrategy.ALL).into(headerImg);
                     }
                 });
     }
@@ -141,6 +150,12 @@ public class NavigationFragment extends Fragment {
                 signout();
                 break;
         }
+    }
+
+    @OnClick(R.id.my_feed_back)
+    public void goMyFeedBack(){
+        Intent intent = new Intent(getActivity(), MyFeedBackActivity.class);
+        startActivity(intent);
     }
 
     private void signout() {
@@ -179,10 +194,10 @@ public class NavigationFragment extends Fragment {
         if (resultCode == ImagePicker.RESULT_CODE_ITEMS) {
             if (data != null && requestCode == 1) {
                 mImageItem = (ArrayList<ImageItem>) data.getSerializableExtra(ImagePicker.EXTRA_RESULT_ITEMS);
-                Glide.with(this).load( mImageItem.get(0).path).into( headerImg);
+                Glide.with(this).load(mImageItem.get(0).path).into(headerImg);
                 sp.edit().putString("path", mImageItem.get(0).path).commit();
                 //如果等于2  需要上传到服务器
-                if (Extra.NET_WORK == 2){
+                if (Extra.NET_WORK == 2) {
                     submitHeadImg(mImageItem.get(0).path);
                 }
 
@@ -192,13 +207,13 @@ public class NavigationFragment extends Fragment {
         }
     }
 
-    public void submitHeadImg(String path){
+    public void submitHeadImg(String path) {
         File file = new File(path);
         OkHttpUtils
                 .post()
                 .url(HttpUrl.POST_HEADER_IMG)
                 .addParams("phoneNumber", sp.getString("phoneNumber", ""))
-                .addFile("file","file1", file)
+                .addFile("file", "file1", file)
                 .build()
                 .execute(new StringCallback() {
                     @Override
@@ -218,22 +233,23 @@ public class NavigationFragment extends Fragment {
 
     private void showCountPlan() {
         Intent intent = new Intent(getActivity(), CountActivity.class);
-        startActivity( intent);
+        startActivity(intent);
     }
 
-    public void showAllNote(){
+    public void showAllNote() {
         Intent intent = new Intent(getActivity(), AllNoteActivity.class);
-        startActivity( intent);
+        startActivity(intent);
     }
-    public void showAllPlan(){
+
+    public void showAllPlan() {
         Intent intent = new Intent(getActivity(), AllPlanActivity.class);
         intent.putExtra("COMPLETEPLAN", false);
-        startActivity( intent);
+        startActivity(intent);
     }
 
-    public void showCompletePlan(){
+    public void showCompletePlan() {
         Intent intent = new Intent(getActivity(), AllPlanActivity.class);
         intent.putExtra("COMPLETEPLAN", true);
-        startActivity( intent);
+        startActivity(intent);
     }
 }

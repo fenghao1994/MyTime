@@ -54,4 +54,6 @@ public class HttpUrl {
     //上传头像
     public static final String POST_HEADER_IMG = ROOT + "/user/upload/headimg";
 
+    public static final String POST_FEED_BACK = ROOT + "/user/feed_back";
+
 }

@@ -14,5 +14,5 @@ public class Extra {
 
     public static final String WIDGET_TIME = "COM.EXAMPLE.WIDGET.TIME_APP_PROVIDER";
 
-    public static final int NET_WORK = 1;//是否请求网络  1 不请求， 2请求
+    public static final int NET_WORK = 2;//是否请求网络  1 不请求， 2请求
 }
