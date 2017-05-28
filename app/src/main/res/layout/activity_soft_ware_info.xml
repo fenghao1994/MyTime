@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_soft_ware_info"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.example.mytime.mvp.ui.activity.SoftWareInfoActivity">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        app:navigationIcon="@drawable/back">
+
+        <TextView
+            android:id="@+id/toolbar_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="软件信息"
+            android:textSize="16sp" />
+
+    </android.support.v7.widget.Toolbar>
+
+
+    <ImageView
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="60dp"
+        android:src="@drawable/logo" />
+
+    <TextView
+        android:id="@+id/version_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"
+        android:text="版本: v1.2 (已是最新版)"
+        android:textSize="20sp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"
+        android:text="软件信息"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/software_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="20dp"
+        android:text="MyTime 提供时间管理，可以让你更好的管理自己的时间在APP中创建一个计划，设置好闹钟，到点会直接提醒您，并且可以提前把电话，短信等信息填好，到时间了后只需要点击发送就OK了，还可以帮你定位你想要去的地方，到达目的地附近后，会有提示提醒您。"
+        android:textSize="16sp" />
+
+
+</LinearLayout>

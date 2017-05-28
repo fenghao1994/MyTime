@@ -27,6 +27,7 @@ import com.example.mytime.mvp.ui.activity.AllPlanActivity;
 import com.example.mytime.mvp.ui.activity.CountActivity;
 import com.example.mytime.mvp.ui.activity.ImageOneActivity;
 import com.example.mytime.mvp.ui.activity.MyFeedBackActivity;
+import com.example.mytime.mvp.ui.activity.SoftWareInfoActivity;
 import com.example.mytime.util.Extra;
 import com.example.mytime.util.HttpUrl;
 import com.google.gson.Gson;
@@ -155,6 +156,12 @@ public class NavigationFragment extends Fragment {
     @OnClick(R.id.my_feed_back)
     public void goMyFeedBack(){
         Intent intent = new Intent(getActivity(), MyFeedBackActivity.class);
+        startActivity(intent);
+    }
+
+    @OnClick(R.id.software_info)
+    public void goSoftwareInfo(){
+        Intent intent = new Intent(getActivity(), SoftWareInfoActivity.class);
         startActivity(intent);
     }
 

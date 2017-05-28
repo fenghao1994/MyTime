@@ -88,8 +88,8 @@ public class CountActivity extends AppCompatActivity {
             countList.add(count);
         }
 
-        Collections.reverse(keyList);
-        Collections.reverse(countList);
+//        Collections.reverse(keyList);
+//        Collections.reverse(countList);
         ArrayList<AxisValue> aX = new ArrayList<>();
         ArrayList<AxisValue> aY = new ArrayList<>();
         for (int i = 0 ;i < keyList.size(); i++){
