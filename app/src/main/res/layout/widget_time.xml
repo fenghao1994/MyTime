@@ -12,7 +12,6 @@
             android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="学习英语"
             android:layout_marginLeft="16dp"
             android:layout_marginTop="16dp"
             android:textSize="20sp"
@@ -22,19 +21,17 @@
             android:id="@+id/content"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="学习英语"
             android:layout_centerInParent="true"
             android:textSize="20sp"
             android:maxLines="2"
             android:ellipsize="end"
-
+            android:text="暂无提示信息"
             />
 
         <TextView
             android:id="@+id/time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="2017-08-10"
             android:layout_alignParentRight="true"
             android:layout_alignParentBottom="true"
             android:layout_marginRight="16dp"
