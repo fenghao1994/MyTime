@@ -60,8 +60,14 @@ public class CountActivity extends AppCompatActivity {
     }
 
     public void getAllCompletePlanItem(){
-        allCompletePlanItems = (ArrayList<PlanItem>) DataSupport.where("isComplete = ?", "1").find( PlanItem.class);
+        allCompletePlanItems = (ArrayList<PlanItem>) DataSupport.where("isComplete = ?", "1").order("editTime ASC").find( PlanItem.class);
+        changeList();
         initData();
+    }
+
+    //按edittime从小打到大排序
+    public void changeList(){
+        Collections.sort(allCompletePlanItems, new EditTimeSortFromBToS());
     }
 
     public void initData(){

@@ -25,6 +25,7 @@ import com.example.mytime.http_callback.UserCallBack;
 import com.example.mytime.mvp.model.entity.Note;
 import com.example.mytime.mvp.model.entity.Plan;
 import com.example.mytime.mvp.model.entity.PlanItem;
+import com.example.mytime.mvp.model.entity.RiJi;
 import com.example.mytime.mvp.model.entity.User;
 import com.example.mytime.util.Extra;
 import com.example.mytime.util.HttpUrl;
@@ -65,7 +66,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private ProgressDialog progressDialog;
 
-    boolean b1, b2, b3;
+    boolean b1, b2, b3, b4;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -185,6 +186,7 @@ public class LoginActivity extends AppCompatActivity {
                         getNotesFromNet();
                         getPlanItemFromNet();
                         getPlanFromNet();
+                        getRijiFromNet();
                     }
                 });
     }
@@ -302,8 +304,40 @@ public class LoginActivity extends AppCompatActivity {
                     }
                 });
     }
+    public void getRijiFromNet(){
+        OkHttpUtils
+                .post()
+                .url(HttpUrl.POST_ALL_RIJI)
+                .addParams("phoneNumber", phoneNumber.getText().toString().trim())
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        Log.i("MYTIME_OKHTTP", e.toString());
+                        if (progressDialog != null){
+                            progressDialog.dismiss();
+                        }
+                        Toast.makeText(LoginActivity.this, "服务器异常,请稍后在试", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        Gson gson = new Gson();
+                        Type type = new TypeToken<ArrayList<RiJi>>() {}.getType();
+                        ArrayList<RiJi> list = gson.fromJson(response, type);
+                        if (list != null && list.size() > 0){
+                            for (int i = 0 ; i < list.size(); i++){
+                                list.get(i).save();
+                            }
+                        }
+                        b4 = true;
+                        goMainFromNet();
+                    }
+                });
+    }
+
     public void goMainFromNet(){
-        if (b1 && b2 && b3){
+        if (b1 && b2 && b3 && b4){
             progressDialog.dismiss();
             goMainActivity();
         }

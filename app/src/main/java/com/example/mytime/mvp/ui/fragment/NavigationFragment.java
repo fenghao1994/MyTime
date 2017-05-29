@@ -22,11 +22,13 @@ import com.example.mytime.mvp.model.entity.Note;
 import com.example.mytime.mvp.model.entity.Photo;
 import com.example.mytime.mvp.model.entity.Plan;
 import com.example.mytime.mvp.model.entity.PlanItem;
+import com.example.mytime.mvp.model.entity.RiJi;
 import com.example.mytime.mvp.ui.activity.AllNoteActivity;
 import com.example.mytime.mvp.ui.activity.AllPlanActivity;
 import com.example.mytime.mvp.ui.activity.CountActivity;
 import com.example.mytime.mvp.ui.activity.ImageOneActivity;
 import com.example.mytime.mvp.ui.activity.MyFeedBackActivity;
+import com.example.mytime.mvp.ui.activity.RiJiActivity;
 import com.example.mytime.mvp.ui.activity.SoftWareInfoActivity;
 import com.example.mytime.util.Extra;
 import com.example.mytime.util.HttpUrl;
@@ -165,6 +167,12 @@ public class NavigationFragment extends Fragment {
         startActivity(intent);
     }
 
+    @OnClick(R.id.my_riji)
+    public void goMyRiJi(){
+        Intent intent = new Intent(getActivity(), RiJiActivity.class);
+        startActivity(intent);
+    }
+
     private void signout() {
         alertDialog = new AlertDialog.Builder(getActivity())
                 .setMessage("确定退出吗?")
@@ -182,6 +190,7 @@ public class NavigationFragment extends Fragment {
                         Photo.deleteAll(Photo.class);
                         Plan.deleteAll(Plan.class);
                         PlanItem.deleteAll(PlanItem.class);
+                        RiJi.deleteAll(RiJi.class);
                         sp.edit().clear().commit();
                         getActivity().finish();
                         System.exit(0);

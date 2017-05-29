@@ -214,6 +214,9 @@ public class MainActivity extends AppCompatActivity implements IMainView ,SwipeR
     //// TODO: 2017/3/28  weather数据加载
     @Subscribe
     public void showWeathers(WeatherEvent entity) {
+
+        Extra.entity = entity.getWeatherEntity();
+
         mWeatherEvent = entity;
         if (entity.isSuccess()) {
             this.weatherEntity = entity.getWeatherEntity();

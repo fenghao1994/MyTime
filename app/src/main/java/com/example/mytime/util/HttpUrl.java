@@ -54,6 +54,12 @@ public class HttpUrl {
     //上传头像
     public static final String POST_HEADER_IMG = ROOT + "/user/upload/headimg";
 
+    //上传反馈意见
     public static final String POST_FEED_BACK = ROOT + "/user/feed_back";
 
+    //上传日记
+    public static final String POST_RIJI = ROOT + "/riji/save_riji";
+
+    //获取所有的日记
+    public static final String POST_ALL_RIJI = ROOT + "/riji/getAllRiji";
 }
