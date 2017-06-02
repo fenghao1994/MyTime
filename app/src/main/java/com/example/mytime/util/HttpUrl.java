@@ -43,6 +43,9 @@ public class HttpUrl {
     //重置密码
     public static final String RESET_PASSWORD = ROOT + "/user/reset/password";
 
+    //忘记密码
+    public static final String POST_FORGET_PASSWORD = ROOT + "/user/forget/password";
+
     //注册
     public static final String POST_REGISTER = ROOT + "/user/register";
 
@@ -62,4 +65,7 @@ public class HttpUrl {
 
     //获取所有的日记
     public static final String POST_ALL_RIJI = ROOT + "/riji/getAllRiji";
+
+    //分享
+    public static final String GET_SHARE_PLANITEM = ROOT + "/share/planitem";
 }

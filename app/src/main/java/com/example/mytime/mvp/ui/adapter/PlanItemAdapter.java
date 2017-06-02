@@ -88,6 +88,11 @@ public class PlanItemAdapter extends RecyclerView.Adapter<PlanItemAdapter.ViewHo
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
 
+        if (!(mContext instanceof CreatePlanActivity)){
+            holder.planItemCha.setEnabled(false);
+            holder.planItemCha.setImageDrawable(mContext.getResources().getDrawable(R.drawable.cha_gray));
+        }
+
         //// TODO: 2017/1/4  显示的时间处理
 
         //如果只提醒一次则显示年月日，否则不显示
@@ -125,7 +130,7 @@ public class PlanItemAdapter extends RecyclerView.Adapter<PlanItemAdapter.ViewHo
                     intent.putExtra("PLANITEM", mList.get(position));
                     ((CreatePlanActivity) mContext).startActivityForResult(intent, CreatePlanActivity.REQUEST);
                 }else {
-                    Toast.makeText(mContext, "此页面只能进行删除计划操作", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, "此页面不能进行操作", Toast.LENGTH_SHORT).show();
                 }
 
             }

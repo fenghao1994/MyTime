@@ -3,6 +3,7 @@ package com.example.mytime.mvp.ui.activity;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 
 import com.example.mytime.R;
@@ -61,13 +62,8 @@ public class CountActivity extends AppCompatActivity {
 
     public void getAllCompletePlanItem(){
         allCompletePlanItems = (ArrayList<PlanItem>) DataSupport.where("isComplete = ?", "1").order("editTime ASC").find( PlanItem.class);
-        changeList();
+//        changeList();
         initData();
-    }
-
-    //按edittime从小打到大排序
-    public void changeList(){
-        Collections.sort(allCompletePlanItems, new EditTimeSortFromBToS());
     }
 
     public void initData(){
@@ -75,7 +71,6 @@ public class CountActivity extends AppCompatActivity {
         ArrayList<String> keyList = new ArrayList<>();
         ArrayList<Integer> countList = new ArrayList<>();
         ArrayList<PointValue> pointValues = new ArrayList<>();
-
         List<Line> lineList = new ArrayList<>();
         for (int i = 0 ;i < allCompletePlanItems.size() ;i++){
             String date = MyUtil.dateYMD(allCompletePlanItems.get(i).getEditTime());
@@ -92,6 +87,15 @@ public class CountActivity extends AppCompatActivity {
             int count = entry.getValue().size();
             keyList.add(key);
             countList.add(count);
+        }
+
+        for(int i = 0 ; i < keyList.size() - 1; i++){
+            for (int j = i + 1; j < keyList.size(); j++){
+                if (keyList.get(i).compareTo(keyList.get(j)) > 0){
+                    Collections.swap(keyList, i, j);
+                    Collections.swap(countList, i, j);
+                }
+            }
         }
 
 //        Collections.reverse(keyList);

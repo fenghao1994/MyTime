@@ -4,7 +4,6 @@ package com.example.mytime.mvp.ui.activity;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -27,8 +26,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.mytime.R;
-import com.example.mytime.http_callback.UserCallBack;
-import com.example.mytime.mvp.model.entity.User;
 import com.example.mytime.mvp.ui.view.ILoginView;
 import com.example.mytime.receiver.AlarmReceiver;
 import com.example.mytime.util.Extra;
@@ -79,6 +76,8 @@ public class RegisterActivity extends AppCompatActivity implements ILoginView {
     EditText password;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
+    @BindView(R.id.password_text)
+    TextView passwordText;
 
     private BroadcastReceiver smsReceiver;
     private EventHandler eventHandler;
@@ -97,6 +96,9 @@ public class RegisterActivity extends AppCompatActivity implements ILoginView {
     private SharedPreferences sp;
 
     private ProgressDialog progressDialog;
+
+    private boolean flag;
+
 
     private Handler handler = new Handler() {
         @Override
@@ -123,6 +125,8 @@ public class RegisterActivity extends AppCompatActivity implements ILoginView {
                     voiceSMS.setText("短信没收到？用电话接收吧!");
                     handler.removeCallbacks(runnable);
                 }
+            }else if (msg.what == 3){
+
             }
             super.handleMessage(msg);
         }
@@ -176,9 +180,17 @@ public class RegisterActivity extends AppCompatActivity implements ILoginView {
         setContentView(R.layout.activity_register);
         ButterKnife.bind(this);
 
+        flag = getIntent().getBooleanExtra("FLAG", false);
+        if (flag) {
+            toolbarTitle.setText("忘记密码");
+            textLogin.setText("设置新密码");
+            passwordText.setText("输入新密码");
+        }
+
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
+            actionBar.setTitle("");
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setHomeAsUpIndicator(R.drawable.back_white);
         }
@@ -231,7 +243,12 @@ public class RegisterActivity extends AppCompatActivity implements ILoginView {
                 } else if (event == SMSSDK.EVENT_SUBMIT_VERIFICATION_CODE) {
                     if (result == SMSSDK.RESULT_COMPLETE) {
                         detileMessage("验证成功");
-                        sumbitInfo();
+                        if (!flag) {
+                            sumbitInfo(HttpUrl.POST_REGISTER);
+                        } else {
+                            sumbitInfo(HttpUrl.POST_FORGET_PASSWORD);
+                        }
+
                         finish();
                         Log.i("RegisterActivity-verifi", data.toString());
                     } else {
@@ -262,39 +279,67 @@ public class RegisterActivity extends AppCompatActivity implements ILoginView {
 
     }
 
-    public void sumbitInfo() {
-        progressDialog.setMessage("正在注册");
-        progressDialog.show();;
+    public void sumbitInfo(String url) {
+        if (!flag) {
+            progressDialog.setMessage("正在注册");
+        } else {
+            progressDialog.setMessage("正在设置新密码");
+        }
+
+        progressDialog.show();
+        ;
         OkHttpUtils
                 .post()
-                .url(HttpUrl.POST_REGISTER)
+                .url(url)
                 .addParams("phoneNumber", phoneNumber.getText().toString().trim())
                 .addParams("password", password.getText().toString().trim())
                 .build()
                 .execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
-                        Toast.makeText(RegisterActivity.this, "注册失败", Toast.LENGTH_SHORT).show();
-                        if (progressDialog != null){
-                            progressDialog.dismiss();
+                        if (!flag) {
+                            Toast.makeText(RegisterActivity.this, "注册失败", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(RegisterActivity.this, "修改密码失败", Toast.LENGTH_SHORT).show();
                         }
+
+                        new Thread(dismissRunnable).start();
                         Toast.makeText(RegisterActivity.this, "服务器异常,请稍后在试", Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
                     public void onResponse(String response, int id) {
-                        progressDialog.dismiss();
+                        new Thread(dismissRunnable).start();
                         sp.edit().putString("phoneNumber", phoneNumber.getText().toString().trim())
                                 .putString("password", password.getText().toString())
                                 .commit();
                         Gson gson = new Gson();
                         Map<String, String> map = gson.fromJson(response, Map.class);
-                        Toast.makeText(RegisterActivity.this, map.get("msg"), Toast.LENGTH_SHORT).show();
+                        if (!flag) {
+                            Toast.makeText(RegisterActivity.this, "注册成功", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(RegisterActivity.this, "修改密码成功", Toast.LENGTH_SHORT).show();
+                        }
+
                         finish();
                     }
                 });
-
     }
+
+    public void dismiss() {
+        if (progressDialog != null) {
+            progressDialog.dismiss();
+        }
+    }
+
+    private Runnable dismissRunnable = new Runnable() {
+        @Override
+        public void run() {
+            Message message = new Message();
+            message.what = 3;
+            handler.sendMessage(message);
+        }
+    };
 
     public void detileMessage(Object data) {
         Looper.prepare();

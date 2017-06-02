@@ -35,8 +35,12 @@ import com.example.mytime.util.HttpUrl;
 import com.google.gson.Gson;
 import com.lzy.imagepicker.ImagePicker;
 import com.lzy.imagepicker.bean.ImageItem;
+import com.lzy.imagepicker.ui.ImageGridActivity;
+import com.lzy.imagepicker.view.CropImageView;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
+
+import org.litepal.crud.DataSupport;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -186,11 +190,17 @@ public class NavigationFragment extends Fragment {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         alertDialog.dismiss();
-                        Note.deleteAll(Note.class);
-                        Photo.deleteAll(Photo.class);
-                        Plan.deleteAll(Plan.class);
-                        PlanItem.deleteAll(PlanItem.class);
-                        RiJi.deleteAll(RiJi.class);
+//                        Note.deleteAll(Note.class);
+//                        Photo.deleteAll(Photo.class);
+//                        Plan.deleteAll(Plan.class);
+//                        PlanItem.deleteAll(PlanItem.class);
+//                        RiJi.deleteAll(RiJi.class);
+                        DataSupport.deleteAll(Note.class);
+                        DataSupport.deleteAll(Photo.class);
+                        DataSupport.deleteAll(Plan.class);
+                        DataSupport.deleteAll(PlanItem.class);
+                        DataSupport.deleteAll(RiJi.class);
+                        boolean b  = getActivity().deleteDatabase("mytime");
                         sp.edit().clear().commit();
                         getActivity().finish();
                         System.exit(0);
@@ -200,7 +210,10 @@ public class NavigationFragment extends Fragment {
     }
 
     private void choosePhoto() {
-        Intent intent = new Intent(getActivity(), ImageOneActivity.class);
+        Intent intent = new Intent(getActivity(), ImageGridActivity.class);
+        ImagePicker imagePicker = ImagePicker.getInstance();
+        imagePicker.setMultiMode(false);
+        imagePicker.setStyle(CropImageView.Style.CIRCLE);
         startActivityForResult(intent, 1);
     }
 

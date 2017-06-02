@@ -239,7 +239,7 @@ public class CreatePlanActivity extends AppCompatActivity implements ICreatePlan
 
                                 //等于2 上传到服务器
                                 if (Extra.NET_WORK == 2){
-                                    saveObjectWithNetWork();
+                                    updateObjectWithNetWork();
                                 }
                             }
                             Toast.makeText(CreatePlanActivity.this, "设置成功", Toast.LENGTH_SHORT).show();
@@ -390,7 +390,7 @@ public class CreatePlanActivity extends AppCompatActivity implements ICreatePlan
                 .post()
                 .url(HttpUrl.POST_COMPLETE_PLAN_ITEM)
                 .addParams("phoneNumber", sp.getString("phoneNumber", ""))
-                .addParams("id", planItem.getId() + "")
+                .addParams("createTime", planItem.getCreateTime() + "")
                 .addParams("editTime", planItem.getEditTime() + "")
                 .build()
                 .execute(new StringCallback() {
@@ -420,7 +420,7 @@ public class CreatePlanActivity extends AppCompatActivity implements ICreatePlan
                 params.putInt(QQShare.SHARE_TO_QQ_KEY_TYPE, QQShare.SHARE_TO_QQ_TYPE_DEFAULT);
                 params.putString(QQShare.SHARE_TO_QQ_TITLE, planItem.getTitle());
                 params.putString(QQShare.SHARE_TO_QQ_SUMMARY,  planItem.getContent());
-                params.putString(QQShare.SHARE_TO_QQ_TARGET_URL,  "http://connect.qq.com/");
+                params.putString(QQShare.SHARE_TO_QQ_TARGET_URL,  HttpUrl.GET_SHARE_PLANITEM + "?id=" + planItem.getId() + "&phoneNumber=" + sp.getString("phoneNumber", ""));
 //                params.putString(QQShare.SHARE_TO_QQ_IMAGE_URL,"http://imgcache.qq.com/qzone/space_item/pre/0/66768.gif");
                 params.putString(QQShare.SHARE_TO_QQ_APP_NAME,  "MyTime");
                 params.putInt(QQShare.SHARE_TO_QQ_EXT_INT,  QQShare.SHARE_TO_QQ_FLAG_QZONE_ITEM_HIDE);
@@ -444,7 +444,7 @@ public class CreatePlanActivity extends AppCompatActivity implements ICreatePlan
     public void choosePYOrSe(int flag, PlanItem planItem){
         //flag 1为 分享到聊天界面中  2为  朋友圈
         WXWebpageObject wxWebpageObject = new WXWebpageObject();
-        wxWebpageObject.webpageUrl = "www.baidu.com";
+        wxWebpageObject.webpageUrl = HttpUrl.GET_SHARE_PLANITEM + "?id=" + planItem.getId() + "&phoneNumber=" + sp.getString("phoneNumber", "");
         WXMediaMessage msg = new WXMediaMessage(wxWebpageObject);
         msg.title = planItem.getTitle();
         msg.description = planItem.getContent();

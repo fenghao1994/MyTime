@@ -14,6 +14,15 @@ public class Photo extends DataSupport implements Serializable{
     int objectType;
     int objectId;
     String address;
+    long createTime;
+
+    public long getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(long createTime) {
+        this.createTime = createTime;
+    }
 
     public int getId() {
         return id;

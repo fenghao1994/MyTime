@@ -159,7 +159,7 @@
         <activity android:name=".mvp.ui.activity.MyFeedBackActivity" />
         <activity android:name=".mvp.ui.activity.SoftWareInfoActivity" />
         <activity android:name=".mvp.ui.activity.RiJiActivity" />
-        <activity android:name=".mvp.ui.activity.CreateRiJiActivity"></activity>
+        <activity android:name=".mvp.ui.activity.CreateRiJiActivity" />
     </application>
 
 </manifest>

@@ -143,6 +143,8 @@ public class CreatePlanItemActivity extends AppCompatActivity implements ICreate
     private int mWidth;
     private AlertDialog alertDialog;
 
+
+    private boolean isOk;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -278,6 +280,10 @@ public class CreatePlanItemActivity extends AppCompatActivity implements ICreate
      * 提交信息
      */
     public void submit() {
+
+        isOk = true;
+
+
         planItemTitle = contentTitle.getText().toString();
         planItemContentMessage = content.getText().toString();
         if (TextUtils.isEmpty(planItemTitle) && TextUtils.isEmpty(planItemContentMessage)) {
@@ -376,7 +382,7 @@ public class CreatePlanItemActivity extends AppCompatActivity implements ICreate
     @Override
     public void complete() {
         Intent intent = new Intent();
-        intent.putExtra("isCompletePlanItem", planItemIsComplete);
+        intent.putExtra("isCompletePlanItem", isOk);
         setResult(RESULT_OK, intent);
         this.finish();
     }
@@ -455,6 +461,8 @@ public class CreatePlanItemActivity extends AppCompatActivity implements ICreate
 
     private void takePhoto() {
         Intent intent = new Intent(this, ImageGridActivity.class);
+        ImagePicker imagePicker = ImagePicker.getInstance();
+        imagePicker.setMultiMode(true);
         startActivityForResult(intent, IMAGE_PICKER);
     }
 

@@ -6,6 +6,7 @@ import com.example.mytime.util.GlideImageLoader;
 import com.lzy.imagepicker.ImagePicker;
 import com.lzy.imagepicker.view.CropImageView;
 import com.mob.mobapi.MobAPI;
+import com.squareup.leakcanary.LeakCanary;
 import com.tencent.bugly.Bugly;
 import com.tencent.bugly.crashreport.CrashReport;
 import com.zhy.http.okhttp.OkHttpUtils;
@@ -57,5 +58,12 @@ public class MyApplication extends Application {
 
 //        CrashReport.initCrashReport(getApplicationContext(), "0f640935c9", true);
         Bugly.init(getApplicationContext(), "0f640935c9", false);
+
+        if (LeakCanary.isInAnalyzerProcess(this)) {
+            // This process is dedicated to LeakCanary for heap analysis.
+            // You should not init your app in this process.
+            return;
+        }
+        LeakCanary.install(this);
     }
 }

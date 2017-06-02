@@ -157,6 +157,8 @@ public class CreateNoteActivity extends AppCompatActivity implements ICreateNote
 
     private void takePhoto() {
         Intent intent = new Intent(this, ImageGridActivity.class);
+        ImagePicker imagePicker = ImagePicker.getInstance();
+        imagePicker.setMultiMode(true);
         startActivityForResult(intent, IMAGE_PICKER);
     }
 

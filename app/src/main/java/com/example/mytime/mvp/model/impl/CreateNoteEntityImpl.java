@@ -27,6 +27,7 @@ public class CreateNoteEntityImpl implements ICreateNoteEntity {
             for (int i = 0 ; i < list.size(); i++){
                 list.get(i).setObjectType(2);
                 list.get(i).setObjectId( currentNote.getId());
+                list.get(i).setCreateTime(currentNote.getCreateTime());
                 list.get(i).save();
             }
         }
@@ -38,12 +39,13 @@ public class CreateNoteEntityImpl implements ICreateNoteEntity {
         note.update( note.getId());
 //        currentNote = DataSupport.where("createTime = ?", note.getCreateTime() + "").findFirst(Note.class);
         if ( list != null){
-            DataSupport.deleteAll(Photo.class, "objectType = ? and objectId = ?", 2 + "", note.getId() + "");
+            DataSupport.deleteAll(Photo.class, "objectType = ? and createTime = ?", 2 + "", note.getCreateTime() + "");
             for (int i = 0 ; i < list.size(); i++){
                 Photo photo = new Photo();
                 photo.setObjectId(note.getId());
                 photo.setObjectType(2);
                 photo.setAddress(list.get(i).getAddress());
+                photo.setCreateTime(note.getCreateTime());
                 photo.save();
             }
         }
@@ -54,7 +56,7 @@ public class CreateNoteEntityImpl implements ICreateNoteEntity {
     @Override
     public List<Photo> getPhotoAddress(Note note) {
 
-        return DataSupport.where("objectId = ? and objectType = ?", note.getId() + "", 2 + "").find(Photo.class);
+        return DataSupport.where("createTime = ? and objectType = ?", note.getCreateTime() + "", 2 + "").find(Photo.class);
     }
 
     @Override

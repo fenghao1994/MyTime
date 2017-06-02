@@ -73,7 +73,7 @@ public class CreateRiJiActivity extends AppCompatActivity {
             ok.setVisibility(View.GONE);
             rijiContent.setEnabled(false);
             riJi = (RiJi) getIntent().getSerializableExtra("DATE");
-            weather.setText(riJi.getWeather());
+            weather.setText("天气：" + riJi.getWeather());
             calendar.setText(MyUtil.dateYMD(riJi.getCreateTime()));
             rijiContent.setText(riJi.getContent());
             toolbarTitle.setText("我的日记");
@@ -86,9 +86,9 @@ public class CreateRiJiActivity extends AppCompatActivity {
             riJi.setContent(rijiContent.getText().toString());
             riJi.setCreateTime(System.currentTimeMillis());
             if(Extra.getEntity() != null){
-                riJi.setWeather("天气: " + Extra.getEntity().getResult().get(0).getWeather());
+                riJi.setWeather(Extra.getEntity().getResult().get(0).getWeather());
             }else {
-                riJi.setWeather("天气: 晴");
+                riJi.setWeather("晴");
             }
             riJi.save();
             if (Extra.NET_WORK == 2){

@@ -21,6 +21,7 @@ public class CreatePlanItemEntityImpl implements ICreatePlanItemEntity {
             for ( int i = 0; i < photos.size(); i++){
                 photos.get(i).setObjectType(1);
                 photos.get(i).setObjectId( planItem.getId());
+                photos.get(i).setCreateTime(planItem.getCreateTime());
                 photos.get(i).save();
             }
         }
@@ -30,12 +31,13 @@ public class CreatePlanItemEntityImpl implements ICreatePlanItemEntity {
     public void updatePlanItem(PlanItem planItem, List<Photo> photos) {
         planItem.update(planItem.getId());
         if (photos != null) {
-            DataSupport.deleteAll(Photo.class, "objectType = ? and objectId = ?", 1 + "", planItem.getId() + "");
+            DataSupport.deleteAll(Photo.class, "objectType = ? and createTime = ?", 1 + "", planItem.getCreateTime() + "");
             for (int i = 0; i < photos.size(); i++) {
                 Photo photo = new Photo();
                 photo.setObjectId(planItem.getId());
                 photo.setAddress(photos.get(i).getAddress());
                 photo.setObjectType(1);
+                photo.setCreateTime(planItem.getCreateTime());
                 photo.save();
             }
         }
@@ -43,7 +45,7 @@ public class CreatePlanItemEntityImpl implements ICreatePlanItemEntity {
 
     @Override
     public List<Photo> getPhotoAddress(PlanItem planItem) {
-        return DataSupport.where("objectType = ? and objectId = ?", "1", planItem.getId() + "").find(Photo.class);
+        return DataSupport.where("objectType = ? and createTime = ?", "1", planItem.getCreateTime() + "").find(Photo.class);
 
     }
 
