@@ -11,7 +11,7 @@
         android:id="@+id/title_dialog"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:hint="请输入计划表名:"
+        android:hint="请输入主题名:"
         android:background="@null"
         android:paddingLeft="16dp"
         />
