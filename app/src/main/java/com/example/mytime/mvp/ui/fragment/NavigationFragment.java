@@ -27,8 +27,8 @@ import com.example.mytime.mvp.model.entity.RiJi;
 import com.example.mytime.mvp.model.entity.User;
 import com.example.mytime.mvp.ui.activity.AllNoteActivity;
 import com.example.mytime.mvp.ui.activity.AllPlanActivity;
+import com.example.mytime.mvp.ui.activity.ChangeMessageActivity;
 import com.example.mytime.mvp.ui.activity.CountActivity;
-import com.example.mytime.mvp.ui.activity.ImageOneActivity;
 import com.example.mytime.mvp.ui.activity.MyFeedBackActivity;
 import com.example.mytime.mvp.ui.activity.RiJiActivity;
 import com.example.mytime.mvp.ui.activity.SoftWareInfoActivity;
@@ -80,22 +80,23 @@ public class NavigationFragment extends Fragment {
     LinearLayout myFeedBack;
     @BindView(R.id.software_info)
     LinearLayout softwareInfo;
+    @BindView(R.id.signature)
+    TextView signature;
+    @BindView(R.id.signature_layout)
+    LinearLayout signatureLayout;
 
     private ArrayList<ImageItem> mImageItem;
     private SharedPreferences sp;
     private String headerPath;
     private AlertDialog alertDialog;
     private User user;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_navigation, container, false);
         ButterKnife.bind(this, view);
-        user = DataSupport.findFirst(User.class);
         sp = getActivity().getSharedPreferences("MYTIME", Context.MODE_PRIVATE);
-//        headerPath = sp.getString("path", "");
-
-//        showHeadImg();
         if (Extra.NET_WORK == 1) {
             signOutLayout.setVisibility(View.GONE);
         } else {
@@ -107,8 +108,10 @@ public class NavigationFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        user = DataSupport.findFirst(User.class);
         headerPath = user.getHeadImg();
         showHeadImg();
+        signature.setText(user.getPersonalizedSignature() == null? "" : user.getPersonalizedSignature() );
     }
 
     public void showHeadImg() {
@@ -117,9 +120,9 @@ public class NavigationFragment extends Fragment {
                 Glide.with(this).load(headerPath).into(headerImg);
             }
         } else {
-            if (TextUtils.isEmpty(headerPath)){
+            if (TextUtils.isEmpty(headerPath)) {
                 getHeadImg();
-            }else {
+            } else {
                 if (headerPath.contains("D:\\")) {
                     String s = headerPath;
                     s = s.substring(3, s.length());
@@ -157,6 +160,13 @@ public class NavigationFragment extends Fragment {
                 });
     }
 
+    @OnClick(R.id.signature_layout)
+    public void goChangeSignature(){
+        Intent intent = new Intent(getActivity(), ChangeMessageActivity.class);
+        intent.putExtra("FLAG", "SIGNATURE");
+        startActivity(intent);
+    }
+
     @OnClick({R.id.header_img, R.id.plan_layout, R.id.complete_layout, R.id.note_layout, R.id.count_layout, R.id.sign_out_layout})
     public void onClick(View view) {
         switch (view.getId()) {
@@ -182,19 +192,19 @@ public class NavigationFragment extends Fragment {
     }
 
     @OnClick(R.id.my_feed_back)
-    public void goMyFeedBack(){
+    public void goMyFeedBack() {
         Intent intent = new Intent(getActivity(), MyFeedBackActivity.class);
         startActivity(intent);
     }
 
     @OnClick(R.id.software_info)
-    public void goSoftwareInfo(){
+    public void goSoftwareInfo() {
         Intent intent = new Intent(getActivity(), SoftWareInfoActivity.class);
         startActivity(intent);
     }
 
     @OnClick(R.id.my_riji)
-    public void goMyRiJi(){
+    public void goMyRiJi() {
         Intent intent = new Intent(getActivity(), RiJiActivity.class);
         startActivity(intent);
     }
@@ -218,7 +228,7 @@ public class NavigationFragment extends Fragment {
                         DataSupport.deleteAll(PlanItem.class);
                         DataSupport.deleteAll(RiJi.class);
                         DataSupport.deleteAll(User.class);
-                        boolean b  = getActivity().deleteDatabase("mytime");
+                        boolean b = getActivity().deleteDatabase("mytime");
                         sp.edit().clear().commit();
                         getActivity().finish();
                         System.exit(0);
