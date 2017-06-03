@@ -80,4 +80,7 @@ public class HttpUrl {
 
     //改变朋友关系
     public static final String POST_CHANGE_FRIEND_RELATIONSHIP = ROOT + "/share/change/friend/relationship";
+
+    //获取某人的公开计划
+    public static final String POST_GET_SOMEONE_OPEN_PLANITEM = ROOT + "/share/get/someone/share";
 }

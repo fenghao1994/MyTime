@@ -1,6 +1,7 @@
 package com.example.mytime.mvp.ui.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -18,6 +19,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.mytime.R;
 import com.example.mytime.mvp.model.entity.Friend;
+import com.example.mytime.mvp.ui.activity.FriendInfoActivity;
 import com.example.mytime.util.HttpUrl;
 
 import java.util.List;
@@ -121,7 +123,9 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Vi
         holder.friendLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent intent = new Intent(context, FriendInfoActivity.class);
+                intent.putExtra("FRIEND", friends.get(position).getUser());
+                context.startActivity(intent);
             }
         });
     }
