@@ -160,6 +160,8 @@
         <activity android:name=".mvp.ui.activity.SoftWareInfoActivity" />
         <activity android:name=".mvp.ui.activity.RiJiActivity" />
         <activity android:name=".mvp.ui.activity.CreateRiJiActivity" />
+        <activity android:name=".mvp.ui.activity.MineActivity" />
+        <activity android:name=".mvp.ui.activity.ChangeMessageActivity"></activity>
     </application>
 
 </manifest>

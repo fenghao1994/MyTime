@@ -6,4 +6,6 @@
     <color name="logoGreen">#50D2C2</color>
     <color name="darkGray">#A9A9A9</color>
     <color name="mainTextColor">#8A8A8A</color>
+    <color name="blue">#87CEEB</color>
+    <color name="mine_blue">#0061b2</color>
 </resources>

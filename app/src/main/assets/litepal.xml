@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <litepal>
     <dbname value="mytime"></dbname>
-    <version value="2"></version>
+    <version value="1"></version>
     <list>
         <mapping class="com.example.mytime.mvp.model.entity.Note"></mapping>
         <mapping class="com.example.mytime.mvp.model.entity.Photo"></mapping>
         <mapping class="com.example.mytime.mvp.model.entity.Plan"></mapping>
         <mapping class="com.example.mytime.mvp.model.entity.PlanItem"></mapping>
         <mapping class="com.example.mytime.mvp.model.entity.RiJi"></mapping>
+        <mapping class="com.example.mytime.mvp.model.entity.User"></mapping>
     </list>
 </litepal>

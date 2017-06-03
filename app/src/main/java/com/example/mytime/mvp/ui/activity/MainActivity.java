@@ -399,14 +399,16 @@ public class MainActivity extends AppCompatActivity implements IMainView, SwipeR
 
     @OnClick(R.id.bottom_tab_mine_layout)
     public void mineClick(){
-        initBottomLayout();
-        bottomTabMineImg.setImageDrawable(getResources().getDrawable(R.drawable.mine));
-        bottomTabMineText.setTextColor(getResources().getColor(R.color.logoGreen));
-        mineFragment = new MineFragment();
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.content_fragment_layout, mineFragment);
-        fragmentTransaction.commit();
+        Intent intent = new Intent(this, MineActivity.class);
+        startActivity(intent);
+//        initBottomLayout();
+//        bottomTabMineImg.setImageDrawable(getResources().getDrawable(R.drawable.mine));
+//        bottomTabMineText.setTextColor(getResources().getColor(R.color.logoGreen));
+//        mineFragment = new MineFragment();
+//        FragmentManager fragmentManager = getSupportFragmentManager();
+//        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+//        fragmentTransaction.replace(R.id.content_fragment_layout, mineFragment);
+//        fragmentTransaction.commit();
     }
 
     /**

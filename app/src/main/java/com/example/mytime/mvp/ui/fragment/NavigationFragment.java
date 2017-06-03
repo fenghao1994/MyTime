@@ -23,6 +23,7 @@ import com.example.mytime.mvp.model.entity.Photo;
 import com.example.mytime.mvp.model.entity.Plan;
 import com.example.mytime.mvp.model.entity.PlanItem;
 import com.example.mytime.mvp.model.entity.RiJi;
+import com.example.mytime.mvp.model.entity.User;
 import com.example.mytime.mvp.ui.activity.AllNoteActivity;
 import com.example.mytime.mvp.ui.activity.AllPlanActivity;
 import com.example.mytime.mvp.ui.activity.CountActivity;
@@ -190,16 +191,12 @@ public class NavigationFragment extends Fragment {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         alertDialog.dismiss();
-//                        Note.deleteAll(Note.class);
-//                        Photo.deleteAll(Photo.class);
-//                        Plan.deleteAll(Plan.class);
-//                        PlanItem.deleteAll(PlanItem.class);
-//                        RiJi.deleteAll(RiJi.class);
                         DataSupport.deleteAll(Note.class);
                         DataSupport.deleteAll(Photo.class);
                         DataSupport.deleteAll(Plan.class);
                         DataSupport.deleteAll(PlanItem.class);
                         DataSupport.deleteAll(RiJi.class);
+                        DataSupport.deleteAll(User.class);
                         boolean b  = getActivity().deleteDatabase("mytime");
                         sp.edit().clear().commit();
                         getActivity().finish();

@@ -69,5 +69,9 @@ public class HttpUrl {
     //分享
     public static final String GET_SHARE_PLANITEM = ROOT + "/share/planitem";
 
+    //获取朋友公开的计划
     public static final String POST_FRIEND_OPEN = ROOT + "/share/friend/open";
+
+    //更新用户信息
+    public static final String POST_USER_MESSAGE = ROOT + "/user/user_message";
 }

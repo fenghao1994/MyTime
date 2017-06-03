@@ -25,6 +25,7 @@ import com.example.mytime.mvp.model.entity.Note;
 import com.example.mytime.mvp.model.entity.Plan;
 import com.example.mytime.mvp.model.entity.PlanItem;
 import com.example.mytime.mvp.model.entity.RiJi;
+import com.example.mytime.mvp.model.entity.User;
 import com.example.mytime.util.Extra;
 import com.example.mytime.util.HttpUrl;
 import com.example.mytime.util.MyUtil;
@@ -68,6 +69,7 @@ public class LoginActivity extends AppCompatActivity {
 
     boolean b1, b2, b3, b4;
 
+    private User user;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -183,9 +185,15 @@ public class LoginActivity extends AppCompatActivity {
                         sp.edit().putString("phoneNumber", phoneNumber.getText().toString().trim())
                                 .putString("password", password.getText().toString())
                                 .commit();
+
+                        /*user = new User();
+                        user.setPhoneNumber(phoneNumber.getText().toString().trim());
+                        user.setPassword(password.getText().toString());
+                        user.save();*/
                         Gson gson = new Gson();
-                        Map<String, String> map = gson.fromJson(response, Map.class);
-                        Toast.makeText(LoginActivity.this, map.get("msg"), Toast.LENGTH_SHORT).show();
+                        user = gson.fromJson(response, User.class);
+                        user.save();
+                        Toast.makeText(LoginActivity.this, "登陆成功", Toast.LENGTH_SHORT).show();
                         getNotesFromNet();
                         getPlanItemFromNet();
                         getPlanFromNet();
