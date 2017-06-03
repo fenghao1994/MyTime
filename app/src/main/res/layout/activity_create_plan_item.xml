@@ -185,6 +185,31 @@
                     android:layout_weight="1">
 
                     <ImageView
+                        android:id="@+id/open"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:src="@drawable/open_planitem"
+                        />
+
+                    <ImageView
+                        android:id="@+id/open_gou"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginRight="5dp"
+                        android:src="@drawable/gou_right_bottom"
+                        android:visibility="gone"
+                        />
+                </RelativeLayout>
+
+
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="30dp"
+                    android:layout_weight="1">
+
+                    <ImageView
                         android:id="@+id/time"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"

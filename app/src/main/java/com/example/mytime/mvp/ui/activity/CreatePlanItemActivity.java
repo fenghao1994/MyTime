@@ -32,7 +32,6 @@ import com.example.mytime.mvp.model.entity.PlanItem;
 import com.example.mytime.mvp.presenter.ICreatePlanItemPresenter;
 import com.example.mytime.mvp.presenter.impl.CreatePlanItemPresenterImpl;
 import com.example.mytime.mvp.ui.adapter.EasyGridviewAdapter;
-import com.example.mytime.mvp.ui.adapter.ImageItemAdapter;
 import com.example.mytime.mvp.ui.custom.DateDialog;
 import com.example.mytime.mvp.ui.custom.TimeDialog;
 import com.example.mytime.mvp.ui.view.ICreatePlanItemView;
@@ -61,9 +60,7 @@ import butterknife.OnClick;
 import butterknife.OnItemClick;
 import okhttp3.Call;
 
-import static com.example.mytime.R.drawable.note;
-
-public class CreatePlanItemActivity extends AppCompatActivity implements ICreatePlanItemView, EasyGridviewAdapter.onDeleteImage{
+public class CreatePlanItemActivity extends AppCompatActivity implements ICreatePlanItemView, EasyGridviewAdapter.onDeleteImage {
 
     private static final int IMAGE_PICKER = 1;
     private static final int REQUEST_LOCATION = 2;
@@ -118,6 +115,13 @@ public class CreatePlanItemActivity extends AppCompatActivity implements ICreate
     boolean planItemIsExpired;
     boolean planItemIsComplete;
     ArrayList<Photo> planItemAddress;
+    String planItemOpen;
+    @BindView(R.id.open)
+    ImageView open;
+    @BindView(R.id.open_gou)
+    ImageView openGou;
+
+
     private SharedPreferences sp;
     //设置一个-1来判断是否真的点击设定按钮
     int planItemYear = -1, planItemMonth, planItemDay, planItemHour = -1, planItemMinute, planItemAlarmWay;
@@ -145,6 +149,7 @@ public class CreatePlanItemActivity extends AppCompatActivity implements ICreate
 
 
     private boolean isOk;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -182,18 +187,21 @@ public class CreatePlanItemActivity extends AppCompatActivity implements ICreate
         sp = getSharedPreferences("MYTIME", Context.MODE_PRIVATE);
     }
 
-    public void initView(){
-        if ( !TextUtils.isEmpty(planItem.getPhoneNumber()) && !planItem.getPhoneNumber().equals("null")){
+    public void initView() {
+        if (!TextUtils.isEmpty(planItem.getPhoneNumber()) && !planItem.getPhoneNumber().equals("null")) {
             mCallPhoneGou.setVisibility(View.VISIBLE);
         }
-        if (!TextUtils.isEmpty(planItem.getMessageContent()) && !planItem.getMessageContent().equals("null")){
+        if (!TextUtils.isEmpty(planItem.getMessageContent()) && !planItem.getMessageContent().equals("null")) {
             mSendMessageGou.setVisibility(View.VISIBLE);
         }
-        if (planItem.getAddress() != null && planItem.getAddress().size() > 0){
+        if (planItem.getAddress() != null && planItem.getAddress().size() > 0) {
             mPhotoGou.setVisibility(View.VISIBLE);
         }
-        if (!TextUtils.isEmpty(planItem.getLocation()) && !planItem.getLocation().equals("null")){
+        if (!TextUtils.isEmpty(planItem.getLocation()) && !planItem.getLocation().equals("null")) {
             mLocationGou.setVisibility(View.VISIBLE);
+        }
+        if (!TextUtils.isEmpty(planItem.getOpen()) && planItem.getOpen().equals("OPEN")){
+            openGou.setVisibility(View.VISIBLE);
         }
         mTimeGou.setVisibility(View.VISIBLE);
     }
@@ -203,7 +211,7 @@ public class CreatePlanItemActivity extends AppCompatActivity implements ICreate
         toolbarTitle.setText("编辑");
         contentTitle.setText(planItem.getTitle());
 
-        if (photos.size() > 0){
+        if (photos.size() > 0) {
             mPhotoGou.setVisibility(View.VISIBLE);
         }
         //光标置于文末处
@@ -226,6 +234,7 @@ public class CreatePlanItemActivity extends AppCompatActivity implements ICreate
         planItemIsManyDays = planItem.isManyDays();
         planItemIsExpired = planItem.isExpired();
         planItemIsComplete = planItem.isComplete();
+        planItemOpen = planItem.getOpen();
     }
 
 
@@ -261,18 +270,29 @@ public class CreatePlanItemActivity extends AppCompatActivity implements ICreate
         }
     }
 
+    @OnClick(R.id.open)
+    public void openClick(){
+        if (!TextUtils.isEmpty(planItemOpen) && planItemOpen.equals("OPEN")){
+            planItemOpen = "";
+            openGou.setVisibility(View.GONE);
+        }else {
+            planItemOpen = "OPEN";
+            openGou.setVisibility(View.VISIBLE);
+        }
+    }
+
     private void clickSendMessage() {
         Intent intent = new Intent(this, PhoneAndMessageActivity.class);
         intent.putExtra("ONLYPHONE", false);
-        intent.putExtra("PHONE",  planItemMessagePhoneNumber);
+        intent.putExtra("PHONE", planItemMessagePhoneNumber);
         intent.putExtra("MESSAGE", planItemMessageContent);
         startActivityForResult(intent, REQUEST_CODE);
     }
 
-    public void clickCallPhone(){
+    public void clickCallPhone() {
         Intent intent = new Intent(this, PhoneAndMessageActivity.class);
         intent.putExtra("ONLYPHONE", true);
-        intent.putExtra("PHONE",planItemPhoneNumber);
+        intent.putExtra("PHONE", planItemPhoneNumber);
         startActivityForResult(intent, REQUEST_CODE);
     }
 
@@ -323,10 +343,11 @@ public class CreatePlanItemActivity extends AppCompatActivity implements ICreate
             planItem.setManyDays(planItemIsManyDays);
             planItem.setExpired(planItemIsExpired);
             planItem.setComplete(planItemIsComplete);
+            planItem.setOpen(planItemOpen);
             createPlanItemPresenter.savePlanItem(planItem, planItemAddress);
             Toast.makeText(CreatePlanItemActivity.this, "保存成功", Toast.LENGTH_SHORT).show();
             //如果等于2 需要上传到服务器
-            if (Extra.NET_WORK == 2){
+            if (Extra.NET_WORK == 2) {
                 planItem = createPlanItemPresenter.getPlanItem(planItem.getCreateTime());
                 planItem.setAddress(planItemAddress);
                 saveObjectWithNetWork();
@@ -354,9 +375,10 @@ public class CreatePlanItemActivity extends AppCompatActivity implements ICreate
             planItem.setExpired(planItemIsExpired);
             planItemIsComplete = false;
             planItem.setComplete(planItemIsComplete);
+            planItem.setOpen(planItemOpen);
             createPlanItemPresenter.updatePlanItem(planItem, planItemAddress);
             Toast.makeText(CreatePlanItemActivity.this, "更新成功", Toast.LENGTH_SHORT).show();
-            if (Extra.NET_WORK == 2){
+            if (Extra.NET_WORK == 2) {
                 planItemAddress = (ArrayList<Photo>) createPlanItemPresenter.getPhoto(planItem);
                 planItem.setAddress(planItemAddress);
                 updateObjectWithNetWork();
@@ -410,6 +432,7 @@ public class CreatePlanItemActivity extends AppCompatActivity implements ICreate
 
         }*/
     }
+
     /**
      * 展示dialog
      */
@@ -432,9 +455,9 @@ public class CreatePlanItemActivity extends AppCompatActivity implements ICreate
                         CreatePlanItemActivity.this.planItemAlarmWay = alarmWay;
                         timeDialog.dismiss();
 
-                        if ( hour != -1 && min != -1){
+                        if (hour != -1 && min != -1) {
                             CreatePlanItemActivity.this.mTimeGou.setVisibility(View.VISIBLE);
-                        }else {
+                        } else {
                             CreatePlanItemActivity.this.mTimeGou.setVisibility(View.GONE);
                         }
                     }
@@ -469,7 +492,7 @@ public class CreatePlanItemActivity extends AppCompatActivity implements ICreate
     /**
      * 获取屏幕宽度的1/3
      */
-    public void getWidth(){
+    public void getWidth() {
         WindowManager windowManager = getWindowManager();
         Display display = windowManager.getDefaultDisplay();
         mWidth = display.getWidth() / 3;
@@ -490,9 +513,9 @@ public class CreatePlanItemActivity extends AppCompatActivity implements ICreate
                     planItemAddress.add(photo);
                 }
                 easyGridviewAdapter.setData(planItemAddress);
-                if ( planItemAddress != null && planItemAddress.size() > 0){
+                if (planItemAddress != null && planItemAddress.size() > 0) {
                     mPhotoGou.setVisibility(View.VISIBLE);
-                }else {
+                } else {
                     mPhotoGou.setVisibility(View.GONE);
                 }
             } else {
@@ -503,27 +526,27 @@ public class CreatePlanItemActivity extends AppCompatActivity implements ICreate
         if (resultCode == MapActivity.RESULT_LOCATION) {
             if (data != null && requestCode == REQUEST_LOCATION) {
                 planItemLocation = data.getStringExtra("LOCATION");
-                if ( !TextUtils.isEmpty(planItemLocation)){
+                if (!TextUtils.isEmpty(planItemLocation)) {
                     mLocationGou.setVisibility(View.VISIBLE);
-                }else {
+                } else {
                     mLocationGou.setVisibility(View.GONE);
                 }
             }
         }
-        if (requestCode == REQUEST_CODE){
-            if (resultCode == CreatePlanItemActivity.ONLY_PHONE ){
+        if (requestCode == REQUEST_CODE) {
+            if (resultCode == CreatePlanItemActivity.ONLY_PHONE) {
                 planItemPhoneNumber = data.getStringExtra("PHONENUMBER");
-                if ( !TextUtils.isEmpty( planItemPhoneNumber)){
+                if (!TextUtils.isEmpty(planItemPhoneNumber)) {
                     mCallPhoneGou.setVisibility(View.VISIBLE);
-                }else {
+                } else {
                     mCallPhoneGou.setVisibility(View.GONE);
                 }
-            }else if (resultCode == CreatePlanItemActivity.MESSAGE_CONTENT){
+            } else if (resultCode == CreatePlanItemActivity.MESSAGE_CONTENT) {
                 planItemMessagePhoneNumber = data.getStringExtra("PHONENUMBER");
                 planItemMessageContent = data.getStringExtra("MESSAGECONTENT");
-                if ( !TextUtils.isEmpty(planItemMessagePhoneNumber) && !TextUtils.isEmpty(planItemMessageContent)){
+                if (!TextUtils.isEmpty(planItemMessagePhoneNumber) && !TextUtils.isEmpty(planItemMessageContent)) {
                     mSendMessageGou.setVisibility(View.VISIBLE);
-                }else {
+                } else {
                     mSendMessageGou.setVisibility(View.GONE);
                 }
             }
@@ -562,7 +585,7 @@ public class CreatePlanItemActivity extends AppCompatActivity implements ICreate
 //                        planItem.setAddress(planItemAddress);
 //                        planItem.update(planItem.getId());
                         alertDialog.dismiss();
-                        if (planItemAddress.size() == 0){
+                        if (planItemAddress.size() == 0) {
                             mPhotoGou.setVisibility(View.GONE);
                         }
                     }
@@ -578,18 +601,18 @@ public class CreatePlanItemActivity extends AppCompatActivity implements ICreate
     }
 
 
-    public void saveObjectWithNetWork(){
+    public void saveObjectWithNetWork() {
         postUrl(HttpUrl.POST_SAVE_PLAN_ITEM);
     }
 
-    public void updateObjectWithNetWork(){
+    public void updateObjectWithNetWork() {
         postUrl(HttpUrl.POST_UPDATA_PLAN_ITEM);
     }
 
-    public void postUrl(String url){
+    public void postUrl(String url) {
         Map<String, File> map = new HashMap<>();
-        if (planItemAddress != null && planItemAddress.size()> 0){
-            for (int i = 0 ; i < planItemAddress.size(); i++){
+        if (planItemAddress != null && planItemAddress.size() > 0) {
+            for (int i = 0; i < planItemAddress.size(); i++) {
                 File file = new File(planItemAddress.get(i).getAddress());
                 map.put("file" + i, file);
             }
@@ -622,6 +645,7 @@ public class CreatePlanItemActivity extends AppCompatActivity implements ICreate
                 .addParams("minute", planItem.getMinute() + "")
                 .addParams("alarmWay", planItem.getAlarmWay() + "")
                 .addParams("describe", planItem.getDescribe() + "")
+                .addParams("open", planItem.getOpen())
                 .addParams("address", new Gson().toJson(planItem.getAddress()))
                 .files("addressFiles", map)
                 .build()

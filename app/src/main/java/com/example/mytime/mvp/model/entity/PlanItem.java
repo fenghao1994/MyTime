@@ -56,6 +56,16 @@ public class PlanItem extends DataSupport implements Serializable{
     //目前用于到达目的后通知，显示一次后不再显示，默认为null 到达目的地通知后变为 LOCATED
     String describe;
 
+    String open;
+
+    public String getOpen() {
+        return open;
+    }
+
+    public void setOpen(String open) {
+        this.open = open;
+    }
+
     public int getId() {
         return id;
     }
