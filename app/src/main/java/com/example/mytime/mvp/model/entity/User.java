@@ -9,6 +9,15 @@ import java.io.Serializable;
 public class User implements Serializable{
     public String phoneNumber;
     public String password;
+    public String headImg;
+
+    public String getHeadImg() {
+        return headImg;
+    }
+
+    public void setHeadImg(String headImg) {
+        this.headImg = headImg;
+    }
 
     public String getPhoneNumber() {
         return phoneNumber;

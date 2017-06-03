@@ -68,4 +68,6 @@ public class HttpUrl {
 
     //分享
     public static final String GET_SHARE_PLANITEM = ROOT + "/share/planitem";
+
+    public static final String POST_FRIEND_OPEN = ROOT + "/share/friend/open";
 }
