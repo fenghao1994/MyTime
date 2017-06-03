@@ -119,6 +119,12 @@ public class MineActivity extends AppCompatActivity {
         startActivityForResult(intent, 1);
     }
 
+    @OnClick(R.id.label_img)
+    public void goMyLabel(){
+        Intent intent = new Intent(this, MyLabelActivity.class);
+        startActivity(intent);
+    }
+
     @OnClick(R.id.mine_friend)
     public void goMyFriend(){
         Intent intent = new Intent(this, FriendListActivity.class);

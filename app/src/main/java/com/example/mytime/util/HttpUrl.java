@@ -83,4 +83,10 @@ public class HttpUrl {
 
     //获取某人的公开计划
     public static final String POST_GET_SOMEONE_OPEN_PLANITEM = ROOT + "/share/get/someone/share";
+
+    //保存label
+    public static final String POST_SAVE_USER_LABEL = ROOT + "/user/user_label";
+
+    //删除label
+    public static final String POST_DELETE_USER_LABEL = ROOT + "/user/delete/label";
 }
