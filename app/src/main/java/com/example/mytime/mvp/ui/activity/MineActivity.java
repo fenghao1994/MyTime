@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -13,22 +14,30 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.mytime.R;
 import com.example.mytime.mvp.model.entity.User;
 import com.example.mytime.util.Extra;
+import com.example.mytime.util.HttpUrl;
+import com.google.gson.Gson;
 import com.lzy.imagepicker.ImagePicker;
 import com.lzy.imagepicker.bean.ImageItem;
 import com.lzy.imagepicker.ui.ImageGridActivity;
 import com.lzy.imagepicker.view.CropImageView;
+import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.callback.StringCallback;
 
 import org.litepal.crud.DataSupport;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import de.hdodenhof.circleimageview.CircleImageView;
+import okhttp3.Call;
 
 public class MineActivity extends AppCompatActivity {
 
@@ -76,6 +85,16 @@ public class MineActivity extends AppCompatActivity {
         super.onResume();
         user = DataSupport.findFirst(User.class);
         minePhoneNumber.setText(user.getPhoneNumber());
+
+        if ( user.getHeadImg().contains("D:\\")){
+            String s = user.getHeadImg();
+            s = s.substring(3, s.length());
+            s = s.replace("\\", "/");
+            Glide.with(this).load(HttpUrl.ROOT + "/" + s).diskCacheStrategy(DiskCacheStrategy.ALL).into( headerImg);
+        }else {
+            Glide.with(this).load(user.getHeadImg()).diskCacheStrategy(DiskCacheStrategy.ALL).into( headerImg);
+        }
+
         initData();
     }
 
@@ -110,11 +129,7 @@ public class MineActivity extends AppCompatActivity {
                 sp.edit().putString("path", mImageItem.get(0).path).commit();
                 user.setHeadImg(mImageItem.get(0).path);
                 user.saveOrUpdate();
-                //如果等于2  需要上传到服务器
-                if (Extra.NET_WORK == 2) {
-//                    submitHeadImg(mImageItem.get(0).path);
-                    updateUserInfo();
-                }
+                updateUserInfo(user.getHeadImg());
             } else {
                 Toast.makeText(this, "没有数据", Toast.LENGTH_SHORT).show();
             }
@@ -147,7 +162,26 @@ public class MineActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public void updateUserInfo() {
+    public void updateUserInfo(String path) {
+        File file = new File(path);
+        OkHttpUtils
+                .post()
+                .url(HttpUrl.POST_HEADER_IMG)
+                .addParams("phoneNumber", sp.getString("phoneNumber", ""))
+                .addFile("file", "file1", file)
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        Log.i("MYTIME_OKHTTP", e.toString());
+                    }
 
+                    @Override
+                    public void onResponse(String response, int id) {
+                        Gson gson = new Gson();
+                        Map<String, String> map = gson.fromJson(response, Map.class);
+                        Toast.makeText(MineActivity.this, map.get("msg"), Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 }

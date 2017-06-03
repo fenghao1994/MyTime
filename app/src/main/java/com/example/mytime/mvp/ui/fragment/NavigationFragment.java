@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -84,16 +85,17 @@ public class NavigationFragment extends Fragment {
     private SharedPreferences sp;
     private String headerPath;
     private AlertDialog alertDialog;
-
+    private User user;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_navigation, container, false);
         ButterKnife.bind(this, view);
-
+        user = DataSupport.findFirst(User.class);
         sp = getActivity().getSharedPreferences("MYTIME", Context.MODE_PRIVATE);
-        headerPath = sp.getString("path", "");
-        showHeadImg();
+//        headerPath = sp.getString("path", "");
+
+//        showHeadImg();
         if (Extra.NET_WORK == 1) {
             signOutLayout.setVisibility(View.GONE);
         } else {
@@ -102,14 +104,31 @@ public class NavigationFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        headerPath = user.getHeadImg();
+        showHeadImg();
+    }
+
     public void showHeadImg() {
         if (Extra.NET_WORK == 1) {
             if (!"".equals(headerPath)) {
                 Glide.with(this).load(headerPath).into(headerImg);
             }
         } else {
-            getHeadImg();
-
+            if (TextUtils.isEmpty(headerPath)){
+                getHeadImg();
+            }else {
+                if (headerPath.contains("D:\\")) {
+                    String s = headerPath;
+                    s = s.substring(3, s.length());
+                    s = s.replace("\\", "/");
+                    Glide.with(getActivity()).load(HttpUrl.ROOT + "/" + s).diskCacheStrategy(DiskCacheStrategy.ALL).into(headerImg);
+                } else {
+                    Glide.with(getActivity()).load(headerPath).diskCacheStrategy(DiskCacheStrategy.ALL).into(headerImg);
+                }
+            }
         }
 
     }
@@ -128,6 +147,8 @@ public class NavigationFragment extends Fragment {
 
                     @Override
                     public void onResponse(String response, int id) {
+                        user.setHeadImg(response);
+                        user.saveOrUpdate();
                         headerPath = response;
                         headerPath = headerPath.substring(3, headerPath.length());
                         headerPath = headerPath.replace("\\", "/");
@@ -222,6 +243,9 @@ public class NavigationFragment extends Fragment {
                 mImageItem = (ArrayList<ImageItem>) data.getSerializableExtra(ImagePicker.EXTRA_RESULT_ITEMS);
                 Glide.with(this).load(mImageItem.get(0).path).into(headerImg);
                 sp.edit().putString("path", mImageItem.get(0).path).commit();
+
+                user.setHeadImg(mImageItem.get(0).path);
+                user.saveOrUpdate();
                 //如果等于2  需要上传到服务器
                 if (Extra.NET_WORK == 2) {
                     submitHeadImg(mImageItem.get(0).path);
@@ -252,6 +276,7 @@ public class NavigationFragment extends Fragment {
                         Gson gson = new Gson();
                         Map<String, String> map = gson.fromJson(response, Map.class);
                         Toast.makeText(getActivity(), map.get("msg"), Toast.LENGTH_SHORT).show();
+
                     }
                 });
 
