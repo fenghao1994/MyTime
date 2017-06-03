@@ -123,8 +123,16 @@
             <FrameLayout
                 android:id="@+id/content_fragment_layout"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"></FrameLayout>
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                ></FrameLayout>
+
+            <include layout="@layout/layout_bottom_tab"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                />
         </LinearLayout>
+
     </android.support.v4.widget.SwipeRefreshLayout>
 
     <fragment

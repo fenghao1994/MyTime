@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+    android:background="#FFF"
+    >
+
+    <LinearLayout
+        android:id="@+id/bottom_tab_zhuye_layout"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:gravity="center"
+        >
+        <ImageView
+            android:id="@+id/bottom_tab_zhuye_img"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:src="@drawable/zhuye"
+            />
+        <TextView
+            android:layout_marginTop="5dp"
+            android:id="@+id/bottom_tab_zhuye_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="主页"
+            android:textColor="@color/logoGreen"
+            />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/bottom_tab_friend_share_layout"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:gravity="center"
+        >
+        <ImageView
+            android:id="@+id/bottom_tab_friend_share_img"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:src="@drawable/friend_share_gray"
+            />
+        <TextView
+            android:layout_marginTop="5dp"
+            android:id="@+id/bottom_tab_friend_share_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="好友分享"
+            android:textColor="@color/mainTextColor"
+            />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/bottom_tab_mine_layout"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:gravity="center"
+        >
+        <ImageView
+            android:id="@+id/bottom_tab_mine_img"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:src="@drawable/mine_gray"
+            />
+        <TextView
+            android:layout_marginTop="5dp"
+            android:id="@+id/bottom_tab_mine_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="我的"
+            android:textColor="@color/mainTextColor"
+            />
+    </LinearLayout>
+
+</LinearLayout>

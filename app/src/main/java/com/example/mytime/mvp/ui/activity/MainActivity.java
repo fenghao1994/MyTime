@@ -20,6 +20,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,10 +29,11 @@ import com.example.mytime.R;
 import com.example.mytime.event.LocalEvent;
 import com.example.mytime.event.WeatherEvent;
 import com.example.mytime.mvp.model.entity.Note;
-import com.example.mytime.mvp.model.entity.PlanItem;
 import com.example.mytime.mvp.model.entity.WeatherEntity;
 import com.example.mytime.mvp.presenter.IMainPresenter;
 import com.example.mytime.mvp.presenter.impl.MainPresenterImpl;
+import com.example.mytime.mvp.ui.fragment.FriendShareFragment;
+import com.example.mytime.mvp.ui.fragment.MineFragment;
 import com.example.mytime.mvp.ui.fragment.NoteFragment;
 import com.example.mytime.mvp.ui.fragment.PlanFragment;
 import com.example.mytime.mvp.ui.view.IMainView;
@@ -40,8 +42,6 @@ import com.example.mytime.util.Extra;
 import com.example.mytime.util.HttpUrl;
 import com.example.mytime.util.MyUtil;
 import com.example.mytime.util.WeatherUtil;
-import com.tencent.mm.opensdk.openapi.IWXAPI;
-import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
@@ -53,7 +53,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import okhttp3.Call;
 
-public class MainActivity extends AppCompatActivity implements IMainView ,SwipeRefreshLayout.OnRefreshListener{
+public class MainActivity extends AppCompatActivity implements IMainView, SwipeRefreshLayout.OnRefreshListener {
 
     private static final String TAG = "MainActivity";
 
@@ -77,6 +77,24 @@ public class MainActivity extends AppCompatActivity implements IMainView ,SwipeR
     TextView mWeatherDec;
     @BindView(R.id.swipeLayout)
     SwipeRefreshLayout mSwipeLayout;
+    @BindView(R.id.bottom_tab_zhuye_img)
+    ImageView bottomTabZhuyeImg;
+    @BindView(R.id.bottom_tab_zhuye_text)
+    TextView bottomTabZhuyeText;
+    @BindView(R.id.bottom_tab_zhuye_layout)
+    LinearLayout bottomTabZhuyeLayout;
+    @BindView(R.id.bottom_tab_friend_share_img)
+    ImageView bottomTabFriendShareImg;
+    @BindView(R.id.bottom_tab_friend_share_text)
+    TextView bottomTabFriendShareText;
+    @BindView(R.id.bottom_tab_friend_share_layout)
+    LinearLayout bottomTabFriendShareLayout;
+    @BindView(R.id.bottom_tab_mine_img)
+    ImageView bottomTabMineImg;
+    @BindView(R.id.bottom_tab_mine_text)
+    TextView bottomTabMineText;
+    @BindView(R.id.bottom_tab_mine_layout)
+    LinearLayout bottomTabMineLayout;
 
     //plan和note的选择 0为plan 、1为note
     private int chooseFragment;
@@ -94,8 +112,8 @@ public class MainActivity extends AppCompatActivity implements IMainView ,SwipeR
 
     private SharedPreferences sp;
 
-
-
+    private FriendShareFragment friendShareFragment;
+    private MineFragment mineFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -134,8 +152,7 @@ public class MainActivity extends AppCompatActivity implements IMainView ,SwipeR
     }
 
 
-
-    Handler mHandler = new Handler(){
+    Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
@@ -150,7 +167,7 @@ public class MainActivity extends AppCompatActivity implements IMainView ,SwipeR
         if (mLocalEvent != null) {
             mainPresenter.getWeatherInfo(mLocalEvent);
         }
-        if (weatherEntity != null){
+        if (weatherEntity != null) {
             displayWeather(weatherEntity);
         }
     }
@@ -229,7 +246,7 @@ public class MainActivity extends AppCompatActivity implements IMainView ,SwipeR
         Log.i("WeatherInfoFragment", "clf ---- 》>>>>> " + entity.toString());
     }
 
-    public void displayWeather(WeatherEntity weatherEntity){
+    public void displayWeather(WeatherEntity weatherEntity) {
         WeatherEntity.ResultBean resultBean = weatherEntity.getResult().get(0);
         mTemperature.setText(resultBean.getTemperature());
         mTemperature.setText(resultBean.getTemperature());
@@ -335,7 +352,7 @@ public class MainActivity extends AppCompatActivity implements IMainView ,SwipeR
         }).start();
     }
 
-    public void deleteNote(Note note){
+    public void deleteNote(Note note) {
         OkHttpUtils
                 .post()
                 .url(HttpUrl.POST_DELETE_NOTE)
@@ -353,6 +370,55 @@ public class MainActivity extends AppCompatActivity implements IMainView ,SwipeR
                         Log.i("MYTIME_OKHTTP", "删除成功");
                     }
                 });
+    }
+
+
+    @OnClick(R.id.bottom_tab_zhuye_layout)
+    public void zhuyeClick(){
+        initBottomLayout();
+        bottomTabZhuyeImg.setImageDrawable(getResources().getDrawable(R.drawable.zhuye));
+        bottomTabZhuyeText.setTextColor(getResources().getColor(R.color.logoGreen));
+        if (chooseFragment == 0) {
+            showPlanFragment();
+        } else if (chooseFragment == 1) {
+            showNoteFragment();
+        }
+    }
+
+    @OnClick(R.id.bottom_tab_friend_share_layout)
+    public void friendShareClick(){
+        initBottomLayout();
+        bottomTabFriendShareImg.setImageDrawable(getResources().getDrawable(R.drawable.friend_share));
+        bottomTabFriendShareText.setTextColor(getResources().getColor(R.color.logoGreen));
+        friendShareFragment = new FriendShareFragment();
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.content_fragment_layout, friendShareFragment);
+        fragmentTransaction.commit();
+    }
+
+    @OnClick(R.id.bottom_tab_mine_layout)
+    public void mineClick(){
+        initBottomLayout();
+        bottomTabMineImg.setImageDrawable(getResources().getDrawable(R.drawable.mine));
+        bottomTabMineText.setTextColor(getResources().getColor(R.color.logoGreen));
+        mineFragment = new MineFragment();
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.content_fragment_layout, mineFragment);
+        fragmentTransaction.commit();
+    }
+
+    /**
+     * 初始化底部layout  全部变为灰色
+     */
+    public void initBottomLayout(){
+        bottomTabZhuyeImg.setImageDrawable(getResources().getDrawable(R.drawable.zhuye_gray));
+        bottomTabZhuyeText.setTextColor(getResources().getColor(R.color.mainTextColor));
+        bottomTabFriendShareImg.setImageDrawable(getResources().getDrawable(R.drawable.friend_share_gray));
+        bottomTabFriendShareText.setTextColor(getResources().getColor(R.color.mainTextColor));
+        bottomTabMineImg.setImageDrawable(getResources().getDrawable(R.drawable.mine_gray));
+        bottomTabMineText.setTextColor(getResources().getColor(R.color.mainTextColor));
     }
 
 }
