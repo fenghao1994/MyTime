@@ -1,6 +1,7 @@
 package com.example.mytime.mvp.ui.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -16,6 +17,8 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.mytime.R;
 import com.example.mytime.mvp.model.entity.FriendShare;
+import com.example.mytime.mvp.ui.activity.FriendInfoActivity;
+import com.example.mytime.mvp.ui.activity.FriendPlanItemActivity;
 import com.example.mytime.util.Extra;
 import com.example.mytime.util.HttpUrl;
 
@@ -48,7 +51,7 @@ public class FriendOpenAdapter extends RecyclerView.Adapter<FriendOpenAdapter.Vi
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(ViewHolder holder, final int position) {
         if (mList.get(position).getUser().getHeadImg().contains("D:\\")){
             String s = mList.get(position).getUser().getHeadImg();
             s = s.substring(3, s.length());
@@ -79,14 +82,18 @@ public class FriendOpenAdapter extends RecyclerView.Adapter<FriendOpenAdapter.Vi
         holder.headerImg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.i("************", "312321");
+                Intent intent = new Intent(mContext, FriendInfoActivity.class);
+                intent.putExtra("FRIEND", mList.get(position).getUser());
+                mContext.startActivity(intent);
             }
         });
 
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.i("************", "11111");
+                Intent intent = new Intent(mContext, FriendPlanItemActivity.class);
+                intent.putExtra("PLANITEM", mList.get(position).getPlanItem());
+                mContext.startActivity(intent);
             }
         });
     }

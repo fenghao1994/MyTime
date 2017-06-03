@@ -1,6 +1,7 @@
 package com.example.mytime.mvp.ui.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 
 import com.example.mytime.R;
 import com.example.mytime.mvp.model.entity.PlanItem;
+import com.example.mytime.mvp.ui.activity.FriendPlanItemActivity;
 
 import java.util.List;
 
@@ -40,7 +42,7 @@ public class FriendOpenPlanItemAdapter extends RecyclerView.Adapter<FriendOpenPl
     }
 
     @Override
-    public void onBindViewHolder(FriendOpenPlanItemAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(FriendOpenPlanItemAdapter.ViewHolder holder, final int position) {
         holder.planItemTitle.setText(planItemList.get(position).getTitle() == null? "" : planItemList.get(position).getTitle());
         holder.planItemContent.setText(planItemList.get(position).getContent() == null ? "" : planItemList.get(position).getContent());
         if (planItemList.get(position).getAlarmWay() == 0) {
@@ -55,7 +57,9 @@ public class FriendOpenPlanItemAdapter extends RecyclerView.Adapter<FriendOpenPl
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent intent = new Intent(context, FriendPlanItemActivity.class);
+                intent.putExtra("PLANITEM", planItemList.get(position));
+                context.startActivity(intent);
             }
         });
     }
