@@ -66,14 +66,19 @@ public class FriendShareFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_friend_share, container, false);
         sp = getActivity().getSharedPreferences("MYTIME", Context.MODE_PRIVATE);
-        getLianXiPeople();
-        ButterKnife.bind(this, view);
 
+        ButterKnife.bind(this, view);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager( getActivity());
         recyclerView.setLayoutManager( layoutManager);
 
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getLianXiPeople();
     }
 
     /**

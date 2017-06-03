@@ -161,7 +161,8 @@
         <activity android:name=".mvp.ui.activity.RiJiActivity" />
         <activity android:name=".mvp.ui.activity.CreateRiJiActivity" />
         <activity android:name=".mvp.ui.activity.MineActivity" />
-        <activity android:name=".mvp.ui.activity.ChangeMessageActivity"></activity>
+        <activity android:name=".mvp.ui.activity.ChangeMessageActivity" />
+        <activity android:name=".mvp.ui.activity.FriendListActivity"></activity>
     </application>
 
 </manifest>

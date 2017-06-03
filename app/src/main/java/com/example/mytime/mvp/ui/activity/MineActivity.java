@@ -119,6 +119,12 @@ public class MineActivity extends AppCompatActivity {
         startActivityForResult(intent, 1);
     }
 
+    @OnClick(R.id.mine_friend)
+    public void goMyFriend(){
+        Intent intent = new Intent(this, FriendListActivity.class);
+        startActivity(intent);
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
