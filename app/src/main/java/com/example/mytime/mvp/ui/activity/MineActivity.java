@@ -1,15 +1,23 @@
 package com.example.mytime.mvp.ui.activity;
 
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.TranslateAnimation;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,6 +27,7 @@ import com.example.mytime.R;
 import com.example.mytime.mvp.model.entity.User;
 import com.example.mytime.util.Extra;
 import com.example.mytime.util.HttpUrl;
+import com.example.mytime.util.MyUtil;
 import com.google.gson.Gson;
 import com.lzy.imagepicker.ImagePicker;
 import com.lzy.imagepicker.bean.ImageItem;
@@ -31,6 +40,7 @@ import org.litepal.crud.DataSupport;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
@@ -72,6 +82,14 @@ public class MineActivity extends AppCompatActivity {
     private ArrayList<ImageItem> mImageItem;
     private SharedPreferences sp;
 
+    private List<RelativeLayout> layouts;
+    private TranslateAnimation[] list;
+    float x,y;
+    int[][] location;
+    public static final float RADIUS = 450f;
+    Handler handler = new Handler();
+    Runnable[] runnables;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,6 +114,94 @@ public class MineActivity extends AppCompatActivity {
         }
 
         initData();
+       /* if (user.getLabel() != null && user.getLabel().size() > 0){
+            location = new int[user.getLabel().size()][2];
+            runnables = new Runnable[user.getLabel().size()];
+            addLabelLayout();
+        }*/
+    }
+
+    public void addLabelLayout(){
+        layouts = new ArrayList<>();
+        for (int i = 0; i < user.getLabel().size(); i++){
+            RelativeLayout relativeLayout = new RelativeLayout(this);
+            frameLayout.addView(relativeLayout);
+            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) relativeLayout.getLayoutParams();
+            layoutParams.height = MyUtil.dip2px(this, 80);
+            layoutParams.width = MyUtil.dip2px(this, 80);
+            relativeLayout.setLayoutParams(layoutParams);
+            relativeLayout.setGravity(Gravity.CENTER);
+
+            TextView textView = new TextView(this);
+            textView.setText(user.getLabel().get(i));
+            textView.setGravity(Gravity.CENTER);
+
+            relativeLayout.addView(textView);
+
+            layouts.add(relativeLayout);
+        }
+
+        list = new TranslateAnimation[layouts.size()];
+        gameRotate();
+    }
+
+    public void gameRotate(){
+        Animation operatingAnim = AnimationUtils.loadAnimation(this, R.anim.rorate);
+        LinearInterpolator lin = new LinearInterpolator();
+        operatingAnim.setInterpolator(lin);
+        if ( operatingAnim != null){
+            labelImg.startAnimation(operatingAnim);
+            labelImg.post(new Runnable() {
+                @Override
+                public void run() {
+                    x = labelImg.getTranslationX();
+                    y = labelImg.getTranslationY();
+                    other();
+                }
+            });
+        }
+    }
+    public void other(){
+
+        for(int i = 0; i < layouts.size() ; i++){
+            layouts.get(i).getLocationInWindow(location[i]);
+            ObjectAnimator.ofFloat(layouts.get(i), "translationX", x, (float)(x + Math.sin(Math.toRadians(i * 60)) * RADIUS)).setDuration(500).start();
+            ObjectAnimator.ofFloat(layouts.get(i), "translationY", y, (float)(y - Math.cos(Math.toRadians(i * 60)) * RADIUS)).setDuration(500).start();
+            location[i][0] = location[i][0] + (int)(Math.sin(Math.toRadians(i * 60)) * RADIUS);
+            location[i][1] = location[i][1] - (int)(Math.cos(Math.toRadians(i * 60)) * RADIUS);
+        }
+        active();
+    }
+
+    public void active(){
+
+        for (int i = 0 ; i < runnables.length ; i ++){
+            final int finalI = i;
+            runnables[i] = new Runnable() {
+                @Override
+                public void run() {
+                    float flag ;
+                    float flag1;
+                    int[] loc = new int[2];
+                    layouts.get(finalI).getLocationInWindow(loc);
+                    for(int j = 0; ; j++){
+                        flag = -30f + (float) (Math.random() * 60);
+                        flag1 = -30f + (float) (Math.random() * 60);
+                        if ( ((location[finalI][0] + 30) > (loc[0] + flag )&& (location[finalI][0] - 30 ) < (loc[0] + flag))
+                                && (( location[finalI][1] + 30) > (loc[1] + flag1) && (location[finalI][1] - 30) < (loc[1] + flag1))){
+                            break;
+                        }
+                    }
+                    ObjectAnimator.ofFloat(layouts.get(finalI), "translationX", layouts.get(finalI).getTranslationX(),layouts.get(finalI).getTranslationX() + flag ).setDuration(1000).start();
+                    ObjectAnimator.ofFloat(layouts.get(finalI), "translationY", layouts.get(finalI).getTranslationY() ,layouts.get(finalI).getTranslationY() + flag1 ).setDuration(1000).start();
+                    handler.postDelayed(this, 100 * (finalI + 6));
+                }
+            };
+        }
+        for (int i = 0; i < runnables.length; i++){
+            handler.postDelayed(runnables[i], 1000);
+        }
+
     }
 
     public void initData() {

@@ -25,6 +25,15 @@
                 android:layout_height="wrap_content"
                 android:text="分享计划"
                 android:textSize="16sp" />
+
+            <ImageView
+                android:id="@+id/pinglun_list"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/pinglun_list"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="16dp"
+                />
         </RelativeLayout>
 
     </android.support.v7.widget.Toolbar>
@@ -121,8 +130,28 @@
     <GridView
         android:id="@+id/gridview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
         android:numColumns="3"
+        android:layout_weight="1"
         ></GridView>
+
+    <LinearLayout
+        android:id="@+id/pinglun_layout"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:gravity="center"
+        >
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:background="@drawable/shape_corner"
+            android:layout_marginRight="16dp"
+            android:layout_marginLeft="16dp"
+            android:hint="写评论"
+            android:gravity="center"
+            android:textSize="18sp"
+            />
+
+    </LinearLayout>
 
 </LinearLayout>

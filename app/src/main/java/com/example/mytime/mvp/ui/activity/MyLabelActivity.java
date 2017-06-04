@@ -7,10 +7,16 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.MenuItem;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.TranslateAnimation;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,6 +24,7 @@ import com.example.mytime.R;
 import com.example.mytime.mvp.model.entity.User;
 import com.example.mytime.mvp.ui.adapter.MyLabelAdapter;
 import com.example.mytime.util.HttpUrl;
+import com.example.mytime.util.MyUtil;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
@@ -52,6 +59,7 @@ public class MyLabelActivity extends AppCompatActivity implements MyLabelAdapter
     private User user;
     private MyLabelAdapter labelAdapter;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,6 +72,11 @@ public class MyLabelActivity extends AppCompatActivity implements MyLabelAdapter
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setHomeAsUpIndicator(R.drawable.back);
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         user = DataSupport.findFirst(User.class);
 
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
@@ -73,7 +86,10 @@ public class MyLabelActivity extends AppCompatActivity implements MyLabelAdapter
             recyclerView.setAdapter(labelAdapter);
             labelAdapter.setOnDeleteLabel(this);
         }
+
     }
+
+
 
     @OnClick(R.id.ok)
     public void okClick(){

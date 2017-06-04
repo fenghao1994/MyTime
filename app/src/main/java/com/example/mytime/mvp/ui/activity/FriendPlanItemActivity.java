@@ -11,16 +11,17 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.mytime.R;
 import com.example.mytime.mvp.model.entity.PlanItem;
-import com.example.mytime.mvp.model.entity.User;
 import com.example.mytime.mvp.ui.adapter.EasyGridviewAdapter;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class FriendPlanItemActivity extends AppCompatActivity {
 
@@ -38,11 +39,16 @@ public class FriendPlanItemActivity extends AppCompatActivity {
     GridView gridview;
     @BindView(R.id.activity_friend_plan_item)
     LinearLayout activityFriendPlanItem;
+    @BindView(R.id.pinglun_list)
+    ImageView pinglunList;
+    @BindView(R.id.pinglun_layout)
+    LinearLayout pinglunLayout;
 
 
     private PlanItem planItem;
     EasyGridviewAdapter easyGridviewAdapter;
     private int mWidth;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,7 +66,7 @@ public class FriendPlanItemActivity extends AppCompatActivity {
         init();
     }
 
-    private void init(){
+    private void init() {
         title.setText(planItem.getTitle() == null ? "无标题" : planItem.getTitle());
         content.setText(planItem.getContent() == null ? "无内容" : planItem.getContent());
         time.setText(planItem.getYear() + "." + planItem.getMonth() + "." + planItem.getDay() + " " + planItem.getHour() + ":" + planItem.getMinute());
@@ -68,7 +74,7 @@ public class FriendPlanItemActivity extends AppCompatActivity {
         getWidth();
         easyGridviewAdapter = new EasyGridviewAdapter(this, mWidth);
         gridview.setAdapter(easyGridviewAdapter);
-        if (planItem.getAddress() != null){
+        if (planItem.getAddress() != null) {
             easyGridviewAdapter.setData(planItem.getAddress());
         }
 
@@ -82,15 +88,29 @@ public class FriendPlanItemActivity extends AppCompatActivity {
             }
         });
     }
+
+    @OnClick(R.id.pinglun_layout)
+    public void goPinglun(){
+        Intent intent = new Intent(this, PingLunActivity.class);
+        intent.putExtra("PLANITEM", planItem);
+        startActivity(intent);
+    }
+
+    @OnClick(R.id.pinglun_list)
+    public void goPingLunList() {
+        Intent intent = new Intent(this, PingLunListActivity.class);
+        intent.putExtra("PLANITEM", planItem);
+        startActivity(intent);
+    }
+
     /**
      * 获取屏幕宽度的1/3
      */
-    public void getWidth(){
+    public void getWidth() {
         WindowManager windowManager = getWindowManager();
         Display display = windowManager.getDefaultDisplay();
         mWidth = display.getWidth() / 3;
     }
-
 
 
     @Override

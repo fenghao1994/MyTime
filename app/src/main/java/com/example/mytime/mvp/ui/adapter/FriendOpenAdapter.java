@@ -19,6 +19,7 @@ import com.example.mytime.R;
 import com.example.mytime.mvp.model.entity.FriendShare;
 import com.example.mytime.mvp.ui.activity.FriendInfoActivity;
 import com.example.mytime.mvp.ui.activity.FriendPlanItemActivity;
+import com.example.mytime.mvp.ui.activity.PingLunActivity;
 import com.example.mytime.util.Extra;
 import com.example.mytime.util.HttpUrl;
 
@@ -96,6 +97,15 @@ public class FriendOpenAdapter extends RecyclerView.Adapter<FriendOpenAdapter.Vi
                 mContext.startActivity(intent);
             }
         });
+
+        holder.pingLun.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(mContext, PingLunActivity.class);
+                intent.putExtra("PLANITEM", mList.get(position).getPlanItem());
+                mContext.startActivity(intent);
+            }
+        });
     }
 
     @Override
@@ -109,6 +119,8 @@ public class FriendOpenAdapter extends RecyclerView.Adapter<FriendOpenAdapter.Vi
         CircleImageView headerImg;
         @BindView(R.id.plan_item_ok)
         ImageView planItemOk;
+        @BindView(R.id.pinglun)
+        ImageView pingLun;
         @BindView(R.id.plan_item_title)
         TextView planItemTitle;
         @BindView(R.id.plan_item_content)

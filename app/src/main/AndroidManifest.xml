@@ -166,7 +166,9 @@
         <activity android:name=".mvp.ui.activity.FriendInfoActivity" />
         <activity android:name=".mvp.ui.activity.FriendOpenPlanItemActivity" />
         <activity android:name=".mvp.ui.activity.FriendPlanItemActivity" />
-        <activity android:name=".mvp.ui.activity.MyLabelActivity"></activity>
+        <activity android:name=".mvp.ui.activity.MyLabelActivity" />
+        <activity android:name=".mvp.ui.activity.PingLunActivity" />
+        <activity android:name=".mvp.ui.activity.PingLunListActivity"></activity>
     </application>
 
 </manifest>

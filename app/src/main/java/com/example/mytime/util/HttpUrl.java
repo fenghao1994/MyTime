@@ -89,4 +89,10 @@ public class HttpUrl {
 
     //删除label
     public static final String POST_DELETE_USER_LABEL = ROOT + "/user/delete/label";
+
+    //发表评论
+    public static final String POST_SEND_PINGLUN = ROOT + "/planItem/pinglun";
+
+    //获取一个计划的所有评论
+    public static final String POST_GET_ALL_PING_LUN = ROOT + "/planItem/get/pinglun";
 }
