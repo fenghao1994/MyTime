@@ -95,4 +95,7 @@ public class HttpUrl {
 
     //获取一个计划的所有评论
     public static final String POST_GET_ALL_PING_LUN = ROOT + "/planItem/get/pinglun";
+
+    //更新location字段
+    public static final String POST_UPDATE_LOCATION = ROOT + "/planItem/update/location";
 }

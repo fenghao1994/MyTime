@@ -15,6 +15,14 @@ import android.text.TextUtils;
 
 import com.example.mytime.R;
 import com.example.mytime.mvp.model.entity.PlanItem;
+import com.example.mytime.mvp.model.entity.User;
+import com.example.mytime.util.HttpUrl;
+import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.callback.StringCallback;
+
+import org.litepal.crud.DataSupport;
+
+import okhttp3.Call;
 
 /**
  * 透明activity
@@ -78,6 +86,28 @@ public class TransActivity extends AppCompatActivity {
         }
     }
 
+    //向服务器发送地点到了
+    public void sendLocation(){
+        User user = DataSupport.findFirst(User.class);
+        OkHttpUtils
+                .post()
+                .url(HttpUrl.POST_UPDATE_LOCATION)
+                .addParams("phoneNumber", user.getPhoneNumber())
+                .addParams("createTime", planItem.getCreateTime() + "")
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        String a = "";
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        String a = "";
+                    }
+                });
+    }
+
     //闹钟想起来
     public void alarmIng() {
         vibrate();
@@ -92,6 +122,7 @@ public class TransActivity extends AppCompatActivity {
 
     //地点到了
     public void arrvide(){
+        sendLocation();
         vibrate();
         ringAlarm();
     }
