@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -22,6 +23,7 @@ import android.widget.Toast;
 
 import com.example.mytime.R;
 import com.example.mytime.mvp.model.entity.Note;
+import com.example.mytime.mvp.model.entity.Photo;
 import com.example.mytime.mvp.model.entity.Plan;
 import com.example.mytime.mvp.model.entity.PlanItem;
 import com.example.mytime.mvp.model.entity.RiJi;
@@ -32,16 +34,22 @@ import com.example.mytime.util.MyUtil;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.callback.FileCallBack;
 import com.zhy.http.okhttp.callback.StringCallback;
 
+import org.litepal.crud.DataSupport;
+
+import java.io.File;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import okhttp3.Call;
+import okhttp3.Request;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -70,6 +78,7 @@ public class LoginActivity extends AppCompatActivity {
     boolean b1, b2, b3, b4;
 
     private User user;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -214,7 +223,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     @OnClick(R.id.goForgetPassword)
-    public void setGoForgetPassword(){
+    public void setGoForgetPassword() {
         Intent intent = new Intent(this, RegisterActivity.class);
         intent.putExtra("FLAG", true);
         startActivity(intent);
@@ -247,6 +256,7 @@ public class LoginActivity extends AppCompatActivity {
                                 list.get(i).save();
                                 for (int j = 0; j < list.get(i).getAddress().size(); j++) {
                                     list.get(i).getAddress().get(j).save();
+                                    downLoadImg(list.get(i).getAddress().get(j).getAddress(), list.get(i).getAddress().get(j).getCreateTime() + "");
                                 }
                             }
                         }
@@ -255,6 +265,33 @@ public class LoginActivity extends AppCompatActivity {
                     }
                 });
 
+    }
+
+    public void downLoadImg(String url, String name) {
+        url = url.substring(3, url.length());
+        url = url.replace("\\", "/");
+        OkHttpUtils//
+                .get()//
+                .url(HttpUrl.ROOT + "/" + url)//
+                .build()//
+                .execute(new FileCallBack(Environment.getExternalStorageDirectory().getAbsolutePath(), name + ".png")//
+                {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        String a = "";
+                    }
+
+                    @Override
+                    public void onResponse(File response, int id) {
+                        List<Photo> list = DataSupport.findAll(Photo.class);
+                        for (int i = 0; i < list.size(); i++){
+                            if (response.getAbsolutePath().contains(list.get(i).getCreateTime() + "")){
+                                list.get(i).setAddress(response.getAbsolutePath());
+                                list.get(i).save();
+                            }
+                        }
+                    }
+                });
     }
 
     public void getNotesFromNet() {
@@ -284,6 +321,7 @@ public class LoginActivity extends AppCompatActivity {
                                 list.get(i).save();
                                 for (int j = 0; j < list.get(i).getAddress().size(); j++) {
                                     list.get(i).getAddress().get(j).save();
+                                    downLoadImg(list.get(i).getAddress().get(j).getAddress(), list.get(i).getAddress().get(j).getCreateTime() + "");
                                 }
                             }
                         }

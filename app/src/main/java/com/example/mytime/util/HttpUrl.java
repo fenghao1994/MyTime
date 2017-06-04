@@ -5,7 +5,7 @@ package com.example.mytime.util;
  */
 
 public class HttpUrl {
-    public static final String ROOT = "http://192.168.155.1:8080";
+    public static final String ROOT = "http://192.168.191.1:8080";
 
     //上传save Note
     public static final String POST_SAVE_NOTE = ROOT + "/note/saveNote";

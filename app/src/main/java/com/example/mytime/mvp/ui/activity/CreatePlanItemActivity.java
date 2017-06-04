@@ -645,19 +645,19 @@ public class CreatePlanItemActivity extends AppCompatActivity implements ICreate
                 .addParams("minute", planItem.getMinute() + "")
                 .addParams("alarmWay", planItem.getAlarmWay() + "")
                 .addParams("describe", planItem.getDescribe() + "")
-                .addParams("open", planItem.getOpen())
+                .addParams("open", planItem.getOpen() + "")
                 .addParams("address", new Gson().toJson(planItem.getAddress()))
                 .files("addressFiles", map)
                 .build()
                 .execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
-                        Log.e("MYTIME_OKHTTP", e.toString());
+                        String a = "";
                     }
 
                     @Override
                     public void onResponse(String response, int id) {
-                        Log.e("MYTIME_OKHTTP", "更新或者保存成功");
+                        String a = "";
                     }
                 });
     }
