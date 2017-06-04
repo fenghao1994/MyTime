@@ -25,7 +25,6 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.mytime.R;
 import com.example.mytime.mvp.model.entity.User;
-import com.example.mytime.util.Extra;
 import com.example.mytime.util.HttpUrl;
 import com.example.mytime.util.MyUtil;
 import com.google.gson.Gson;
@@ -77,6 +76,8 @@ public class MineActivity extends AppCompatActivity {
     TextView personalizedText;
     @BindView(R.id.self_introduction_text)
     TextView selfIntroductionText;
+    @BindView(R.id.mine_open_layout)
+    LinearLayout mineOpenLayout;
 
     private User user;
     private ArrayList<ImageItem> mImageItem;
@@ -84,7 +85,7 @@ public class MineActivity extends AppCompatActivity {
 
     private List<RelativeLayout> layouts;
     private TranslateAnimation[] list;
-    float x,y;
+    float x, y;
     int[][] location;
     public static final float RADIUS = 450f;
     Handler handler = new Handler();
@@ -104,13 +105,13 @@ public class MineActivity extends AppCompatActivity {
         user = DataSupport.findFirst(User.class);
         minePhoneNumber.setText(user.getPhoneNumber());
 
-        if ( user.getHeadImg().contains("D:\\")){
+        if (user.getHeadImg().contains("D:\\")) {
             String s = user.getHeadImg();
             s = s.substring(3, s.length());
             s = s.replace("\\", "/");
-            Glide.with(this).load(HttpUrl.ROOT + "/" + s).diskCacheStrategy(DiskCacheStrategy.ALL).into( headerImg);
-        }else {
-            Glide.with(this).load(user.getHeadImg()).diskCacheStrategy(DiskCacheStrategy.ALL).into( headerImg);
+            Glide.with(this).load(HttpUrl.ROOT + "/" + s).diskCacheStrategy(DiskCacheStrategy.ALL).into(headerImg);
+        } else {
+            Glide.with(this).load(user.getHeadImg()).diskCacheStrategy(DiskCacheStrategy.ALL).into(headerImg);
         }
 
         initData();
@@ -121,9 +122,15 @@ public class MineActivity extends AppCompatActivity {
         }*/
     }
 
-    public void addLabelLayout(){
+    @OnClick(R.id.mine_open_layout)
+    public void goMyOpen(){
+        Intent intent = new Intent(this, MyOpenPlanItemActivity.class);
+        startActivity(intent);
+    }
+
+    public void addLabelLayout() {
         layouts = new ArrayList<>();
-        for (int i = 0; i < user.getLabel().size(); i++){
+        for (int i = 0; i < user.getLabel().size(); i++) {
             RelativeLayout relativeLayout = new RelativeLayout(this);
             frameLayout.addView(relativeLayout);
             RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) relativeLayout.getLayoutParams();
@@ -145,11 +152,11 @@ public class MineActivity extends AppCompatActivity {
         gameRotate();
     }
 
-    public void gameRotate(){
+    public void gameRotate() {
         Animation operatingAnim = AnimationUtils.loadAnimation(this, R.anim.rorate);
         LinearInterpolator lin = new LinearInterpolator();
         operatingAnim.setInterpolator(lin);
-        if ( operatingAnim != null){
+        if (operatingAnim != null) {
             labelImg.startAnimation(operatingAnim);
             labelImg.post(new Runnable() {
                 @Override
@@ -161,44 +168,45 @@ public class MineActivity extends AppCompatActivity {
             });
         }
     }
-    public void other(){
 
-        for(int i = 0; i < layouts.size() ; i++){
+    public void other() {
+
+        for (int i = 0; i < layouts.size(); i++) {
             layouts.get(i).getLocationInWindow(location[i]);
-            ObjectAnimator.ofFloat(layouts.get(i), "translationX", x, (float)(x + Math.sin(Math.toRadians(i * 60)) * RADIUS)).setDuration(500).start();
-            ObjectAnimator.ofFloat(layouts.get(i), "translationY", y, (float)(y - Math.cos(Math.toRadians(i * 60)) * RADIUS)).setDuration(500).start();
-            location[i][0] = location[i][0] + (int)(Math.sin(Math.toRadians(i * 60)) * RADIUS);
-            location[i][1] = location[i][1] - (int)(Math.cos(Math.toRadians(i * 60)) * RADIUS);
+            ObjectAnimator.ofFloat(layouts.get(i), "translationX", x, (float) (x + Math.sin(Math.toRadians(i * 60)) * RADIUS)).setDuration(500).start();
+            ObjectAnimator.ofFloat(layouts.get(i), "translationY", y, (float) (y - Math.cos(Math.toRadians(i * 60)) * RADIUS)).setDuration(500).start();
+            location[i][0] = location[i][0] + (int) (Math.sin(Math.toRadians(i * 60)) * RADIUS);
+            location[i][1] = location[i][1] - (int) (Math.cos(Math.toRadians(i * 60)) * RADIUS);
         }
         active();
     }
 
-    public void active(){
+    public void active() {
 
-        for (int i = 0 ; i < runnables.length ; i ++){
+        for (int i = 0; i < runnables.length; i++) {
             final int finalI = i;
             runnables[i] = new Runnable() {
                 @Override
                 public void run() {
-                    float flag ;
+                    float flag;
                     float flag1;
                     int[] loc = new int[2];
                     layouts.get(finalI).getLocationInWindow(loc);
-                    for(int j = 0; ; j++){
+                    for (int j = 0; ; j++) {
                         flag = -30f + (float) (Math.random() * 60);
                         flag1 = -30f + (float) (Math.random() * 60);
-                        if ( ((location[finalI][0] + 30) > (loc[0] + flag )&& (location[finalI][0] - 30 ) < (loc[0] + flag))
-                                && (( location[finalI][1] + 30) > (loc[1] + flag1) && (location[finalI][1] - 30) < (loc[1] + flag1))){
+                        if (((location[finalI][0] + 30) > (loc[0] + flag) && (location[finalI][0] - 30) < (loc[0] + flag))
+                                && ((location[finalI][1] + 30) > (loc[1] + flag1) && (location[finalI][1] - 30) < (loc[1] + flag1))) {
                             break;
                         }
                     }
-                    ObjectAnimator.ofFloat(layouts.get(finalI), "translationX", layouts.get(finalI).getTranslationX(),layouts.get(finalI).getTranslationX() + flag ).setDuration(1000).start();
-                    ObjectAnimator.ofFloat(layouts.get(finalI), "translationY", layouts.get(finalI).getTranslationY() ,layouts.get(finalI).getTranslationY() + flag1 ).setDuration(1000).start();
+                    ObjectAnimator.ofFloat(layouts.get(finalI), "translationX", layouts.get(finalI).getTranslationX(), layouts.get(finalI).getTranslationX() + flag).setDuration(1000).start();
+                    ObjectAnimator.ofFloat(layouts.get(finalI), "translationY", layouts.get(finalI).getTranslationY(), layouts.get(finalI).getTranslationY() + flag1).setDuration(1000).start();
                     handler.postDelayed(this, 100 * (finalI + 6));
                 }
             };
         }
-        for (int i = 0; i < runnables.length; i++){
+        for (int i = 0; i < runnables.length; i++) {
             handler.postDelayed(runnables[i], 1000);
         }
 
@@ -211,7 +219,7 @@ public class MineActivity extends AppCompatActivity {
         if (!TextUtils.isEmpty(user.getSelfIntroduction())) {
             selfIntroductionText.setText(user.getSelfIntroduction());
         }
-        if (!TextUtils.isEmpty(user.getPersonalizedSignature())){
+        if (!TextUtils.isEmpty(user.getPersonalizedSignature())) {
             personalizedText.setText(user.getPersonalizedSignature());
         }
     }
@@ -226,13 +234,13 @@ public class MineActivity extends AppCompatActivity {
     }
 
     @OnClick(R.id.label_img)
-    public void goMyLabel(){
+    public void goMyLabel() {
         Intent intent = new Intent(this, MyLabelActivity.class);
         startActivity(intent);
     }
 
     @OnClick(R.id.mine_friend)
-    public void goMyFriend(){
+    public void goMyFriend() {
         Intent intent = new Intent(this, FriendListActivity.class);
         startActivity(intent);
     }

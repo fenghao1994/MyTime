@@ -82,10 +82,10 @@ public class TransActivity extends AppCompatActivity {
     public void alarmIng() {
         vibrate();
         ringAlarm();
-        if (!TextUtils.isEmpty(planItem.getPhoneNumber())) {
+        if (!TextUtils.isEmpty(planItem.getPhoneNumber()) && !planItem.getPhoneNumber().equals("null")) {
             callPhone();
         }
-        if (!TextUtils.isEmpty(planItem.getMessagePhoneNumber())){
+        if (!TextUtils.isEmpty(planItem.getMessagePhoneNumber()) && !planItem.getMessagePhoneNumber().equals("null")){
             sendSMS();
         }
     }

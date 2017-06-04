@@ -25,6 +25,7 @@ import com.example.mytime.mvp.model.entity.PlanItem;
 import com.example.mytime.mvp.ui.activity.CreatePlanActivity;
 import com.example.mytime.mvp.ui.activity.CreatePlanItemActivity;
 import com.example.mytime.mvp.ui.activity.MainActivity;
+import com.example.mytime.mvp.ui.activity.MyOpenPlanItemActivity;
 import com.example.mytime.mvp.ui.custom.SharePopWindow;
 import com.example.mytime.receiver.AlarmReceiver;
 import com.example.mytime.util.EditTimeSortFromBToS;
@@ -88,7 +89,7 @@ public class PlanItemAdapter extends RecyclerView.Adapter<PlanItemAdapter.ViewHo
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
 
-        if (!(mContext instanceof CreatePlanActivity)){
+        if (!((mContext instanceof CreatePlanActivity) || (mContext instanceof MyOpenPlanItemActivity))){
             holder.planItemCha.setEnabled(false);
             holder.planItemCha.setImageDrawable(mContext.getResources().getDrawable(R.drawable.cha_gray));
         }
@@ -129,6 +130,10 @@ public class PlanItemAdapter extends RecyclerView.Adapter<PlanItemAdapter.ViewHo
                     Intent intent = new Intent(mContext, CreatePlanItemActivity.class);
                     intent.putExtra("PLANITEM", mList.get(position));
                     ((CreatePlanActivity) mContext).startActivityForResult(intent, CreatePlanActivity.REQUEST);
+                }else if (mContext instanceof MyOpenPlanItemActivity){
+                    Intent intent = new Intent(mContext, CreatePlanItemActivity.class);
+                    intent.putExtra("PLANITEM", mList.get(position));
+                    ((MyOpenPlanItemActivity) mContext).startActivityForResult(intent, MyOpenPlanItemActivity.REQUEST);
                 }else {
                     Toast.makeText(mContext, "此页面不能进行操作", Toast.LENGTH_SHORT).show();
                 }
@@ -159,7 +164,12 @@ public class PlanItemAdapter extends RecyclerView.Adapter<PlanItemAdapter.ViewHo
                                 mList.get(position).setDelete(true);
 //                                mList.get(position).setEditTime(System.currentTimeMillis());
                                 mList.get(position).update(mList.get(position).getId());
-                                ((CreatePlanActivity)mContext).deletePlanItem(mList.get(position));
+                                if (mContext instanceof CreatePlanActivity){
+                                    ((CreatePlanActivity)mContext).deletePlanItem(mList.get(position));
+                                }else {
+                                    ((MyOpenPlanItemActivity)mContext).deletePlanItem(mList.get(position));
+                                }
+
                                 mList.remove(position);
                                 PlanItemAdapter.this.notifyDataSetChanged();
                                 alertDialog.dismiss();
@@ -192,7 +202,12 @@ public class PlanItemAdapter extends RecyclerView.Adapter<PlanItemAdapter.ViewHo
                                 planItem1.setComplete(true);
                                 planItem1.setEditTime(System.currentTimeMillis());
                                 planItem1.update(planItem1.getId());
-                                ((CreatePlanActivity)mContext).completePlanItem(mList.get(position));
+                                if (mContext instanceof CreatePlanActivity){
+                                    ((CreatePlanActivity)mContext).completePlanItem(mList.get(position));
+                                }else {
+                                    ((MyOpenPlanItemActivity)mContext).completePlanItem(mList.get(position));
+                                }
+
                                 Toast.makeText(mContext, "恭喜完成该任务", Toast.LENGTH_SHORT).show();
                                 PlanItemAdapter.this.notifyDataSetChanged();
                                 alertDialog.dismiss();
