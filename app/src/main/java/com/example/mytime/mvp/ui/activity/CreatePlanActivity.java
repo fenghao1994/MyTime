@@ -309,6 +309,16 @@ public class CreatePlanActivity extends AppCompatActivity implements ICreatePlan
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
+                if (isCompletePlanItem && plan != null && isFromFab) {
+                    if (TextUtils.isEmpty(plan.getTitle())){
+                        plan.setTitle("");
+                    }
+                    createPlanPresenter.savePlan(plan);
+                    //等于2 上传到服务器
+                    if (Extra.NET_WORK == 2){
+                        saveObjectWithNetWork();
+                    }
+                }
                 this.finish();
                 break;
         }
@@ -320,7 +330,9 @@ public class CreatePlanActivity extends AppCompatActivity implements ICreatePlan
     public void onBackPressed() {
         super.onBackPressed();
         if (isCompletePlanItem && plan != null && isFromFab) {
-            plan.setTitle("");
+            if (TextUtils.isEmpty(plan.getTitle())){
+                plan.setTitle("");
+            }
             createPlanPresenter.savePlan(plan);
             //等于2 上传到服务器
             if (Extra.NET_WORK == 2){

@@ -23,6 +23,7 @@
                 android:layout_height="?attr/actionBarSize"
                 android:navigationIcon="@drawable/celan"
                 app:navigationIcon="@drawable/celan"
+                android:background="#FFF"
                 >
 
                 <RelativeLayout

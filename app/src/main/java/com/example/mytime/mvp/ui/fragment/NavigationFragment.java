@@ -150,12 +150,15 @@ public class NavigationFragment extends Fragment {
 
                     @Override
                     public void onResponse(String response, int id) {
-                        user.setHeadImg(response);
-                        user.saveOrUpdate();
-                        headerPath = response;
-                        headerPath = headerPath.substring(3, headerPath.length());
-                        headerPath = headerPath.replace("\\", "/");
-                        Glide.with(getActivity()).load(HttpUrl.ROOT + "/" + headerPath).diskCacheStrategy(DiskCacheStrategy.ALL).into(headerImg);
+                        if ( !TextUtils.isEmpty(response)){
+                            user.setHeadImg(response);
+                            user.saveOrUpdate();
+                            headerPath = response;
+                            headerPath = headerPath.substring(3, headerPath.length());
+                            headerPath = headerPath.replace("\\", "/");
+                            Glide.with(getActivity()).load(HttpUrl.ROOT + "/" + headerPath).diskCacheStrategy(DiskCacheStrategy.ALL).into(headerImg);
+                        }
+
                     }
                 });
     }

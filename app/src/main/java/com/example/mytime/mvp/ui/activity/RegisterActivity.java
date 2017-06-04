@@ -26,6 +26,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.mytime.R;
+import com.example.mytime.mvp.model.entity.User;
 import com.example.mytime.mvp.ui.view.ILoginView;
 import com.example.mytime.receiver.AlarmReceiver;
 import com.example.mytime.util.Extra;
@@ -126,7 +127,15 @@ public class RegisterActivity extends AppCompatActivity implements ILoginView {
                     handler.removeCallbacks(runnable);
                 }
             }else if (msg.what == 3){
+                dismiss();
+            }else if (msg.what == 4){
+                if (!flag) {
+                    progressDialog.setMessage("正在注册");
+                } else {
+                    progressDialog.setMessage("正在设置新密码");
+                }
 
+                progressDialog.show();
             }
             super.handleMessage(msg);
         }
@@ -225,6 +234,7 @@ public class RegisterActivity extends AppCompatActivity implements ILoginView {
         if (actionBar != null) {
             actionBar.setHomeAsUpIndicator(R.drawable.back_white);
         }
+        textLogin.setEnabled(false);
         mLayoutLogin.setEnabled(false);
         mLayoutLogin.setBackgroundColor(getResources().getColor(R.color.darkGray));
     }
@@ -279,15 +289,18 @@ public class RegisterActivity extends AppCompatActivity implements ILoginView {
 
     }
 
-    public void sumbitInfo(String url) {
-        if (!flag) {
-            progressDialog.setMessage("正在注册");
-        } else {
-            progressDialog.setMessage("正在设置新密码");
+    Runnable runnable4 = new Runnable() {
+        @Override
+        public void run() {
+            Message message = new Message();
+            message.what = 4;
+            handler.sendMessage(message);
         }
+    };
 
-        progressDialog.show();
-        ;
+    public void sumbitInfo(final String url) {
+        new Thread(runnable4).start();
+
         OkHttpUtils
                 .post()
                 .url(url)
@@ -310,10 +323,14 @@ public class RegisterActivity extends AppCompatActivity implements ILoginView {
                     @Override
                     public void onResponse(String response, int id) {
                         new Thread(dismissRunnable).start();
-                        sp.edit().putString("phoneNumber", phoneNumber.getText().toString().trim())
-                                .putString("password", password.getText().toString())
-                                .commit();
+//                        sp.edit().putString("phoneNumber", phoneNumber.getText().toString().trim())
+//                                .putString("password", password.getText().toString())
+//                                .commit();
                         Gson gson = new Gson();
+//                        User user = new User();
+//                        user.setPhoneNumber(phoneNumber.getText().toString().trim());
+//                        user.setPassword(password.getText().toString());
+//                        user.save();
                         Map<String, String> map = gson.fromJson(response, Map.class);
                         if (!flag) {
                             Toast.makeText(RegisterActivity.this, "注册成功", Toast.LENGTH_SHORT).show();
@@ -395,6 +412,9 @@ public class RegisterActivity extends AppCompatActivity implements ILoginView {
             case R.id.layout_login:
                 clickLogin();
                 break;
+            case R.id.text_login:
+                clickLogin();
+                break;
             case R.id.voice_sms:
                 clickVoiceSMS();
                 break;
@@ -415,9 +435,11 @@ public class RegisterActivity extends AppCompatActivity implements ILoginView {
     @OnTextChanged(value = R.id.input_verification_code, callback = OnTextChanged.Callback.TEXT_CHANGED)
     public void verificationTextChanged(CharSequence s, int start, int before, int count) {
         if (s.length() > 0) {
+            textLogin.setEnabled(true);
             mLayoutLogin.setEnabled(true);
             mLayoutLogin.setBackgroundColor(getResources().getColor(R.color.logoGreen));
         } else {
+            textLogin.setEnabled(false);
             mLayoutLogin.setEnabled(false);
             mLayoutLogin.setBackgroundColor(getResources().getColor(R.color.darkGray));
         }
@@ -487,7 +509,7 @@ public class RegisterActivity extends AppCompatActivity implements ILoginView {
      * 显示progressbar
      */
     public void progressBarShow() {
-        progressBar.setVisibility(View.VISIBLE);
+//        progressBar.setVisibility(View.VISIBLE);
     }
 
     @Override

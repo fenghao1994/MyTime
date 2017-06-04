@@ -185,8 +185,8 @@ public class LoginActivity extends AppCompatActivity {
                         if (progressDialog != null) {
                             progressDialog.dismiss();
                         }
-                        Toast.makeText(LoginActivity.this, "登陆失败", Toast.LENGTH_SHORT).show();
-                        Toast.makeText(LoginActivity.this, "服务器异常,请稍后在试", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(LoginActivity.this, "登陆失败,请核对手机号和密码", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(LoginActivity.this, "服务器异常,请稍后在试", Toast.LENGTH_SHORT).show();
                     }
 
                     @Override

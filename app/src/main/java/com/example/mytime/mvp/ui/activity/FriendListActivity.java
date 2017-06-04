@@ -86,6 +86,13 @@ public class FriendListActivity extends AppCompatActivity implements FriendListA
 
         user = DataSupport.findFirst(User.class);
         getLianXiPeople();
+
+        refresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                getMessage();
+            }
+        });
     }
 
     /**

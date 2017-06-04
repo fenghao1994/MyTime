@@ -24,6 +24,8 @@ import com.example.mytime.mvp.model.entity.PlanItem;
 import com.example.mytime.mvp.ui.activity.TransActivity;
 import com.example.mytime.util.Extra;
 
+import org.litepal.crud.DataSupport;
+
 import cn.smssdk.SMSSDK;
 
 public class AlarmReceiver extends BroadcastReceiver {
@@ -63,6 +65,10 @@ public class AlarmReceiver extends BroadcastReceiver {
     }
 
     public void gotoAlarm(){
+        planItem = DataSupport.where("id = ?", planItem.getId() + "").findFirst(PlanItem.class);
+        if (planItem.isDelete()){
+            return;
+        }
         Intent intent = new Intent(mContext, TransActivity.class);
         intent.putExtra("FLAG", flag);
         intent.putExtra("PLAN_ITEM", planItem);

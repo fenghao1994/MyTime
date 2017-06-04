@@ -15,6 +15,7 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             app:navigationIcon="@drawable/back"
+            android:background="#FFF"
             >
 
             <RelativeLayout
