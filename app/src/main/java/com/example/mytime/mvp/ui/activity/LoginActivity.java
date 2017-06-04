@@ -256,7 +256,7 @@ public class LoginActivity extends AppCompatActivity {
                                 list.get(i).save();
                                 for (int j = 0; j < list.get(i).getAddress().size(); j++) {
                                     list.get(i).getAddress().get(j).save();
-                                    downLoadImg(list.get(i).getAddress().get(j).getAddress(), list.get(i).getAddress().get(j).getCreateTime() + "");
+//                                    downLoadImg(list.get(i).getAddress().get(j).getAddress(), list.get(i).getAddress().get(j).getCreateTime() + "");
                                 }
                             }
                         }
@@ -267,7 +267,7 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-    public void downLoadImg(String url, String name) {
+   /* public void downLoadImg(String url, String name) {
         url = url.substring(3, url.length());
         url = url.replace("\\", "/");
         OkHttpUtils//
@@ -292,7 +292,7 @@ public class LoginActivity extends AppCompatActivity {
                         }
                     }
                 });
-    }
+    }*/
 
     public void getNotesFromNet() {
         OkHttpUtils
@@ -321,7 +321,7 @@ public class LoginActivity extends AppCompatActivity {
                                 list.get(i).save();
                                 for (int j = 0; j < list.get(i).getAddress().size(); j++) {
                                     list.get(i).getAddress().get(j).save();
-                                    downLoadImg(list.get(i).getAddress().get(j).getAddress(), list.get(i).getAddress().get(j).getCreateTime() + "");
+//                                    downLoadImg(list.get(i).getAddress().get(j).getAddress(), list.get(i).getAddress().get(j).getCreateTime() + "");
                                 }
                             }
                         }

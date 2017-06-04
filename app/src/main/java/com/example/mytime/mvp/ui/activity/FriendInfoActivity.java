@@ -66,13 +66,15 @@ public class FriendInfoActivity extends AppCompatActivity {
     }
 
     public void init() {
-        if (user.getHeadImg().contains("D:\\")) {
-            String s = user.getHeadImg();
-            s = s.substring(3, s.length());
-            s = s.replace("\\", "/");
-            Glide.with(this).load(HttpUrl.ROOT + "/" + s).diskCacheStrategy(DiskCacheStrategy.ALL).into(headerImg);
-        } else {
-            Glide.with(this).load(user.getHeadImg()).diskCacheStrategy(DiskCacheStrategy.ALL).into(headerImg);
+        if (!TextUtils.isEmpty(user.getHeadImg())){
+            if (user.getHeadImg().contains("D:\\")) {
+                String s = user.getHeadImg();
+                s = s.substring(3, s.length());
+                s = s.replace("\\", "/");
+                Glide.with(this).load(HttpUrl.ROOT + "/" + s).diskCacheStrategy(DiskCacheStrategy.ALL).into(headerImg);
+            } else {
+                Glide.with(this).load(user.getHeadImg()).diskCacheStrategy(DiskCacheStrategy.ALL).into(headerImg);
+            }
         }
         minePhoneNumber.setText(user.getPhoneNumber());
 

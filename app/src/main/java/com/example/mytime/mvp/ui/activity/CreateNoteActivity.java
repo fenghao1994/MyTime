@@ -5,6 +5,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -21,6 +23,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.Target;
 import com.example.mytime.R;
 import com.example.mytime.http_callback.UserCallBack;
 import com.example.mytime.mvp.model.entity.Note;
@@ -47,6 +51,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -309,19 +314,26 @@ public class CreateNoteActivity extends AppCompatActivity implements ICreateNote
     public void updateObjectWithNetWork(){
         postUrl(HttpUrl.POST_UPDATA_NOTE);
     }
-    public void postUrl(String url){
-        Map<String, File> map = new HashMap<>();
-        if(noteAddress != null  && noteAddress.size() > 0){
-            for (int i = 0 ; i < noteAddress.size(); i++){
-                File file = new File(noteAddress.get(i).getAddress());
-                map.put("file" + i, file);
+
+
+    private String remoteUri;
+    private Map<String, File> map;
+
+    private Handler handler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            if (msg.what == 1){
+                sendNote();
             }
         }
+    };
 
+    public void sendNote() {
 
         OkHttpUtils
                 .post()
-                .url(url)
+                .url(remoteUri)
                 .addParams("phoneNumber", sp.getString("phoneNumber", ""))
                 .addParams("id", note.getId() + "")
                 .addParams("title", note.getTitle())
@@ -344,5 +356,43 @@ public class CreateNoteActivity extends AppCompatActivity implements ICreateNote
                         Log.e("MYTIME_OKHTTP", "更新或者保存成功");
                     }
                 });
+
+    }
+
+    public void postUrl(String url){
+        remoteUri = url;
+        map = new HashMap<>();
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                if (noteAddress != null && noteAddress.size() > 0) {
+                    for (int i = 0; i < noteAddress.size(); i++) {
+                        File file = null;
+                        if (noteAddress.get(i).getAddress().contains("D:\\")) {
+                            String s = noteAddress.get(i).getAddress();
+                            s = s.substring(3, s.length());
+                            s = s.replace("\\", "/");
+                            try {
+                                file = Glide.with(CreateNoteActivity.this).load(HttpUrl.ROOT + "/" + s)
+                                        .downloadOnly(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
+                                        .get();
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            } catch (ExecutionException e) {
+                                e.printStackTrace();
+                            }
+                        } else {
+                            file = new File(noteAddress.get(i).getAddress());
+                        }
+                        map.put("file" + i, file);
+
+                    }
+                }
+                Message message = new Message();
+                message.what = 1;
+                handler.sendMessage(message);
+            }
+        }).start();
     }
 }

@@ -26,6 +26,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * Created by fenghao on 2017/6/3.
@@ -55,14 +56,17 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Vi
 
     @Override
     public void onBindViewHolder(final FriendListAdapter.ViewHolder holder, final int position) {
-        if (friends.get(position).getUser().getHeadImg().contains("D:\\")) {
-            String s = friends.get(position).getUser().getHeadImg();
-            s = s.substring(3, s.length());
-            s = s.replace("\\", "/");
-            Glide.with(context).load(HttpUrl.ROOT + "/" + s).diskCacheStrategy(DiskCacheStrategy.ALL).into(holder.headerImg);
-        } else {
-            Glide.with(context).load(friends.get(position).getUser().getHeadImg()).diskCacheStrategy(DiskCacheStrategy.ALL).into( holder.headerImg);
+        if (!TextUtils.isEmpty(friends.get(position).getUser().getHeadImg())){
+            if (friends.get(position).getUser().getHeadImg().contains("D:\\")) {
+                String s = friends.get(position).getUser().getHeadImg();
+                s = s.substring(3, s.length());
+                s = s.replace("\\", "/");
+                Glide.with(context).load(HttpUrl.ROOT + "/" + s).diskCacheStrategy(DiskCacheStrategy.ALL).into(holder.headerImg);
+            } else {
+                Glide.with(context).load(friends.get(position).getUser().getHeadImg()).diskCacheStrategy(DiskCacheStrategy.ALL).into( holder.headerImg);
+            }
         }
+
         holder.userName.setText(friends.get(position).getUser().getUserName() == null ? "": friends.get(position).getUser().getUserName());
         holder.phoneNumber.setText(friends.get(position).getUser().getPhoneNumber());
         holder.signature.setText(friends.get(position).getUser().getPersonalizedSignature() == null ? "" : friends.get(position).getUser().getPersonalizedSignature());
@@ -141,7 +145,7 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Vi
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.header_img)
-        ImageView headerImg;
+        CircleImageView headerImg;
         @BindView(R.id.user_name)
         TextView userName;
         @BindView(R.id.phone_number)

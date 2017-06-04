@@ -53,13 +53,15 @@ public class FriendOpenAdapter extends RecyclerView.Adapter<FriendOpenAdapter.Vi
 
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
-        if (mList.get(position).getUser().getHeadImg().contains("D:\\")){
-            String s = mList.get(position).getUser().getHeadImg();
-            s = s.substring(3, s.length());
-            s = s.replace("\\", "/");
-            Glide.with(mContext).load(HttpUrl.ROOT + "/" + s).diskCacheStrategy(DiskCacheStrategy.ALL).into( holder.headerImg);
-        }else {
-            Glide.with(mContext).load(mList.get(position).getUser().getHeadImg()).diskCacheStrategy(DiskCacheStrategy.ALL).into( holder.headerImg);
+        if (!TextUtils.isEmpty(mList.get(position).getUser().getHeadImg())){
+            if (mList.get(position).getUser().getHeadImg().contains("D:\\")){
+                String s = mList.get(position).getUser().getHeadImg();
+                s = s.substring(3, s.length());
+                s = s.replace("\\", "/");
+                Glide.with(mContext).load(HttpUrl.ROOT + "/" + s).diskCacheStrategy(DiskCacheStrategy.ALL).into( holder.headerImg);
+            }else {
+                Glide.with(mContext).load(mList.get(position).getUser().getHeadImg()).diskCacheStrategy(DiskCacheStrategy.ALL).into( holder.headerImg);
+            }
         }
         if (mList.get(position).getPlanItem().isComplete()){
             holder.planItemOk.setVisibility(View.VISIBLE);

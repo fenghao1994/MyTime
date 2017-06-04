@@ -105,14 +105,17 @@ public class MineActivity extends AppCompatActivity {
         user = DataSupport.findFirst(User.class);
         minePhoneNumber.setText(user.getPhoneNumber());
 
-        if (user.getHeadImg().contains("D:\\")) {
-            String s = user.getHeadImg();
-            s = s.substring(3, s.length());
-            s = s.replace("\\", "/");
-            Glide.with(this).load(HttpUrl.ROOT + "/" + s).diskCacheStrategy(DiskCacheStrategy.ALL).into(headerImg);
-        } else {
-            Glide.with(this).load(user.getHeadImg()).diskCacheStrategy(DiskCacheStrategy.ALL).into(headerImg);
+        if ( !TextUtils.isEmpty(user.getHeadImg())){
+            if (user.getHeadImg().contains("D:\\")) {
+                String s = user.getHeadImg();
+                s = s.substring(3, s.length());
+                s = s.replace("\\", "/");
+                Glide.with(this).load(HttpUrl.ROOT + "/" + s).diskCacheStrategy(DiskCacheStrategy.ALL).into(headerImg);
+            } else {
+                Glide.with(this).load(user.getHeadImg()).diskCacheStrategy(DiskCacheStrategy.ALL).into(headerImg);
+            }
         }
+
 
         initData();
        /* if (user.getLabel() != null && user.getLabel().size() > 0){

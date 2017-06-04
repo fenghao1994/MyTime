@@ -259,6 +259,9 @@ public class MainActivity extends AppCompatActivity implements IMainView, SwipeR
     }
 
     private void initLabel() {
+        initBottomLayout();
+        bottomTabZhuyeImg.setImageDrawable(getResources().getDrawable(R.drawable.zhuye));
+        bottomTabZhuyeText.setTextColor(getResources().getColor(R.color.logoGreen));
         if (chooseFragment == 0) {
             planText.setBackgroundColor(this.getResources().getColor(R.color.logoGreen));
             noteText.setBackgroundColor(this.getResources().getColor(R.color.darkGray));

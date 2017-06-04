@@ -7,6 +7,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -24,6 +26,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.Target;
 import com.example.mytime.R;
 import com.example.mytime.event.PlanItemRefreshEvent;
 import com.example.mytime.mvp.model.entity.Photo;
@@ -53,6 +57,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -200,7 +205,7 @@ public class CreatePlanItemActivity extends AppCompatActivity implements ICreate
         if (!TextUtils.isEmpty(planItem.getLocation()) && !planItem.getLocation().equals("null")) {
             mLocationGou.setVisibility(View.VISIBLE);
         }
-        if (!TextUtils.isEmpty(planItem.getOpen()) && planItem.getOpen().equals("OPEN")){
+        if (!TextUtils.isEmpty(planItem.getOpen()) && planItem.getOpen().equals("OPEN")) {
             openGou.setVisibility(View.VISIBLE);
         }
         mTimeGou.setVisibility(View.VISIBLE);
@@ -271,11 +276,11 @@ public class CreatePlanItemActivity extends AppCompatActivity implements ICreate
     }
 
     @OnClick(R.id.open)
-    public void openClick(){
-        if (!TextUtils.isEmpty(planItemOpen) && planItemOpen.equals("OPEN")){
+    public void openClick() {
+        if (!TextUtils.isEmpty(planItemOpen) && planItemOpen.equals("OPEN")) {
             planItemOpen = "";
             openGou.setVisibility(View.GONE);
-        }else {
+        } else {
             planItemOpen = "OPEN";
             openGou.setVisibility(View.VISIBLE);
         }
@@ -609,18 +614,23 @@ public class CreatePlanItemActivity extends AppCompatActivity implements ICreate
         postUrl(HttpUrl.POST_UPDATA_PLAN_ITEM);
     }
 
-    public void postUrl(String url) {
-        Map<String, File> map = new HashMap<>();
-        if (planItemAddress != null && planItemAddress.size() > 0) {
-            for (int i = 0; i < planItemAddress.size(); i++) {
-                File file = new File(planItemAddress.get(i).getAddress());
-                map.put("file" + i, file);
+    private String remoteUri;
+    private Map<String, File> map;
+
+    private Handler handler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            if (msg.what == 1){
+                sendPlanItem();
             }
         }
+    };
 
+    public void sendPlanItem(){
         OkHttpUtils
                 .post()
-                .url(url)
+                .url(remoteUri)
                 .addParams("phoneNumber", sp.getString("phoneNumber", ""))
                 .addParams("id", planItem.getId() + "")
                 .addParams("planId", planItem.getPlanId() + "")
@@ -660,5 +670,41 @@ public class CreatePlanItemActivity extends AppCompatActivity implements ICreate
                         String a = "";
                     }
                 });
+    }
+
+    public void postUrl(String url) {
+        remoteUri = url;
+        map = new HashMap<>();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                if (planItemAddress != null && planItemAddress.size() > 0) {
+                    for (int i = 0; i < planItemAddress.size(); i++) {
+                        File file = null;
+                        if (planItemAddress.get(i).getAddress().contains("D:\\")) {
+                            String s = planItemAddress.get(i).getAddress();
+                            s = s.substring(3, s.length());
+                            s = s.replace("\\", "/");
+                            try {
+                                file = Glide.with(CreatePlanItemActivity.this).load(HttpUrl.ROOT + "/" + s)
+                                        .downloadOnly(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
+                                        .get();
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            } catch (ExecutionException e) {
+                                e.printStackTrace();
+                            }
+                        } else {
+                            file = new File(planItemAddress.get(i).getAddress());
+                        }
+                        map.put("file" + i, file);
+
+                    }
+                }
+                Message message = new Message();
+                message.what = 1;
+                handler.sendMessage(message);
+            }
+        }).start();
     }
 }
