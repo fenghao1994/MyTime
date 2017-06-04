@@ -86,6 +86,16 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"
                 >
+
+                <ImageView
+                    android:id="@+id/pinglun_list"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:src="@drawable/pinglun_list"
+                    android:layout_marginLeft="20dp"
+                    android:visibility="gone"
+                    />
+
                 <TextView
                     android:id="@+id/plan_item_time"
                     android:layout_width="wrap_content"

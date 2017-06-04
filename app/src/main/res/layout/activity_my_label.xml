@@ -12,7 +12,8 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        app:navigationIcon="@drawable/back"
+        app:navigationIcon="@drawable/back_white"
+        android:background="@color/logoGreen"
         >
 
         <RelativeLayout
@@ -26,14 +27,15 @@
                 android:layout_height="wrap_content"
                 android:text="我的标签"
                 android:textSize="16sp"
+                android:textColor="#FFF"
                 />
             <ImageView
                 android:id="@+id/ok"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:src="@drawable/gou"
-                android:layout_marginRight="6dp"
+                android:src="@drawable/gou_white"
+                android:layout_marginRight="16dp"
                 />
         </RelativeLayout>
     </android.support.v7.widget.Toolbar>

@@ -66,7 +66,7 @@ public class MyLabelActivity extends AppCompatActivity implements MyLabelAdapter
         if (actionBar != null) {
             actionBar.setTitle("");
             actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setHomeAsUpIndicator(R.drawable.back);
+            actionBar.setHomeAsUpIndicator(R.drawable.back_white);
         }
     }
 

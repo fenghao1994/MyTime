@@ -79,22 +79,25 @@ public class CityListFragment extends Fragment implements IWeatherView , SwipeRe
      * 列表显示等级  省为第一级，市为第二级
      */
     private int currentLevel = 1;
-//    private ACache mACache;
+    private ACache mACache;
     private Citys mCitys;
+
+    private boolean flag;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_city_list, container, false);
         ButterKnife.bind(this, view);
-//        mACache = ACache.get(getActivity());
+        mACache = ACache.get(getActivity());
 //        mWeatherEvent = (WeatherEvent) mACache.getAsObject("WEATHEREVENT");
-//        if (mWeatherEvent != null) {
-//            showWeatherEvent();
-//        }
-//        mCitys = (Citys) mACache.getAsObject("CITYS");
+        if (mWeatherEvent != null) {
+            showWeatherEvent();
+        }
+        mCitys = (Citys) mACache.getAsObject("CITYS");
         if (mCitys != null){
             showProviceAndCityList(mCitys);
+            flag = true;
         }
         mSwipeLayout.setRefreshing(true);
         mIMainEntity = new MainEntityImpl();
@@ -124,7 +127,7 @@ public class CityListFragment extends Fragment implements IWeatherView , SwipeRe
                     // enabling or disabling the refresh layout
                     enable = firstItemVisible && topOfFirstItemVisible;
                 }
-                mSwipeLayout.setEnabled(enable);
+//                mSwipeLayout.setEnabled(enable);
             }
         });
 
@@ -221,11 +224,12 @@ public class CityListFragment extends Fragment implements IWeatherView , SwipeRe
 
     @Subscribe
     public void showProviceAndCityList(Citys citys) {
+        flag = true;
         mSwipeLayout.setRefreshing(false);
         if (citys == null) {
             return;
         }
-//        mACache.put("CITYS", citys, ACache.TIME_DAY * 10);
+        mACache.put("CITYS", citys, ACache.TIME_DAY * 10);
         mResultBeenList = citys.getResult();
         for (int i = 0; i < mResultBeenList.size(); i++) {
             mCityNameList.add(mResultBeenList.get(i).getProvince());
@@ -248,18 +252,20 @@ public class CityListFragment extends Fragment implements IWeatherView , SwipeRe
         new Thread(new Runnable() {
             @Override
             public void run() {
-                try {
-                    Thread.sleep(1500);
-                    mHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            mSwipeLayout.setRefreshing(false);
-                            String time = MyUtil.dateYMDHM(System.currentTimeMillis());
-                            Toast.makeText(getActivity(), "城市列表更新成功\n" + time, Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+                if (flag){
+                    try {
+                        Thread.sleep(1000);
+                        mHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                mSwipeLayout.setRefreshing(false);
+                                String time = MyUtil.dateYMDHM(System.currentTimeMillis());
+                                Toast.makeText(getActivity(), "城市列表更新成功\n" + time, Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }).start();

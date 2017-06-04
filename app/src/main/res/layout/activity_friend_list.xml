@@ -18,14 +18,18 @@
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                app:navigationIcon="@drawable/back">
+                app:navigationIcon="@drawable/back_white"
+                android:background="@color/logoGreen"
+                >
 
                 <TextView
                     android:id="@+id/toolbar_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="我的好友"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"
+                    android:textColor="#FFF"
+                    />
 
             </android.support.v7.widget.Toolbar>
 

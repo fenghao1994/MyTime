@@ -26,6 +26,7 @@ import com.example.mytime.mvp.ui.activity.CreatePlanActivity;
 import com.example.mytime.mvp.ui.activity.CreatePlanItemActivity;
 import com.example.mytime.mvp.ui.activity.MainActivity;
 import com.example.mytime.mvp.ui.activity.MyOpenPlanItemActivity;
+import com.example.mytime.mvp.ui.activity.PingLunListActivity;
 import com.example.mytime.mvp.ui.custom.SharePopWindow;
 import com.example.mytime.receiver.AlarmReceiver;
 import com.example.mytime.util.EditTimeSortFromBToS;
@@ -94,6 +95,10 @@ public class PlanItemAdapter extends RecyclerView.Adapter<PlanItemAdapter.ViewHo
             holder.planItemCha.setImageDrawable(mContext.getResources().getDrawable(R.drawable.cha_gray));
         }
 
+        if (mContext instanceof MyOpenPlanItemActivity){
+            holder.pinglunList.setVisibility(View.VISIBLE);
+        }
+
         //// TODO: 2017/1/4  显示的时间处理
 
         //如果只提醒一次则显示年月日，否则不显示
@@ -138,6 +143,16 @@ public class PlanItemAdapter extends RecyclerView.Adapter<PlanItemAdapter.ViewHo
                     Toast.makeText(mContext, "此页面不能进行操作", Toast.LENGTH_SHORT).show();
                 }
 
+            }
+        });
+
+        holder.pinglunList.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(mContext, PingLunListActivity.class);
+                intent.putExtra("PLANITEM", mList.get(position));
+                intent.putExtra("CANCEL", "CANCEL");
+                mContext.startActivity(intent);
             }
         });
 
@@ -376,6 +391,8 @@ public class PlanItemAdapter extends RecyclerView.Adapter<PlanItemAdapter.ViewHo
         LinearLayout alarmLayout;
         @BindView(R.id.card_view)
         CardView cardView;
+        @BindView(R.id.pinglun_list)
+        ImageView pinglunList;
 
         View planItemView;
 

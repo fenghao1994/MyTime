@@ -79,7 +79,7 @@ public class FriendListActivity extends AppCompatActivity implements FriendListA
         if (actionBar != null) {
             actionBar.setTitle("");
             actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setHomeAsUpIndicator(R.drawable.back);
+            actionBar.setHomeAsUpIndicator(R.drawable.back_white);
         }
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);

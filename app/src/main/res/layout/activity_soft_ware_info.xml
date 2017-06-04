@@ -12,14 +12,18 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        app:navigationIcon="@drawable/back">
+        app:navigationIcon="@drawable/back_white"
+        android:background="@color/logoGreen"
+        >
 
         <TextView
             android:id="@+id/toolbar_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="软件信息"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            android:textColor="#FFF"
+            />
 
     </android.support.v7.widget.Toolbar>
 
@@ -56,7 +60,7 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:layout_marginTop="20dp"
-        android:text="MyTime 提供时间管理，可以让你更好的管理自己的时间在APP中创建一个计划，设置好闹钟，到点会直接提醒您，并且可以提前把电话，短信等信息填好，到时间了后只需要点击发送就OK了，还可以帮你定位你想要去的地方，到达目的地附近后，会有提示提醒您。"
+        android:text="MyTime 提供时间管理，可以让你更好的管理自己的时间在APP中创建一个计划，设置好闹钟，到点会直接提醒您，并且可以提前把电话，短信等信息填好，到时间了后只需要点击发送就OK了，还可以帮你定位你想要去的地方，到达目的地附近后，会有提示提醒您。通过通讯录查询好友，分享自己的计划，关注好友的计划。"
         android:textSize="16sp" />
 
 

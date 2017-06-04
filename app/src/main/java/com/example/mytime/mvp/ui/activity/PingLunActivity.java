@@ -54,7 +54,7 @@ public class PingLunActivity extends AppCompatActivity {
         if (actionBar != null) {
             actionBar.setTitle("");
             actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setHomeAsUpIndicator(R.drawable.back);
+            actionBar.setHomeAsUpIndicator(R.drawable.back_white);
         }
         user = DataSupport.findFirst(User.class);
         planItem = (PlanItem) getIntent().getSerializableExtra("PLANITEM");

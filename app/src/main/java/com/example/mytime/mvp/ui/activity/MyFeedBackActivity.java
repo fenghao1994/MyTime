@@ -52,7 +52,7 @@ public class MyFeedBackActivity extends AppCompatActivity {
         if (actionBar != null) {
             actionBar.setTitle("");
             actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setHomeAsUpIndicator(R.drawable.back);
+            actionBar.setHomeAsUpIndicator(R.drawable.back_white);
         }
 
         sendMessage.setOnClickListener(new View.OnClickListener() {

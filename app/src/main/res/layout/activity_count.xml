@@ -14,7 +14,9 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        app:navigationIcon="@drawable/back" >
+        app:navigationIcon="@drawable/back_white"
+        android:background="@color/logoGreen"
+        >
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -27,6 +29,7 @@
                 android:layout_height="wrap_content"
                 android:text="完成统计"
                 android:textSize="16sp"
+                android:textColor="#FFF"
                 />
         </RelativeLayout>
     </android.support.v7.widget.Toolbar>

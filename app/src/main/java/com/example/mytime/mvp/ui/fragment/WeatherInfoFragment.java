@@ -88,6 +88,8 @@ public class WeatherInfoFragment extends Fragment implements SwipeRefreshLayout.
         }
     };
 
+    private boolean flag;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -99,10 +101,12 @@ public class WeatherInfoFragment extends Fragment implements SwipeRefreshLayout.
 //            showWeather(mWeatherEvent);
 //        }
         mSwipeLayout.setOnRefreshListener(this);
+        mSwipeLayout.setRefreshing(true);
         Intent intent = getActivity().getIntent();
         mWeatherEvent = (WeatherEvent) intent.getSerializableExtra("WEATHER_EVENT");
         if (mWeatherEvent != null){
             showWeather(mWeatherEvent);
+            flag = true;
         }
         return view;
     }
@@ -122,6 +126,7 @@ public class WeatherInfoFragment extends Fragment implements SwipeRefreshLayout.
     @Subscribe
     public void showWeather(WeatherEvent event) {
         mSwipeLayout.setRefreshing(false);
+        flag = true;
         if (event.isSuccess()) {
 //            mACache.put("WEATHEREVENT", event, ACache.TIME_DAY / 4);
             mWeatherEvent = event;
@@ -181,19 +186,21 @@ public class WeatherInfoFragment extends Fragment implements SwipeRefreshLayout.
             @Override
             public void run() {
                 try {
-                    Thread.sleep(1000);
-                    mHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            mSwipeLayout.setRefreshing(false);
+                    if (flag){
+                        Thread.sleep(1000);
+                        mHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                mSwipeLayout.setRefreshing(false);
                             /*if (mWeatherEvent != null){
                                 showWeather(mWeatherEvent);
                             }*/
-                            long time = System.currentTimeMillis();
-                            String str = MyUtil.dateYMDHM(time);
-                            Toast.makeText(getActivity(), "更新成功\n" + str, Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                                long time = System.currentTimeMillis();
+                                String str = MyUtil.dateYMDHM(time);
+                                Toast.makeText(getActivity(), "更新成功\n" + str, Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

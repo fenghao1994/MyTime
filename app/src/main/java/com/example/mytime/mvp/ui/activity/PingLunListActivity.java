@@ -6,7 +6,9 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -54,6 +56,8 @@ public class PingLunListActivity extends AppCompatActivity {
 
     private PingLunListAdapter pingLunListAdapter;
 
+    private String flag;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,11 +68,15 @@ public class PingLunListActivity extends AppCompatActivity {
         if (actionBar != null) {
             actionBar.setTitle("");
             actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setHomeAsUpIndicator(R.drawable.back);
+            actionBar.setHomeAsUpIndicator(R.drawable.back_white);
         }
-
+        flag = getIntent().getStringExtra("CANCEL");
+        if ( !TextUtils.isEmpty(flag) && flag.equals("CANCEL")){
+            pinglun.setVisibility(View.GONE);
+        }
         planItem = (PlanItem) getIntent().getSerializableExtra("PLANITEM");
         user = DataSupport.findFirst(User.class);
+
     }
 
     @Override
