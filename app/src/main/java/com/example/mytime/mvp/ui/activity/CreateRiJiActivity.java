@@ -78,6 +78,10 @@ public class CreateRiJiActivity extends AppCompatActivity {
             rijiContent.setText(riJi.getContent());
             toolbarTitle.setText("我的日记");
         }
+        if (Extra.getEntity() != null){
+            weather.setText("天气: " + Extra.getEntity().getResult().get(0).getWeather());
+        }
+
     }
     @OnClick(R.id.ok)
     public void saveRiJi(){
