@@ -190,7 +190,7 @@
                         android:id="@+id/open"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:src="@drawable/open_planitem"
+                        android:src="@drawable/share_green"
                         />
 
                     <ImageView
