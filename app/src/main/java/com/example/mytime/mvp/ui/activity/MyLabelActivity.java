@@ -9,9 +9,6 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.MenuItem;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.view.animation.LinearInterpolator;
 import android.view.animation.TranslateAnimation;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -59,7 +56,6 @@ public class MyLabelActivity extends AppCompatActivity implements MyLabelAdapter
     private User user;
     private MyLabelAdapter labelAdapter;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,9 +82,7 @@ public class MyLabelActivity extends AppCompatActivity implements MyLabelAdapter
             recyclerView.setAdapter(labelAdapter);
             labelAdapter.setOnDeleteLabel(this);
         }
-
     }
-
 
 
     @OnClick(R.id.ok)

@@ -25,9 +25,14 @@ public class MyLabelAdapter extends RecyclerView.Adapter<MyLabelAdapter.ViewHold
     private Context context;
     private List<String> list;
     private OnDeleteLabel onDeleteLabel;
+    private boolean flag;
 
     public void setOnDeleteLabel(OnDeleteLabel onDeleteLabel) {
         this.onDeleteLabel = onDeleteLabel;
+    }
+
+    public void setFlag(boolean flag) {
+        this.flag = flag;
     }
 
     public MyLabelAdapter(Context context, List<String> list) {
@@ -53,6 +58,9 @@ public class MyLabelAdapter extends RecyclerView.Adapter<MyLabelAdapter.ViewHold
                 }
             }
         });
+        if (flag){
+            holder.delete.setVisibility(View.GONE);
+        }
     }
 
     @Override
