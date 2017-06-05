@@ -47,7 +47,7 @@ public class TimeAppWidgetProvider extends AppWidgetProvider{
 
 
     private PlanItem getPlanItem() {
-        List<PlanItem> list = DataSupport.where("isComplete = ?", 0 + "").find(PlanItem.class);
+        List<PlanItem> list = DataSupport.where("isComplete = ? and isDelete = ?", 0 + "" , 0 + "").find(PlanItem.class);
         if (list != null && list.size() > 0) {
             if (list.size() == 1){
                 return list.get(0);

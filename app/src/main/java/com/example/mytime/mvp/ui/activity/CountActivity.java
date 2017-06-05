@@ -61,7 +61,7 @@ public class CountActivity extends AppCompatActivity {
     }
 
     public void getAllCompletePlanItem(){
-        allCompletePlanItems = (ArrayList<PlanItem>) DataSupport.where("isComplete = ?", "1").order("editTime ASC").find( PlanItem.class);
+        allCompletePlanItems = (ArrayList<PlanItem>) DataSupport.where("isComplete = ? and isDelete = ?", "1", "0").order("editTime ASC").find( PlanItem.class);
 //        changeList();
         initData();
     }

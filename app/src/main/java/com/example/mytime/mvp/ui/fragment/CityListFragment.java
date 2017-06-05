@@ -127,7 +127,7 @@ public class CityListFragment extends Fragment implements IWeatherView , SwipeRe
                     // enabling or disabling the refresh layout
                     enable = firstItemVisible && topOfFirstItemVisible;
                 }
-//                mSwipeLayout.setEnabled(enable);
+                mSwipeLayout.setEnabled(enable);
             }
         });
 
